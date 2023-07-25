@@ -1,0 +1,214 @@
+$btn_size:(
+    xs: $xs-font,
+    s: $s-font,
+    m: $m-font,
+    l: $l-font,
+);
+
+[class*="btn_"],
+.btn{
+    text-align: center;
+    width: fit-content;
+    border-radius: 50rem;
+    cursor: pointer;
+    transition: .3s;
+    border: 2px solid #000;
+    color: #fff;
+    background-color: $primary;
+    box-shadow: 0px 3px 0px #000;
+
+    svg{
+        color:#fff;
+    }
+
+    &:hover{
+        box-shadow: none;
+        transform: translate(0px, 3px);
+    }
+}
+a[class*="btn_"]{
+    display: inline-block;
+}
+@each $key, $value in $btn_size{
+    .btn_#{$key}{
+        line-height: 2;
+        padding: 0 $value;
+        font-size: $value;
+        @if $value <= $m-font {
+            letter-spacing: 1px;
+        }
+        @else {
+            letter-spacing: 2px;
+        }
+    }
+    .btn_scd_#{$key}{
+        @extend .btn_#{$key};
+        background-color: $secondary;
+        color: #000;
+    }
+}
+
+// .btn_arrow{
+//     display: flex;
+//     align-items: center;
+//     img[src*="arrow_long"]{
+//         margin-left: 20px;
+//     }
+// }
+
+.btn_icon{
+    aspect-ratio: 1/1;
+    box-shadow: 0px 2px 0px #000;
+    border-width: 1px;
+    [class*="fa-"]{
+        margin: 8px;
+    }
+    svg{
+        color:#fff;
+    }
+}
+
+.btn_flat{
+    border: 1px solid $primary;
+    box-shadow: none;
+    background-color: transparent;
+    color: $primary;
+    position: relative;
+    overflow: hidden;
+    &::before{
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 100%;
+        z-index: -1;
+        display: block;
+        width: 100%;
+        height: 100%;
+        border-radius: 50rem;
+        background-color: $primary;
+        transition: .3s;
+    }
+    svg{
+        color: $primary;
+    }
+    &:hover{
+        transform: translate(0px, 0px);
+        background-color: $primary;
+        color:#fff;
+        svg{
+            color: #fff;
+        }
+        &::before{
+            right: 0%;
+        }
+    }
+}
+
+.btn_flat.btn_icon{
+    svg{
+        color: $primary;
+    }
+}
+
+.btn_circle{
+    aspect-ratio: 1/1;
+    padding: $sp2;
+}
+
+//輪播按鈕
+%btn_carousel{
+    @extend .btn_flat;
+    display: flex;
+    align-items: center;
+    gap: $sp1;
+    span{
+        position: absolute;
+        transition: .3s;
+    }
+    i{
+        line-height: 1.5;
+    }
+    &:hover{
+        span{
+            position: relative;
+
+        }
+    }
+}
+.btn_right{
+    @extend %btn_carousel;
+    span{
+        right: 100%;
+    }
+    &:hover{
+        span{
+            right: 0;
+        }
+    }
+}
+.btn_left{
+    @extend %btn_carousel;
+    &.btn_flat::before{
+        right: 0;
+        left: 100%;
+    }
+    span{
+        order: 2;
+        left: 100%;
+    }
+    &:hover{
+        span{
+            left: 0;
+        }
+        &.btn_flat::before{
+            left: 0%;
+        }
+    }
+}
+
+input[type="email"],
+input[type="text"],
+input[type="password"],
+select{
+    display: block;
+    font-size: $xs-font;
+    line-height: 1.5;
+    height: 40px;
+    background-color: transparent;
+    border-radius: $xs-br;
+    padding: $sp1 $sp3;
+    border: 2px solid $text;
+    &::placeholder{
+        color: rgba(0,0,0,0.5);
+        font-size: $xs-font;
+    }
+}
+.normal_select{
+    appearance:none;
+    -moz-appearance:none;
+    -webkit-appearance:none;
+    -ms-appearance:none;
+}
+
+input.search_bar{
+    border: 1px solid $primary;
+    border-radius: 50rem;
+}
+
+//彈窗遮罩
+.mask {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 20;
+    transition: .3s;
+    opacity: 1;
+    visibility: visible;
+    &.none{
+        opacity: 0;
+        visibility: hidden;
+    }
+}
