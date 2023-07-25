@@ -42,41 +42,52 @@ body {
     justify-content: flex-start;
 
     .sidebarSize {
-        padding: 100px 20px 0px 20px;
+        // padding: 100px 20px 0px 20px;
+        padding-top: 90px;
         left: 0px;
         width: 20%;
         height: 100vh;
     }
 
     .sidebar {
-        padding: 100px 20px 0px 20px;
+        // padding: 100px 20px 0px 20px;
+        padding-top: 90px;
         left: 0px;
         width: 20%;
         height: 100vh;
         border-right: 3px solid $primary;
         background: #FFF7EA;
         position: fixed;
-        // z-index:-1;
+        padding-left: 0px;
+        padding-right: 0px;
 
-        ul {
+            ul {
             display: flex;
             flex-direction: column;
-            padding: 20px;
+            padding-left: 0px;
+            padding-right: 0px;
+            // padding: 20px;
 
             .item {
-                display: block;
-                height: 56px;
+                display: flex;
+                justify-content: flex-start;
+                align-items: center;
+                height: 80px;
                 text-align: start;
                 margin-left: auto;
                 margin-right: auto;
-                width: 80%;
+                width: 100%;
                 text-decoration: none;
+                font-size: 20px;
+             
+                span{
+                    padding-left: 30px;
+                }
             }
         }
-        .item:hover {
-            color: #FED550;
-        }
+
     }
+
 
     .main {
 
@@ -93,8 +104,8 @@ body {
         box-sizing: border-box;
         background-color: #FFF7EA;
 
-        h5{
-            font-size:28px;
+        h5 {
+            font-size: 28px;
             font-weight: bold;
             text-align: start;
             margin: 10px 20px;
@@ -115,4 +126,19 @@ table {
 
 .pagination {
     justify-content: center;
+}
+
+button.btn.btn-outline-primary:hover {
+    color: #fff;
+}
+
+.item:hover {
+    background-color: #1F8D61;
+    color: #fff;
+}
+ 
+//側邊欄當前頁面
+.active{   
+    background-color: #1F8D61;
+    color: #fff;
 }

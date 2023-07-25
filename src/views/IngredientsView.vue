@@ -15,9 +15,23 @@
       <div class="sidebar">
         <ul>
 
-          <router-link v-for="(item, index) in list" :key="index" :to="item.href" class="item">
-            {{ item.title }}
-          </router-link>
+          <!-- <router-link v-for="(item, index) in list" :key="index" :to="item.href" class="item">
+            
+            <span>
+            {{ item.title }}</span>
+          </router-link> -->
+
+          <router-link to="#" class="item"><span>訂單管理</span></router-link>
+          <router-link to="#" class="item"><span>會員資料管理</span></router-link>
+          <router-link to="#" class="item"><span>菜色管理</span></router-link>
+          <router-link to="#" class="item active"><span>食材管理</span></router-link>
+          <router-link to="#" class="item"><span>禮物卡管理</span></router-link>
+          <router-link to="#" class="item"><span>烹飪心得管理</span></router-link>
+          <router-link to="#" class="item"><span>FAQ管理</span></router-link>
+          <router-link to="#" class="item"><span>遊戲結果管理</span></router-link>
+          <router-link to="#" class="item"><span>管理員帳號管理</span></router-link>
+
+
         </ul>
       </div>
 
