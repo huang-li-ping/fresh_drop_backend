@@ -15,12 +15,6 @@
       <div class="sidebar">
         <ul>
 
-          <!-- <router-link v-for="(item, index) in list" :key="index" :to="item.href" class="item">
-            
-            <span>
-            {{ item.title }}</span>
-          </router-link> -->
-
           <router-link to="#" class="item"><span>訂單管理</span></router-link>
           <router-link to="#" class="item"><span>會員資料管理</span></router-link>
           <router-link to="#" class="item"><span>菜色管理</span></router-link>
@@ -112,43 +106,6 @@
 export default {
   data() {
     return {
-      list: [{
-        href: '#',
-        title: '訂單管理',
-      },
-      {
-        href: '#',
-        title: '會員資料管理',
-      },
-      {
-        href: '#',
-        title: '菜色管理',
-      },
-      {
-        href: '#',
-        title: '食材管理',
-      },
-      {
-        href: '#',
-        title: '禮物卡管理',
-      },
-      {
-        href: '#',
-        title: '烹飪心得管理',
-      },
-      {
-        href: '#',
-        title: 'FAQ管理',
-      },
-      {
-        href: '#',
-        title: '遊戲結果管理',
-      },
-      {
-        href: '#',
-        title: '管理員帳號管理',
-      },
-      ],
       colTitle: ['食材編號', '食材名稱', '過敏原'],
       foodData: [
         { id: '2-01-0-001', name: '越光米', allergen: '無' },
