@@ -46,7 +46,7 @@
               </div>
             </div>
             <!-- 每頁顯示...筆 -->
-            <div class="col-2">
+            <div class="col-4">
               <span>每頁　<div class="btn-group">
                   <button class="btn btn-outline-primary dropdown-toggle" type="button" id="defaultDropdown"
                     data-bs-toggle="dropdown" data-bs-auto-close="true" aria-expanded="false">
@@ -118,7 +118,7 @@ export default {
         { id: '2-01-0-002', name: '牛番茄', allergen: '無' },
         { id: '2-01-0-003', name: '伊比利豬', allergen: '有' },
         { id: '2-01-0-001', name: '板腱牛', allergen: '無' },
-        { id: '2-01-0-002', name: '雞蛋', allergen: '雞蛋' },
+
 
 
       ]
