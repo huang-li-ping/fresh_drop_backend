@@ -111,6 +111,8 @@ body {
             text-align: start;
             margin: 10px 20px;
         }
+
+
     }
 }
 
@@ -136,6 +138,7 @@ button.btn.btn-outline-primary:hover {
 .item:hover {
     background-color: #1F8D61;
     color: #fff;
+    transition: background-color 0.2s ease-out;
 }
  
 //側邊欄當前頁面

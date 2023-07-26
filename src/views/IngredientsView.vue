@@ -70,7 +70,11 @@
             </tr>
           </thead>
           <tbody>
+
             <tr v-for="(item, index) in foodData" :key="index">
+              <td> <button class="edit-button btn btn-sm btn-outline-secondary rounded-5">
+                <font-awesome-icon icon="fa-solid fa-pen" />
+                </button></td>
               <td>{{ item.id }}</td>
               <td>{{ item.name }}</td>
               <td>{{ item.allergen }}</td>
@@ -106,7 +110,7 @@
 export default {
   data() {
     return {
-      colTitle: ['食材編號', '食材名稱', '過敏原'],
+      colTitle: ['', '食材編號', '食材名稱', '過敏原'],
       foodData: [
         { id: '2-01-0-001', name: '越光米', allergen: '無' },
         { id: '2-01-0-002', name: '牛番茄', allergen: '無' },
