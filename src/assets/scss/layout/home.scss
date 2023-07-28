@@ -1,0 +1,21 @@
+.back_container {
+    flex-grow: 1;
+    padding-left: 0;
+
+    &>* {
+        height: 100%;
+    }
+}
+
+.main {
+    // height: 100%;
+    padding-top: 20px;
+    margin-top: 10px;
+    margin-left: auto;
+    margin-right: auto;
+    border: 3px solid $primary;
+    border-radius: 50px;
+}
+.pagination {
+    justify-content: center;
+}
