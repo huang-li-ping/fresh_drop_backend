@@ -6,7 +6,7 @@
                 <router-link to="/member" class="item"><span>會員資料管理</span></router-link>
                 <router-link to="recipe" class="item"><span>菜色管理</span></router-link>
                 <router-link to="/ingred" class="item active"><span>食材管理</span></router-link>
-                <router-link to="/gift" class="item"><span>禮物卡管理</span></router-link>
+                <router-link to="/giftcard" class="item"><span>禮物卡管理</span></router-link>
                 <router-link to="/opinion" class="item"><span>烹飪心得管理</span></router-link>
                 <router-link to="/faq" class="item"><span>FAQ管理</span></router-link>
                 <router-link to="/game" class="item"><span>遊戲結果管理</span></router-link>
@@ -43,11 +43,13 @@
             span {
                 padding-left: 30px;
             }
+
             &:hover {
                 background-color: $primary;
                 color: #fff;
                 transition: background-color 0.2s ease-out;
             }
+
             &.active {
                 background-color: $primary;
                 color: #fff;

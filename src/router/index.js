@@ -1,36 +1,87 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
 
 const routes = [
   {
-    path: '/',
-    name: 'home',
-    component: HomeView
+    path: '/backhome',
+    name: 'backhome',
+    redirect: 'order',
+    component: () => import(/* webpackChunkName: "about" */ '../views/BackhomeView.vue'),
+    children: [
+      {
+        path: '/faq',
+        name: 'faq',
+        // route level code-splitting
+        // this generates a separate chunk (about.[hash].js) for this route
+        // which is lazy-loaded when the route is visited.
+        component: () => import(/* webpackChunkName: "about" */ '../views/FaqView.vue')
+      },
+      {
+        path: '/game',
+        name: 'game',
+        // route level code-splitting
+        // this generates a separate chunk (about.[hash].js) for this route
+        // which is lazy-loaded when the route is visited.
+        component: () => import(/* webpackChunkName: "about" */ '../views/GameView.vue')
+      },
+      {
+        path: '/giftcard',
+        name: 'giftcard',
+        // route level code-splitting
+        // this generates a separate chunk (about.[hash].js) for this route
+        // which is lazy-loaded when the route is visited.
+        component: () => import(/* webpackChunkName: "about" */ '../views/GiftcardView.vue')
+      },
+      {
+        path: '/ingred',
+        name: 'ingred',
+        // route level code-splitting
+        // this generates a separate chunk (about.[hash].js) for this route
+        // which is lazy-loaded when the route is visited.
+        component: () => import(/* webpackChunkName: "about" */ '../views/IngredientsView.vue')
+      },
+      {
+        path: '/member',
+        name: 'member',
+        // route level code-splitting
+        // this generates a separate chunk (about.[hash].js) for this route
+        // which is lazy-loaded when the route is visited.
+        component: () => import(/* webpackChunkName: "about" */ '../views/MemberView.vue')
+      },
+      {
+        path: '/opinion',
+        name: 'opinion',
+        // route level code-splitting
+        // this generates a separate chunk (about.[hash].js) for this route
+        // which is lazy-loaded when the route is visited.
+        component: () => import(/* webpackChunkName: "about" */ '../views/OpinionView.vue')
+      },
+      {
+        path: '/order',
+        name: 'order',
+        // route level code-splitting
+        // this generates a separate chunk (about.[hash].js) for this route
+        // which is lazy-loaded when the route is visited.
+        component: () => import(/* webpackChunkName: "about" */ '../views/OrderView.vue')
+      },
+      {
+        path: '/recipe',
+        name: 'recipe',
+        // route level code-splitting
+        // this generates a separate chunk (about.[hash].js) for this route
+        // which is lazy-loaded when the route is visited.
+        component: () => import(/* webpackChunkName: "about" */ '../views/RecipeView.vue')
+      },
+    ]
   },
   {
-    path: '/login',
+    path: '/',
     name: 'login',
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "about" */ '../views/LoginView.vue')
   },
-  {
-    path: '/giftcard',
-    name: 'giftcard',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/GiftcardView.vue')
-  },
-  {
-    path: '/ingred',
-    name: 'ingred',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/IngredientsView.vue')
-  }
+
 
 
 ]

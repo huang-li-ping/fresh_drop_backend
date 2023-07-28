@@ -1,5 +1,5 @@
 <template>
-    <PageTitle :title="'頁面的標題'" />
+    <PageTitle :title="'小遊戲管理'" />
     <div class="container">
         <div class="row">
             <!-- 搜尋框 -->
@@ -16,14 +16,8 @@
                 <span>
                     每頁　
                     <div class="btn-group">
-                        <button
-                            class="btn btn-outline-primary dropdown-toggle"
-                            type="button"
-                            id="defaultDropdown"
-                            data-bs-toggle="dropdown"
-                            data-bs-auto-close="true"
-                            aria-expanded="false"
-                        >
+                        <button class="btn btn-outline-primary dropdown-toggle" type="button" id="defaultDropdown"
+                            data-bs-toggle="dropdown" data-bs-auto-close="true" aria-expanded="false">
                             10
                         </button>
                         <ul class="dropdown-menu" aria-labelledby="defaultDropdown">
@@ -84,8 +78,8 @@ import PageTitle from '@/components/PageTitle.vue';
 export default {
     name: 'IngredientView',
     component: {
-    // PageComponent,
-    PageTitle,
+        // PageComponent,
+        PageTitle,
     },
     data() {
         return {

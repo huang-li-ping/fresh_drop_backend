@@ -1,21 +1,5 @@
 <template>
-    <!-- 導覽列 -->
-    <TopNav />
-    <div class="container-fluid back_container">
-        <!-- 側邊欄 -->
-        <div class="row">
-            <SideMenu />
-
-            <!-- 內容 -->
-            <div class="col-9">
-                <div class="main">
-
-                    <router-view />
-                    
-                </div>
-            </div>
-        </div>
-    </div>
+    <router-view></router-view>
 </template>
 
 <script>
@@ -39,6 +23,7 @@ export default {
 // @import "~bootstrap/scss/bootstrap";
 // @import '@/assets/scss/all.scss';
 @import "@/assets/scss/layout/home.scss";
+
 #app {
     font-family: Avenir, Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
@@ -62,5 +47,4 @@ nav {
         }
     }
 }
-
 </style>

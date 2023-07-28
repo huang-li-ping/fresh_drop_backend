@@ -1,154 +1,110 @@
 <template>
-  <div class="container-fluid">
-
-    <nav class="navbar">
-      <a href="#">
-        <img src="../assets/images/logo/logo.png" alt="logo">
-      </a>
-      <span>後台管理</span>
-      <button class="btn btn-outline-light" type="button">登出</button>
-    </nav>
+  <PageTitle :title="'禮物卡管理'" />
+  <div class="container">
     <div class="row">
-      <div class="sidebar">
-        <ul>
-
-          <router-link v-for="(item, index) in list" :key="index" :to="item.href" class="item">
-            {{ item.title }}
-          </router-link>
-        </ul>
-      </div>
-
-
-      <div class="main">
-
-        <h5>禮物卡管理 / 樣式</h5>
-        <hr>
-        <div class="container">
-          <div class="row">
-            <div class="col-6">
-              <div class="input-group mb-3">
-                <input type="text" class="form-control" placeholder="搜尋樣式">
-                <div class="input-group-append">
-                  <button class="btn btn-outline-primary" type="button">search</button>
-                </div>
-              </div>
-            </div>
-            <div class="col-6">
-              <div class="input-group-append">
-                  <button class="btn btn-primary" type="button">新增樣式</button>
-                </div>
-            </div>
-
-            
+      <!-- 搜尋框 -->
+      <div class="col-3">
+        <div class="input-group mb-3">
+          <input type="text" class="form-control" placeholder="搜尋" />
+          <div class="input-group-append">
+            <button class="btn btn-outline-primary" type="button" style="margin-left: 10px">search</button>
           </div>
         </div>
-
-        <table class="table">
-          <thead>
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col">First</th>
-              <th scope="col">Last</th>
-              <th scope="col">Handle</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <th scope="row">1</th>
-              <td>Mark</td>
-              <td>Otto</td>
-              <td>@mdo</td>
-            </tr>
-            <tr>
-              <th scope="row">2</th>
-              <td>Jacob</td>
-              <td>Thornton</td>
-              <td>@fat</td>
-            </tr>
-            <tr>
-              <th scope="row">3</th>
-              <td>Larry</td>
-              <td>the Bird</td>
-              <td>@twitter</td>
-            </tr>
-          </tbody>
-        </table>
-
-
-        <nav aria-label="Page navigation example">
-          <ul class="pagination">
-            <li class="page-item">
-              <a class="page-link" href="#" aria-label="Previous">
-                <span aria-hidden="true">&laquo;</span>
-              </a>
-            </li>
-            <li class="page-item"><a class="page-link" href="#">1</a></li>
-            <li class="page-item"><a class="page-link" href="#">2</a></li>
-            <li class="page-item"><a class="page-link" href="#">3</a></li>
-            <li class="page-item">
-              <a class="page-link" href="#" aria-label="Next">
-                <span aria-hidden="true">&raquo;</span>
-              </a>
-            </li>
-          </ul>
-        </nav>
-
+      </div>
+      <!-- 每頁顯示...筆 -->
+      <div class="col-4">
+        <span>
+          每頁　
+          <div class="btn-group">
+            <button class="btn btn-outline-primary dropdown-toggle" type="button" id="defaultDropdown"
+              data-bs-toggle="dropdown" data-bs-auto-close="true" aria-expanded="false">
+              10
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="defaultDropdown">
+              <li><a class="dropdown-item" href="#">10</a></li>
+              <li><a class="dropdown-item" href="#">20</a></li>
+              <li><a class="dropdown-item" href="#">30</a></li>
+            </ul>
+          </div>
+          　筆
+        </span>
       </div>
     </div>
   </div>
+
+  <!-- 表格 -->
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col" v-for="(item, index) in colTitle" :key="index">{{ item }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr v-for="(item, index) in foodData" :key="index">
+        <td>
+          <button class="edit-button btn btn-sm btn-outline-secondary rounded-5">
+            <font-awesome-icon icon="fa-solid fa-pen" />
+          </button>
+        </td>
+        <td>{{ item.id }}</td>
+        <td>{{ item.name }}</td>
+        <td>{{ item.allergen }}</td>
+      </tr>
+    </tbody>
+  </table>
+  <!-- 頁碼 -->
+  <nav style="padding: 15px">
+    <ul class="pagination">
+      <li class="page-item">
+        <a class="page-link" href="#" aria-label="Previous">
+          <span aria-hidden="true">&laquo;</span>
+        </a>
+      </li>
+      <li class="page-item"><a class="page-link" href="#">1</a></li>
+      <li class="page-item"><a class="page-link" href="#">2</a></li>
+      <li class="page-item"><a class="page-link" href="#">3</a></li>
+      <li class="page-item">
+        <a class="page-link" href="#" aria-label="Next">
+          <span aria-hidden="true">&raquo;</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
 </template>
 <script>
+import PageTitle from '@/components/PageTitle.vue';
 
+// import PageComponent from "@/components/PageComponent.vue";
 export default {
+  name: 'IngredientView',
+  component: {
+    // PageComponent,
+    PageTitle,
+  },
   data() {
     return {
-      list: [{
-        href: '#',
-        title: '訂單管理',
-      },
-      {
-        href: '#',
-        title: '會員資料管理',
-      },
-      {
-        href: '#',
-        title: '菜色',
-      },
-      {
-        href: '#',
-        title: '食材',
-      },
-      {
-        href: '#',
-        title: '禮物卡管理',
-      },
-      {
-        href: '#',
-        title: '烹飪心得管理',
-      },
-      {
-        href: '#',
-        title: 'FAQ管理',
-      },
-      {
-        href: '#',
-        title: '遊戲結果管理',
-      },
-      {
-        href: '#',
-        title: '管理員帳號管理',
-      },
-      ]
-    }
+      colTitle: ["", "食材編號", "食材名稱", "過敏原"],
+      foodData: [
+        { id: "2-01-0-001", name: "越光米", allergen: "無" },
+        { id: "2-01-0-002", name: "牛番茄", allergen: "無" },
+        { id: "2-01-0-003", name: "伊比利豬", allergen: "有" },
+        { id: "2-01-0-001", name: "板腱牛", allergen: "無" },
+        { id: "2-01-0-002", name: "雞蛋", allergen: "雞蛋" },
+        { id: "2-01-0-003", name: "鱸魚", allergen: "無" },
+        { id: "2-01-0-001", name: "越光米", allergen: "無" },
+        { id: "2-01-0-002", name: "牛番茄", allergen: "無" },
+        { id: "2-01-0-003", name: "伊比利豬", allergen: "有" },
+        { id: "2-01-0-001", name: "板腱牛", allergen: "無" },
+      ],
+    };
   },
-
-  methods: {}
+  methods: {},
+  components: { PageTitle }
 };
-
 </script>
 
 <style lang="scss">
-@import '../assets/scss/all.scss';
-@import 'bootstrap/dist/css/bootstrap.min.css';
-// @import '../assets/scss/page/giftcard.scss';
+// @import 'bootstrap/dist/css/bootstrap.min.css';
+// @import '@/assets/scss/all.scss';
+@import "@/assets/scss/page/ingredients.scss";
 </style>
