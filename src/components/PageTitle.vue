@@ -25,4 +25,11 @@
         text-align: start;
         margin: 10px 30px;
     }
+
+@media screen and (min-width: 1500px){
+    .main h5 {
+        font-size: 20px;
+        margin: 10px 30px;
+    }
+}   
 </style>

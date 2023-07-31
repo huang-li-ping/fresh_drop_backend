@@ -1,57 +1,36 @@
 <template>
     <PageTitle :title="'會員資料管理'" />
-    <div class="container">
-        <div class="row">
-            <!-- 搜尋框 -->
-            <div class="col-3">
-                <div class="input-group mb-3">
-                    <input type="text" class="form-control" placeholder="搜尋" />
-                    <div class="input-group-append">
-                        <button class="btn btn-outline-primary" type="button" style="margin-left: 10px">search</button>
-                    </div>
+    <div class="member_container">
+        <div class="mb-3 ps-3 pe-3 search_bar_group">
+            <div class="d-flex justify-content-between">
+                <div class="input-group">
+                    <span class="input-group-text">搜尋會員</span>
+                    <input type="text" class="form-control" placeholder="請輸入手機號碼或會員編號" @input="searchIdOrPhone" v-model="searchInput"/>
                 </div>
-            </div>
-            <!-- 每頁顯示...筆 -->
-            <div class="col-4">
-                <span>
-                    每頁　
-                    <div class="btn-group">
-                        <button class="btn btn-outline-primary dropdown-toggle" type="button" id="defaultDropdown"
-                            data-bs-toggle="dropdown" data-bs-auto-close="true" aria-expanded="false">
-                            10
-                        </button>
-                        <ul class="dropdown-menu" aria-labelledby="defaultDropdown">
-                            <li><a class="dropdown-item" href="#">10</a></li>
-                            <li><a class="dropdown-item" href="#">20</a></li>
-                            <li><a class="dropdown-item" href="#">30</a></li>
-                        </ul>
-                    </div>
-                    　筆
-                </span>
+                <div class="btn btn-outline-primary" @click="searchIdOrPhone">搜尋</div>
             </div>
         </div>
+        <!-- 表格 -->
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th scope="col" v-for="(item, index) in colTitle" :key="index">{{ item }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="(item, index) in searchResult" :key="index">
+                    <td>{{ item.id }}</td>
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.email }}</td>
+                    <td>{{ item.phone }}</td>
+                    <td>{{ item.birth }}</td>
+                    <td class="add_td">{{ item.add }}</td>
+                    <td><button class="btn btn-outline-primary btn-sm">查閱</button></td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 
-    <!-- 表格 -->
-    <table class="table">
-        <thead>
-            <tr>
-                <th scope="col" v-for="(item, index) in colTitle" :key="index">{{ item }}</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr v-for="(item, index) in foodData" :key="index">
-                <td>
-                    <button class="edit-button btn btn-sm btn-outline-secondary rounded-5">
-                        <font-awesome-icon icon="fa-solid fa-pen" />
-                    </button>
-                </td>
-                <td>{{ item.id }}</td>
-                <td>{{ item.name }}</td>
-                <td>{{ item.allergen }}</td>
-            </tr>
-        </tbody>
-    </table>
     <!-- 頁碼 -->
     <nav style="padding: 15px">
         <ul class="pagination">
@@ -74,37 +53,135 @@
 <script>
 import PageTitle from '@/components/PageTitle.vue';
 
-// import PageComponent from "@/components/PageComponent.vue";
 export default {
-    name: 'IngredientView',
-    component: {
-        // PageComponent,
+    name: "MemberView",
+    components: {
         PageTitle,
     },
     data() {
         return {
-            colTitle: ["", "食材編號", "食材名稱", "過敏原"],
-            foodData: [
-                { id: "2-01-0-001", name: "越光米", allergen: "無" },
-                { id: "2-01-0-002", name: "牛番茄", allergen: "無" },
-                { id: "2-01-0-003", name: "伊比利豬", allergen: "有" },
-                { id: "2-01-0-001", name: "板腱牛", allergen: "無" },
-                { id: "2-01-0-002", name: "雞蛋", allergen: "雞蛋" },
-                { id: "2-01-0-003", name: "鱸魚", allergen: "無" },
-                { id: "2-01-0-001", name: "越光米", allergen: "無" },
-                { id: "2-01-0-002", name: "牛番茄", allergen: "無" },
-                { id: "2-01-0-003", name: "伊比利豬", allergen: "有" },
-                { id: "2-01-0-001", name: "板腱牛", allergen: "無" },
+            searchInput: '',
+            colTitle: ["會員編號", "會員名稱", "會員信箱", "手機號碼", "生日", "住址", ""],
+            memData: [
+                {
+                    id: "98765425",
+                    name: "蔡宗驊",
+                    email: "abc@gamil.com",
+                    phone: "0913-986754",
+                    birth: "1994-05-26",
+                    add: "桃園市中壢區復興路48號8樓",
+                },
+                {
+                    id: "98757322",
+                    name: "熊毅",
+                    email: "abc@gamil.com",
+                    phone: "0987-987554",
+                    birth: "1994-05-26",
+                    add: "桃園市中壢區復興路48號8樓",
+                },
+                {
+                    id: "98732586",
+                    name: "徐億籃",
+                    email: "abc@gamil.com",
+                    phone: "0956-909854",
+                    birth: "1994-05-26",
+                    add: "桃園市中壢區復興路48號8樓",
+                },
+                {
+                    id: "98768925",
+                    name: "黃莉萍",
+                    email: "abc@gamil.com",
+                    phone: "0952-973454",
+                    birth: "1994-05-26",
+                    add: "桃園市中壢區復興路48號8樓",
+                },
+                {
+                    id: "95609322",
+                    name: "李岱霖",
+                    email: "abc@gamil.com",
+                    phone: "0952-123354",
+                    birth: "1994-05-26",
+                    add: "桃園市中壢區復興路48號8樓",
+                },
+                {
+                    id: "98432586",
+                    name: "江瑀庭",
+                    email: "abc@gamil.com",
+                    phone: "0952-909090",
+                    birth: "1994-05-26",
+                    add: "桃園市中壢區復興路48號8樓",
+                },
+                {
+                    id: "98765425",
+                    name: "蔡宗驊",
+                    email: "abc@gamil.com",
+                    phone: "0909-332876",
+                    birth: "1994-05-26",
+                    add: "桃園市中壢區復興路48號8樓",
+                },
+                {
+                    id: "98753452",
+                    name: "李岱霖",
+                    email: "abc@gamil.com",
+                    phone: "0919-202043",
+                    birth: "1994-05-26",
+                    add: "桃園市中壢區復興路48號8樓",
+                },
+                {
+                    id: "09433586",
+                    name: "江瑀庭",
+                    email: "abc@gamil.com",
+                    phone: "0930-808095",
+                    birth: "1994-05-26",
+                    add: "桃園市中壢區復興路48號8樓",
+                },
+                {
+                    id: "98719325",
+                    name: "徐億籃",
+                    email: "abc@gamil.com",
+                    phone: "0990-354667",
+                    birth: "1994-05-26",
+                    add: "桃園市中壢區復興路48號8樓",
+                },
             ],
+            searchResult: [],
         };
     },
-    methods: {},
-    components: { PageTitle }
+    methods: {
+        searchIdOrPhone() {
+            console.log(this.searchInput);
+            if (this.searchInput == '') {
+                this.searchResult = this.memData
+            }
+            let idResult = this.memData.filter(item => {
+                return item.id.includes(this.searchInput)
+            })
+            let phoneResult = this.memData.filter(item => {
+                return item.phone.includes(this.searchInput)
+            })
+            if (idResult.length > 0) {
+                this.searchResult = idResult
+            } else if ((phoneResult.length > 0)) {
+                this.searchResult = phoneResult
+            }
+        }
+    },
+    created (){
+        this.searchResult = this.memData
+    },
 };
 </script>
 
 <style lang="scss">
-// @import 'bootstrap/dist/css/bootstrap.min.css';
-// @import '@/assets/scss/all.scss';
-@import "@/assets/scss/page/ingredients.scss";
+.member_container {
+    .input-group {
+        width: fit-content;
+    }
+    .add_td {
+        max-width: 150px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+}
 </style>

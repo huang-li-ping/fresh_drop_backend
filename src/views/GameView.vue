@@ -77,7 +77,7 @@ import PageTitle from '@/components/PageTitle.vue';
 // import PageComponent from "@/components/PageComponent.vue";
 export default {
     name: 'IngredientView',
-    component: {
+    components: {
         // PageComponent,
         PageTitle,
     },
@@ -99,7 +99,6 @@ export default {
         };
     },
     methods: {},
-    components: { PageTitle }
 };
 </script>
 

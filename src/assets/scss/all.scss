@@ -1,21 +1,19 @@
-
 @import "../../../node_modules/bootstrap/scss/functions";
 @import "variables";
 @import "../../../node_modules/bootstrap/scss/mixins";
 @import '~bootstrap';
-button.btn.btn-outline-primary:hover {
+
+.btn.btn-outline-primary:hover {
     color: #fff;
 }
-// body {
-//     background-color: $bg;
-//     & *{
-//         box-sizing: border-box;
-//     }
-// }
-// @import "reset";
-// @import "var";
-// @import "grid";
-// @import "mixin";
-// @import "base"
 
+.input-group-text {
+    color: #fff;
+}
 
+tr {
+    padding: 10px 10px !important;
+}
+td{
+    line-height: 40px;
+}
