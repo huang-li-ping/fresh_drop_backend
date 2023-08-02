@@ -41,7 +41,8 @@
                             <td>{{ item.number }}</td>
                             <td>{{ item.status }}</td>
                             <td>
-                                <button class="btn btn-sm btn-outline-primary rounded-pill">查閱</button>
+                                <button class="btn btn-outline-primary rounded-pill"
+                                @click.prevent="showOrderDetail(item.number)">查閱</button>
                             </td>
                         </tr>
                     </tbody>
@@ -145,7 +146,12 @@ export default {
             ],
         };
     },
-    methods: {},
+    methods: {
+        showOrderDetail(ordNo) {
+            console.log(ordNo);
+            // this.$router.push('/ordDeatil')
+        },
+    },
     created() {},
 };
 </script>
