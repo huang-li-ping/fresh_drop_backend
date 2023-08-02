@@ -18,7 +18,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="(item, index) in searchResult" :key="index">
+                <tr v-for="(item, index) in showData" :key="index">
                     <td>{{ item.id }}</td>
                     <td>{{ item.name }}</td>
                     <td>{{ item.email }}</td>
@@ -32,32 +32,18 @@
     </div>
 
     <!-- 頁碼 -->
-    <nav style="padding: 15px">
-        <ul class="pagination">
-            <li class="page-item">
-                <a class="page-link" href="#" aria-label="Previous">
-                    <span aria-hidden="true">&laquo;</span>
-                </a>
-            </li>
-            <li class="page-item"><a class="page-link" href="#">1</a></li>
-            <li class="page-item"><a class="page-link" href="#">2</a></li>
-            <li class="page-item"><a class="page-link" href="#">3</a></li>
-            <li class="page-item">
-                <a class="page-link" href="#" aria-label="Next">
-                    <span aria-hidden="true">&raquo;</span>
-                </a>
-            </li>
-        </ul>
-    </nav>
+    <PageComponent :data="searchResult" @changePage="getPageData"/>
 </template>
 <script>
+import PageComponent from '@/components/PageComponent.vue';
 import PageTitle from '@/components/PageTitle.vue';
 
 export default {
     name: "MemberView",
     components: {
-        PageTitle,
-    },
+    PageTitle,
+    PageComponent
+},
     data() {
         return {
             searchInput: '',
@@ -143,13 +129,37 @@ export default {
                     birth: "1994-05-26",
                     add: "桃園市中壢區復興路48號8樓",
                 },
+                {
+                    id: "98432586",
+                    name: "江瑀庭",
+                    email: "abc@gamil.com",
+                    phone: "0952-909090",
+                    birth: "1994-05-26",
+                    add: "桃園市中壢區復興路48號8樓",
+                },
+                {
+                    id: "98765425",
+                    name: "蔡宗驊",
+                    email: "abc@gamil.com",
+                    phone: "0909-332876",
+                    birth: "1994-05-26",
+                    add: "桃園市中壢區復興路48號8樓",
+                },
+                {
+                    id: "98753452",
+                    name: "李岱霖",
+                    email: "abc@gamil.com",
+                    phone: "0919-202043",
+                    birth: "1994-05-26",
+                    add: "桃園市中壢區復興路48號8樓",
+                },
             ],
             searchResult: [],
+            showData: [],
         };
     },
     methods: {
         searchIdOrPhone() {
-            console.log(this.searchInput);
             if (this.searchInput == '') {
                 this.searchResult = this.memData
             }
@@ -164,7 +174,10 @@ export default {
             } else if ((phoneResult.length > 0)) {
                 this.searchResult = phoneResult
             }
-        }
+        },
+        getPageData(data) {
+            this.showData = data
+        },
     },
     created (){
         this.searchResult = this.memData
