@@ -3,13 +3,25 @@
     <div class="container">
         <div class="row">
             <!-- 搜尋框 -->
-            <div class="col-3">
+            <div class="col-3" style="width: 350px;">
                 <div class="input-group mb-3">
-                    <input type="text" class="form-control" placeholder="搜尋" />
+                    <span class="input-group-text">訂單編號</span>
+                    <input type="text" class="form-control" style="width: 100px;" placeholder="搜尋" />
                     <div class="input-group-append">
                         <button class="btn btn-outline-primary" type="button" style="margin-left: 10px">search</button>
                     </div>
                 </div>
+            </div>
+            <div class="btn-group" style="width: 150px;padding: 10px;">
+                <button class="btn btn-outline-primary dropdown-toggle" type="button" id="defaultDropdown"
+                    data-bs-toggle="dropdown" data-bs-auto-close="true" aria-expanded="false">
+                    訂單狀態
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="defaultDropdown">
+                    <li><a class="dropdown-item" href="#">處理中</a></li>
+                    <li><a class="dropdown-item" href="#">已完成</a></li>
+                    <li><a class="dropdown-item" href="#">訂單取消</a></li>
+                </ul>
             </div>
             <!-- 每頁顯示...筆 -->
             <div class="col-4">
@@ -41,14 +53,19 @@
         </thead>
         <tbody>
             <tr v-for="(item, index) in foodData" :key="index">
-                <td>
+                <!-- <td>
                     <button class="edit-button btn btn-sm btn-outline-secondary rounded-5">
                         <font-awesome-icon icon="fa-solid fa-pen" />
                     </button>
-                </td>
-                <td>{{ item.id }}</td>
+                </td> -->
+                <td>{{ item.ord_date }}</td>
+                <td>{{ item.ord_no }}</td>
                 <td>{{ item.name }}</td>
-                <td>{{ item.allergen }}</td>
+                <td>{{ item.email }}</td>
+                <td>{{ item.total }}</td>
+                <td>{{ item.payment }}</td>
+                <td>{{ item.status }}</td>
+                <td><button class="btn btn-outline-primary btn-sm">查閱</button></td>
             </tr>
         </tbody>
     </table>
@@ -83,18 +100,14 @@ export default {
     },
     data() {
         return {
-            colTitle: ["", "食材編號", "食材名稱", "過敏原"],
+            colTitle: ["訂單日期", "訂單編號", "會員姓名", "會員信箱", "訂單金額", "付款方式", "訂單狀態", ""],
             foodData: [
-                { id: "2-01-0-001", name: "越光米", allergen: "無" },
-                { id: "2-01-0-002", name: "牛番茄", allergen: "無" },
-                { id: "2-01-0-003", name: "伊比利豬", allergen: "有" },
-                { id: "2-01-0-001", name: "板腱牛", allergen: "無" },
-                { id: "2-01-0-002", name: "雞蛋", allergen: "雞蛋" },
-                { id: "2-01-0-003", name: "鱸魚", allergen: "無" },
-                { id: "2-01-0-001", name: "越光米", allergen: "無" },
-                { id: "2-01-0-002", name: "牛番茄", allergen: "無" },
-                { id: "2-01-0-003", name: "伊比利豬", allergen: "有" },
-                { id: "2-01-0-001", name: "板腱牛", allergen: "無" },
+                { ord_date: "2023-07-02", ord_no: "WEE5YDGRQ", name: "蔡宗驊", email: "abc123@gmail.com", total: "$3680", payment: "信用卡+禮物卡", status: "處理中" },
+                { ord_date: "2023-07-02", ord_no: "WEE5YDGRQ", name: "黃莉萍", email: "abc123@gmail.com", total: "$680", payment: "ATM匯款", status: "訂單取消" },
+                { ord_date: "2023-07-02", ord_no: "WEE5YDGRQ", name: "李岱霖", email: "abc123@gmail.com", total: "$680", payment: "信用卡", status: "處理中" },
+                { ord_date: "2023-07-02", ord_no: "WEE5YDGRQ", name: "江瑀庭", email: "abc123@gmail.com", total: "$480", payment: "信用卡", status: "訂單取消" },
+                { ord_date: "2023-07-02", ord_no: "WEE5YDGRQ", name: "許弘毅", email: "abc123@gmail.com", total: "$1080", payment: "信用卡+禮物卡", status: "已完成" },
+                { ord_date: "2023-07-02", ord_no: "WEE5YDGRQ", name: "徐億籃", email: "abc123@gmail.com", total: "$880", payment: "禮物卡", status: "已完成" },
             ],
         };
     },
