@@ -7,7 +7,7 @@
             <SideMenu />
 
             <!-- 內容 -->
-            <div class="col-9">
+            <div class="col-9 pt-3 pb-3">
                 <div class="main">
 
                     <router-view />
