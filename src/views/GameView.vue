@@ -1,57 +1,64 @@
 <template>
     <PageTitle :title="'小遊戲管理'" />
-    <div class="container">
-        <div class="row">
-            <!-- 搜尋框 -->
-            <div class="col-3">
-                <div class="input-group mb-3">
-                    <input type="text" class="form-control" placeholder="搜尋" />
-                    <div class="input-group-append">
-                        <button class="btn btn-outline-primary" type="button" style="margin-left: 10px">search</button>
-                    </div>
+    <div class="game_container">
+        <div class="mb-3 ps-3 pe-3 search_bar_group">
+            <div class="d-flex justify-content-between">
+                <div class="input-group" style="width: fit-content;">
+                    <span class="input-group-text">搜尋結果</span>
+                    <input type="text" class="form-control" placeholder="請輸入狀態或菜色" @input="searchIdOrPhone"
+                        v-model="searchInput" />
                 </div>
-            </div>
-            <!-- 每頁顯示...筆 -->
-            <div class="col-4">
+                <!-- 每頁顯示...筆 -->
                 <span>
                     每頁　
                     <div class="btn-group">
                         <button class="btn btn-outline-primary dropdown-toggle" type="button" id="defaultDropdown"
                             data-bs-toggle="dropdown" data-bs-auto-close="true" aria-expanded="false">
-                            10
+                            {{ itemsPerPage }}
                         </button>
                         <ul class="dropdown-menu" aria-labelledby="defaultDropdown">
-                            <li><a class="dropdown-item" href="#">10</a></li>
-                            <li><a class="dropdown-item" href="#">20</a></li>
-                            <li><a class="dropdown-item" href="#">30</a></li>
+                            <li v-for="option in options" :key="option">
+                                <a class="dropdown-item" href="#" @click="itemsPerPage = option">{{ option }}</a>
+                            </li>
                         </ul>
                     </div>
                     　筆
                 </span>
+                <div class="btn btn-outline-primary" @click="searchIdOrPhone">搜尋</div>
             </div>
         </div>
+        <!-- 表格 -->
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th scope="col" v-for="(item, index) in colTitle" :key="index">{{ item }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="(item, index) in searchResult" :key="index">
+                    <td>
+                        <button class="edit-button btn btn-sm btn-outline-secondary rounded-5">
+                            <font-awesome-icon icon="fa-solid fa-pen" />
+                        </button>
+                    </td>
+                    <td>{{ item.id }}</td>
+                    <td>{{ item.personality }}</td>
+                    <td>
+                        <select name="" id="" style="width: 200px; border-radius: 20px; padding: 4px;">
+                            <option value="" v-for="(proItem, proIndex) in item.productLists[0]" :key="proIndex">
+                                {{ proItem.name }}
+                            </option>
+                        </select>
+                    </td>
+                    <td>{{ truncateText(item.txt, 6) }}</td>
+                    <td>{{ item.state }}</td>
+                    <td class="add_td">{{ item.add }}</td>
+                    <td><button class="btn btn-outline-primary btn-sm">查閱</button></td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 
-    <!-- 表格 -->
-    <table class="table">
-        <thead>
-            <tr>
-                <th scope="col" v-for="(item, index) in colTitle" :key="index">{{ item }}</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr v-for="(item, index) in foodData" :key="index">
-                <td>
-                    <button class="edit-button btn btn-sm btn-outline-secondary rounded-5">
-                        <font-awesome-icon icon="fa-solid fa-pen" />
-                    </button>
-                </td>
-                <td>{{ item.id }}</td>
-                <td>{{ item.name }}</td>
-                <td>{{ item.allergen }}</td>
-            </tr>
-        </tbody>
-    </table>
     <!-- 頁碼 -->
     <nav style="padding: 15px">
         <ul class="pagination">
@@ -83,22 +90,238 @@ export default {
     },
     data() {
         return {
-            colTitle: ["", "食材編號", "食材名稱", "過敏原"],
-            foodData: [
-                { id: "2-01-0-001", name: "越光米", allergen: "無" },
-                { id: "2-01-0-002", name: "牛番茄", allergen: "無" },
-                { id: "2-01-0-003", name: "伊比利豬", allergen: "有" },
-                { id: "2-01-0-001", name: "板腱牛", allergen: "無" },
-                { id: "2-01-0-002", name: "雞蛋", allergen: "雞蛋" },
-                { id: "2-01-0-003", name: "鱸魚", allergen: "無" },
-                { id: "2-01-0-001", name: "越光米", allergen: "無" },
-                { id: "2-01-0-002", name: "牛番茄", allergen: "無" },
-                { id: "2-01-0-003", name: "伊比利豬", allergen: "有" },
-                { id: "2-01-0-001", name: "板腱牛", allergen: "無" },
+            searchInput: '',
+            searchResult: [],
+            colTitle: ["", "結果編號", "人格種類", "推薦菜色", "分析結果", "狀態"],
+            result: [
+                {
+                    id: 1,
+                    personality: '冒險家',
+                    txt: `分析原因：對新奇和刺激的渴望使你喜歡嘗試不同的味道和料理、你尋求新的口味體驗、並享受冒烹飪過程。`,
+                    state: "套用",
+                    productLists: [[
+                        {
+                            name: "西班牙海鮮燉飯",
+                            category: "主菜",
+                            amount: 1,
+                        },
+                        {
+                            name: "阿根廷燉牛肉",
+                            category: "主菜",
+                            amount: 1,
+                        },
+                        {
+                            name: "墨西哥辣味雞肉湯",
+                            category: "湯品",
+                            amount: 1,
+                        },
+                        {
+                            name: "泰式生菜包",
+                            category: "沙拉",
+                            amount: 1,
+                        }
+                    ]]
+                },
+                {
+                    id: 2,
+                    personality: '安逸享受者',
+                    txt: '分析原因：你對舒適和享受的追求使你喜歡選擇家常菜和溫和口味的食物。你尋求平衡和放鬆，享受那種讓你感到舒服和滿足的味道。',
+                    state: "套用",
+                    productLists: [[
+                        {
+                            name: "日本櫻花蝦天婦羅",
+                            category: "主菜",
+                            amount: 1,
+                        },
+                        {
+                            name: "奶油啤酒蛤蠣",
+                            category: "主菜",
+                            amount: 1,
+                        },
+                        {
+                            name: "馬來西亞椰奶雞湯",
+                            category: "湯品",
+                            amount: 1,
+                        },
+                        {
+                            name: "巴西凱撒沙拉",
+                            category: "沙拉",
+                            amount: 1,
+                        }
+                    ]]
+                },
+                {
+                    id: 3,
+                    personality: '創意人格',
+                    txt: '分析原因：你的豐富創意和熱情驅使你追求獨特的飲食體驗。你喜歡嘗試新穎的料理和特色小吃，並將食物視為藝術和表達自我的方式。',
+                    state: "套用",
+                    productLists: [[
+                        {
+                            name: "塔香茄子",
+                            category: "主菜",
+                            amount: 1,
+                        },
+                        {
+                            name: "中華彗星炒飯",
+                            category: "主菜",
+                            amount: 1,
+                        },
+                        {
+                            name: "法國洋蔥湯",
+                            category: "湯品",
+                            amount: 1,
+                        },
+                        {
+                            name: "印度瑪撒拉薯仔沙拉",
+                            category: "沙拉",
+                            amount: 1,
+                        }
+                    ]]
+                },
+                {
+                    id: 4,
+                    personality: '社交達人',
+                    txt: '分析原因：你喜歡社交和人際交往，食物在社交場合中扮演重要角色。你喜歡分享美食，享受小吃和下午茶點等輕鬆的社交餐點。',
+                    state: "套用",
+                    productLists: [[
+                        {
+                            name: "泡椒炒鮮魚",
+                            category: "主菜",
+                            amount: 1,
+                        },
+                        {
+                            name: "希臘烤羊肉",
+                            category: "主菜",
+                            amount: 1,
+                        },
+                        {
+                            name: "意大利米蘭湯",
+                            category: "湯品",
+                            amount: 1,
+                        },
+                        {
+                            name: "糖漬番茄",
+                            category: "沙拉",
+                            amount: 1,
+                        }
+                    ]]
+                },
+                {
+                    id: 5,
+                    personality: '健康控',
+                    txt: '分析原因：你對健康和營養的關注使你傾向選擇健康沙拉、素食料理和天然有機食物。你重視身體健康和營養均衡的飲食習慣。',
+                    state: "套用",
+                    productLists: [[
+                        {
+                            name: "滑嫩番茄蛋",
+                            category: "主菜",
+                            amount: 1,
+                        },
+                        {
+                            name: "麻婆豆腐",
+                            category: "主菜",
+                            amount: 1,
+                        },
+                        {
+                            name: "泰式酸辣湯",
+                            category: "湯品",
+                            amount: 1,
+                        },
+                        {
+                            name: "中東麥麩沙拉",
+                            category: "沙拉",
+                            amount: 1,
+                        }
+                    ]]
+                },
+                {
+                    id: 6,
+                    personality: '情感探索者',
+                    txt: '分析原因：你對情感和內心探索感興趣，食物對你來說是情感療癒的一部分。你喜歡享受舒緩心情的甜點和心靈療癒的食物，並創造溫馨的烹飪體驗。',
+                    state: "套用",
+                    productLists: [[
+                        {
+                            name: "越南河粉湯",
+                            category: "主菜",
+                            amount: 1,
+                        },
+                        {
+                            name: "法國紅酒燉雞",
+                            category: "主菜",
+                            amount: 1,
+                        },
+                        {
+                            name: "意大利肉醬千層麵",
+                            category: "湯品",
+                            amount: 1,
+                        },
+                        {
+                            name: "加拿大蔓越莓野菜沙拉",
+                            category: "沙拉",
+                            amount: 1,
+                        }
+                    ]]
+                },
             ],
+            itemsPerPage: 5, // 預設每頁顯示筆數
+            options: [5, 10, 20], // 可選的每頁顯示筆數選項
         };
     },
-    methods: {},
+    methods: {
+        searchIdOrPhone() {
+            console.log(this.searchInput);
+            if (this.searchInput == '') {
+                this.searchResult = this.result
+            }
+            let idResult = this.result.filter(item => {
+                return item.id.includes(this.searchInput)
+            })
+            let phoneResult = this.result.filter(item => {
+                return item.phone.includes(this.searchInput)
+            })
+            if (idResult.length > 0) {
+                this.searchResult = idResult
+            } else if ((phoneResult.length > 0)) {
+                this.searchResult = phoneResult
+            }
+        },
+        //控制顯示字數 多的用"..."省略
+        truncateText(text, length) {
+            if (text.length > length) {
+                return text.slice(0, length) + '...';
+            }
+            return text;
+        },
+    },
+    created() {
+        this.searchResult = this.result
+    },
+    computed: {
+        displayedItems() {
+            // 計算每頁顯示的品項
+            const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+            const endIndex = startIndex + this.itemsPerPage;
+            return this.searchResult.slice(startIndex, endIndex);
+        },
+        totalPageCount() {
+            // 計算總頁數
+            return Math.ceil(this.searchResult.length / this.itemsPerPage);
+        },
+        currentPage() {
+            // 計算目前頁數
+            return Math.ceil(this.startIndex / this.itemsPerPage) + 1;
+        },
+        startIndex() {
+            // 計算每頁顯示品項的起始索引
+            return (this.currentPage - 1) * this.itemsPerPage;
+        },
+        endIndex() {
+            // 計算每頁顯示品項的結束索引
+            return Math.min(this.startIndex + this.itemsPerPage, this.searchResult.length);
+        },
+    },
+
+
 };
 </script>
 
