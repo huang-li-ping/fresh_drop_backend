@@ -24,7 +24,7 @@
                 </ul>
             </div>
             <!-- 每頁顯示...筆 -->
-            <div class="col-4">
+            <!-- <div class="col-4">
                 <span>
                     每頁　
                     <div class="btn-group">
@@ -40,7 +40,7 @@
                     </div>
                     　筆
                 </span>
-            </div>
+            </div> -->
         </div>
     </div>
 
