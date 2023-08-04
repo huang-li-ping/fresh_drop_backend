@@ -4,11 +4,9 @@
         <div class="row">
             <!-- 搜尋框 -->
             <div class="col-3">
-                <div class="input-group mb-3">
-                    <input type="text" class="form-control" placeholder="搜尋" />
-                    <div class="input-group-append">
-                        <button class="btn btn-outline-primary" type="button" style="margin-left: 10px">search</button>
-                    </div>
+                <div class="input-group">
+                    <span class="input-group-text">搜尋菜色</span>
+                    <input type="text" class="form-control" placeholder="請輸入菜色" @input="searchIdOrPhone" v-model="searchInput"/>
                 </div>
             </div>
             <!-- 每頁顯示...筆 -->
@@ -40,12 +38,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr v-for="(item, index) in foodData" :key="index">
-                <td>
-                    <button class="edit-button btn btn-sm btn-outline-secondary rounded-5">
-                        <font-awesome-icon icon="fa-solid fa-pen" />
-                    </button>
-                </td>
+            <tr v-for="(item, index) in searchResult" :key="index">
                 <td>{{ item.id }}</td>
                 <td>{{ item.recipe }}</td>
                 <td>{{ item.pic }}</td>
@@ -53,7 +46,9 @@
                 <td>{{ item.date }}</td>
                 <td>{{ item.state }}</td>
                 <td>{{ item.report }}</td>
-                <td><button class="btn btn-outline-primary btn-sm">查閱</button></td>
+                <td>
+                    <button class="btn btn-outline-primary btn-sm">刪除</button>
+                </td>
             </tr>
         </tbody>
     </table>
@@ -75,8 +70,11 @@
             </li>
         </ul>
     </nav>
+    <!-- 頁碼 -->
+    <PageComponent :data="searchResult" @changePage="getPageData"/>
 </template>
 <script>
+import PageComponent from '@/components/PageComponent.vue';
 import PageTitle from '@/components/PageTitle.vue';
 
 // import PageComponent from "@/components/PageComponent.vue";
@@ -85,10 +83,11 @@ export default {
     component: {
         // PageComponent,
         PageTitle,
+        PageComponent
     },
     data() {
         return {
-            colTitle: ["", "會員編號", "食譜標題", "照片", "評論", "日期", "狀態", "檢舉"],
+            colTitle: ["會員編號", "食譜標題", "照片", "評論", "日期", "狀態", "檢舉",""],
             foodData: [
                 { id: "1", recipe: "綠咖哩", pic: "s1.jpg", comment: "我就說這道菜很屌~", date: "2023/5/12",state:"上架",report:"套用",},
                 { id: "2", recipe: "綠咖哩", pic: "s2.jpg", comment: "今天翹課坐火車回家，就是為了媽媽煮的這道菜！", date: "2023/5/12",state:"上架",report:"套用",},
@@ -99,17 +98,37 @@ export default {
                 { id: "7", recipe: "綠咖哩", pic: "s6.jpg", comment: "做到第幾道菜了?", date: "2023/5/12",state:"上架",report:"套用",},
                 { id: "8", recipe: "綠咖哩", pic: "s1.jpg", comment: "感謝分享~~", date: "2023/5/12",state:"上架",report:"套用",},
                 { id: "9", recipe: "綠咖哩", pic: "s2.jpg", comment: "綠咖哩中加入椰奶可以平衡辣味~", date: "2023/5/12",state:"上架",report:"套用",},
-                { id: "10", recipe: "綠咖哩", pic: "s3.jpg", comment: "如果你喜歡海鮮，將鮮蝦或魚片加入綠咖哩中，可以有豐富的海鮮風味，讓整道菜更好吃。", date: "2023/5/12",state:"上架",report:"套用",},
+                { id: "10", recipe: "111", pic: "s3.jpg", comment: "如果你喜歡海鮮，將鮮蝦或魚片加入綠咖哩中，可以有豐富的海鮮風味，讓整道菜更好吃。", date: "2023/5/12",state:"上架",report:"套用",},
             ],
+            searchResult: [],
+            showData: [],
         };
     },
     methods: {
+    searchIdOrPhone() {
+        console.log('type')
+      if (this.searchInput == '') {
+        this.searchResult = this.foodData;
+      } else {
+        let idResult = this.foodData.filter(item => {
+          return item.recipe.includes(this.searchInput);
+        });
+        console.log(idResult)
+        if (idResult.length > 0) {
+                this.searchResult = idResult
+        }
+      }
+    },
+
     truncateText(text, length) {
       if (text.length > length) {
         return text.slice(0, length) + '...';
       }
       return text;
     },
+},
+    created() {
+        this.searchResult = this.foodData;
     },
     components: { PageTitle }
 };
