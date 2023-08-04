@@ -9,7 +9,7 @@
                         v-model="searchInput" />
                 </div>
                 <!-- 每頁顯示...筆 -->
-                <span>
+                <!-- <span>
                     每頁　
                     <div class="btn-group">
                         <button class="btn btn-outline-primary dropdown-toggle" type="button" id="defaultDropdown"
@@ -23,8 +23,7 @@
                         </ul>
                     </div>
                     　筆
-                </span>
-                <div class="btn btn-outline-primary" @click="searchIdOrPhone">搜尋</div>
+                </span> -->
             </div>
         </div>
         <!-- 表格 -->
@@ -36,11 +35,7 @@
             </thead>
             <tbody>
                 <tr v-for="(item, index) in searchResult" :key="index">
-                    <td>
-                        <button class="edit-button btn btn-sm btn-outline-secondary rounded-5">
-                            <font-awesome-icon icon="fa-solid fa-pen" />
-                        </button>
-                    </td>
+
                     <td>{{ item.id }}</td>
                     <td>{{ item.personality }}</td>
                     <td>
@@ -52,8 +47,7 @@
                     </td>
                     <td>{{ truncateText(item.txt, 6) }}</td>
                     <td>{{ item.state }}</td>
-                    <td class="add_td">{{ item.add }}</td>
-                    <td><button class="btn btn-outline-primary btn-sm">查閱</button></td>
+                    <td><button class="btn btn-outline-primary btn-sm" @click="openModal(item)">查閱</button></td>
                 </tr>
             </tbody>
         </table>
@@ -77,11 +71,39 @@
             </li>
         </ul>
     </nav>
+
+    <!-- 彈窗 -->
+
+    <div class="show_modal d-flex flex-column align-items-start gap-2" v-if="showModal">
+
+        <label for="">狀態:
+            <select name="" id="">
+                <option value="">套用</option>
+                <option value="">未套用</option>
+            </select>
+        </label>
+
+        <label for="">結果編號:<input type="text" :value="newData.id"></label>
+
+        <label for="">人格種類: <input type="text" :value="newData.personality"> </label>
+
+        <label for="">推薦菜色1: <input type="text" :value="newData.productLists[0][0].name"> </label>
+        <label for="">推薦菜色2: <input type="text" :value="newData.productLists[0][1].name"> </label>
+        <label for="">推薦菜色3: <input type="text" :value="newData.productLists[0][2].name"> </label>
+        <label for="">推薦菜色4: <input type="text" :value="newData.productLists[0][3].name"> </label>
+
+        <label for="" style="display: flex;">分析結果:
+            <textarea name="" id="" cols="30" rows="10">{{ newData.txt }}</textarea>
+        </label>
+        <!-- 關閉按鍵 -->
+        <button class="xmark btn btn-outline-secondary " @click="closeModal">
+            x
+        </button>
+    </div>
 </template>
 <script>
 import PageTitle from '@/components/PageTitle.vue';
 
-// import PageComponent from "@/components/PageComponent.vue";
 export default {
     name: 'IngredientView',
     components: {
@@ -90,9 +112,11 @@ export default {
     },
     data() {
         return {
+            showModal: false,
+            newData: [],
             searchInput: '',
             searchResult: [],
-            colTitle: ["", "結果編號", "人格種類", "推薦菜色", "分析結果", "狀態"],
+            colTitle: ["結果編號", "人格種類", "推薦菜色", "分析結果", "狀態"],
             result: [
                 {
                     id: 1,
@@ -273,16 +297,16 @@ export default {
             if (this.searchInput == '') {
                 this.searchResult = this.result
             }
-            let idResult = this.result.filter(item => {
-                return item.id.includes(this.searchInput)
+            let nameResult = this.result.filter(item => {
+                return item.name.includes(this.searchInput)
             })
-            let phoneResult = this.result.filter(item => {
-                return item.phone.includes(this.searchInput)
+            let stateResult = this.result.filter(item => {
+                return item.state.includes(this.searchInput)
             })
             if (idResult.length > 0) {
-                this.searchResult = idResult
-            } else if ((phoneResult.length > 0)) {
-                this.searchResult = phoneResult
+                this.searchResult = nameResult
+            } else if ((stateResult.length > 0)) {
+                this.searchResult = stateResult
             }
         },
         //控制顯示字數 多的用"..."省略
@@ -291,6 +315,15 @@ export default {
                 return text.slice(0, length) + '...';
             }
             return text;
+        },
+        openModal(item) {
+            this.showModal = true;
+            this.newData = item;
+            console.log(this.newData)
+
+        },
+        closeModal() {
+            this.showModal = false;
         },
     },
     created() {
@@ -326,7 +359,28 @@ export default {
 </script>
 
 <style lang="scss">
-// @import 'bootstrap/dist/css/bootstrap.min.css';
-// @import '@/assets/scss/all.scss';
-@import "@/assets/scss/page/ingredients.scss";
+.show_modal {
+    border: 3px solid #1F8D61;
+    border-radius: 20px;
+    width: fit-content;
+    padding: 30px;
+    position: relative;
+    position: fixed;
+    left: 40%;
+    top: 10%;
+    font-weight: 700;
+    background-color: #FFF7EA;
+
+    .xmark {
+        right: 5px;
+        top: 5px;
+        position: absolute;
+    }
+
+    label {
+        input {
+            padding: 0 5px;
+        }
+    }
+}
 </style>
