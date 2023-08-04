@@ -57,7 +57,7 @@
             </li>
         </ul>
     </div>
-    <div v-if="currentTab === 'WEEK1'" class="col-6" >
+    <div v-if="currentTab === 'WEEK1'" class="col-6">
         <!-- WEEK1的内容 -->
         <table class="table" style="border: solid 1px #1F8D61;margin: 0 20px;">
             <thead>
@@ -93,7 +93,19 @@
         </table>
     </div>
     <div class="bill_container">
-
+        <table class="table" style="border: solid 1px #1F8D61;margin: 0 20px;">
+            <thead>
+                <tr>
+                    <th scope="col" v-for="(item, index) in bilTitle" :key="index">{{ item }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="(item, index) in foodData" :key="index">
+                    <td>{{ item.ord_date }}</td>
+                    <td>{{ item.ord_no }}</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
     <!-- 頁碼 -->
     <nav style="padding: 15px">
@@ -144,17 +156,18 @@ export default {
             currentTab: 'WEEK1',
             colTitle: ["品項", "份數", "出貨狀態",],
             week1Data: [
-                { recipe: "滑嫩蕃茄蛋", qty: "X1", status:"已出貨\n(2023-07-05)"},
+                { recipe: "滑嫩蕃茄蛋", qty: "X1", status: "已出貨\n(2023-07-05)" },
                 { recipe: "蒸蛋", qty: "X1", },
                 { recipe: "味噌鮮魚湯", qty: "X1", },
                 { recipe: "塔香茄子", qty: "X1", },
             ],
             week2Data: [
-                { recipe: "越南河粉湯", qty: "X1",status:"處理中" },
+                { recipe: "越南河粉湯", qty: "X1", status: "處理中" },
                 { recipe: "泰式生菜包", qty: "X1", },
                 { recipe: "麻婆豆腐", qty: "X1", },
                 { recipe: "巴西凱撒沙拉", qty: "X1", },
             ],
+            bilTitle: ["訂單金額明細",],
         };
     },
     methods: {},
