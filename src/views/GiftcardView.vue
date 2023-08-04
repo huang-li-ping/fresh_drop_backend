@@ -6,7 +6,7 @@
 
       <div class="col-4 search_bar_group">
         <div class="input-group">
-          <span class="input-group-text">搜尋禮物卡</span>
+          <span class="input-group-text">搜尋樣式</span>
           <input type="text" class="form-control" placeholder="請輸入名稱" @input="searchIdOrPhone" v-model="searchInput" />
           <div class="btn btn-outline-primary" @click="searchIdOrPhone">搜尋</div>
         </div>
@@ -23,7 +23,7 @@
 
 
       <!-- 每頁顯示...筆 -->
-      <div class="col-4">
+      <!-- <div class="col-4">
         <span>
           每頁　
           <div class="btn-group">
@@ -39,7 +39,7 @@
           </div>
           　筆
         </span>
-      </div>
+      </div> -->
       <div class="col-2 create" style="margin-left:auto">
         <button class="btn btn-primary create-btn" type="button" style="margin-left: auto; color: #fff">新增樣式</button>
       </div>
@@ -56,7 +56,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr v-for="(item, index) in searchResult" :key="index">
+      <tr v-for="(item, index) in showData" :key="index">
         <td>
           <button class="edit-button btn btn-sm btn-outline-secondary rounded-5">
             <font-awesome-icon icon="fa-solid fa-pen" />
@@ -77,33 +77,18 @@
     </tbody>
   </table>
   <!-- 頁碼 -->
-  <nav style="padding: 15px">
-    <ul class="pagination">
-      <li class="page-item">
-        <a class="page-link" href="#" aria-label="Previous">
-          <span aria-hidden="true">&laquo;</span>
-        </a>
-      </li>
-      <li class="page-item"><a class="page-link" href="#">1</a></li>
-      <li class="page-item"><a class="page-link" href="#">2</a></li>
-      <li class="page-item"><a class="page-link" href="#">3</a></li>
-      <li class="page-item">
-        <a class="page-link" href="#" aria-label="Next">
-          <span aria-hidden="true">&raquo;</span>
-        </a>
-      </li>
-    </ul>
-  </nav>
+  <PageComponent :data="searchResult" @changePage="getPageData" />
+
 </template>
 <script>
+import PageComponent from '@/components/PageComponent.vue';
 import PageTitle from '@/components/PageTitle.vue';
 
-// import PageComponent from "@/components/PageComponent.vue";
 export default {
   name: 'IngredientView',
-  component: {
-    // PageComponent,
+  components: {
     PageTitle,
+    PageComponent
   },
   data() {
     return {
@@ -116,11 +101,13 @@ export default {
         { id: "4", name: "小動物生日快樂", catogory: "品牌", pic: "giftcard_defaultpic_004.svg", date: "2023-07-04", status: "上架" },
         { id: "5", name: "滿版生日快樂", catogory: "品牌", pic: "giftcard_defaultpic_005.svg", date: "2023-07-05", status: "上架" },
         { id: "6", name: "寫實新鮮蔬果", catogory: "品牌", pic: "giftcard_defaultpic_006.svg", date: "2023-07-06", status: "上架" },
+ 
       ],
       searchResult: [],
+      showData: [],
     };
   },
-  components: { PageTitle },
+ 
   methods: {
     searchIdOrPhone() {
       console.log(this.searchInput);
@@ -138,7 +125,10 @@ export default {
       } else if ((phoneResult.length > 0)) {
         this.searchResult = phoneResult
       }
-    }
+    },
+    getPageData(data) {
+      this.showData = data
+    },
   },
   created() {
     this.searchResult = this.giftcardData
@@ -159,7 +149,7 @@ export default {
   margin-left: auto;
 }
 
-table{
+table {
   margin-top: 20px;
 }
 </style>
