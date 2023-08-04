@@ -6,9 +6,9 @@
             <div class="col-3" style="width: 350px;">
                 <div class="input-group mb-3">
                     <span class="input-group-text">訂單編號</span>
-                    <input type="text" class="form-control" style="width: 100px;" placeholder="搜尋" />
+                    <input type="text" class="form-control" style="width: 100px;" placeholder="搜尋" @input="searchIdOrPhone" v-model="searchInput" />
                     <div class="input-group-append">
-                        <button class="btn btn-outline-primary" type="button" style="margin-left: 10px">search</button>
+                        <button @click="searchIdOrPhone" class="btn btn-outline-primary"  type="button" style="margin-left: 10px" >search</button>
                     </div>
                 </div>
             </div>
@@ -52,7 +52,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr v-for="(item, index) in foodData" :key="index">
+            <tr v-for="(item, index) in showData" :key="index">
                 <!-- <td>
                     <button class="edit-button btn btn-sm btn-outline-secondary rounded-5">
                         <font-awesome-icon icon="fa-solid fa-pen" />
@@ -70,33 +70,20 @@
         </tbody>
     </table>
     <!-- 頁碼 -->
-    <nav style="padding: 15px">
-        <ul class="pagination">
-            <li class="page-item">
-                <a class="page-link" href="#" aria-label="Previous">
-                    <span aria-hidden="true">&laquo;</span>
-                </a>
-            </li>
-            <li class="page-item"><a class="page-link" href="#">1</a></li>
-            <li class="page-item"><a class="page-link" href="#">2</a></li>
-            <li class="page-item"><a class="page-link" href="#">3</a></li>
-            <li class="page-item">
-                <a class="page-link" href="#" aria-label="Next">
-                    <span aria-hidden="true">&raquo;</span>
-                </a>
-            </li>
-        </ul>
-    </nav>
+    <PageComponent :data="searchResult" @changePage="getPageData" />
+
 </template>
 <script>
+import PageComponent from '@/components/PageComponent.vue';
 import PageTitle from '@/components/PageTitle.vue';
 
 // import PageComponent from "@/components/PageComponent.vue";
 export default {
     name: 'IngredientView',
-    component: {
-        // PageComponent,
+    components: {
+        PageComponent,
         PageTitle,
+
     },
     data() {
         return {
@@ -108,11 +95,43 @@ export default {
                 { ord_date: "2023-07-02", ord_no: "WEE5YDGRQ", name: "江瑀庭", email: "abc123@gmail.com", total: "$480", payment: "信用卡", status: "訂單取消" },
                 { ord_date: "2023-07-02", ord_no: "WEE5YDGRQ", name: "許弘毅", email: "abc123@gmail.com", total: "$1080", payment: "信用卡+禮物卡", status: "已完成" },
                 { ord_date: "2023-07-02", ord_no: "WEE5YDGRQ", name: "徐億籃", email: "abc123@gmail.com", total: "$880", payment: "禮物卡", status: "已完成" },
+                { ord_date: "2023-07-02", ord_no: "WEE5YDGRQ", name: "徐億籃", email: "abc123@gmail.com", total: "$880", payment: "禮物卡", status: "已完成" },
+                { ord_date: "2023-07-02", ord_no: "WEE5YDGRQ", name: "徐億籃", email: "abc123@gmail.com", total: "$880", payment: "禮物卡", status: "已完成" },
+                { ord_date: "2023-07-02", ord_no: "WEE5YDGRQ", name: "徐億籃", email: "abc123@gmail.com", total: "$880", payment: "禮物卡", status: "已完成" },
+                { ord_date: "2023-07-02", ord_no: "THISISAPP", name: "徐億籃", email: "abc123@gmail.com", total: "$880", payment: "禮物卡", status: "已完成" },
+                { ord_date: "2023-07-02", ord_no: "WEE5YDGRQ", name: "徐億籃", email: "abc123@gmail.com", total: "$880", payment: "禮物卡", status: "已完成" },
+                { ord_date: "2023-07-02", ord_no: "WEE5YDGRQ", name: "徐億籃", email: "abc123@gmail.com", total: "$880", payment: "禮物卡", status: "已完成" },
+                { ord_date: "2023-07-02", ord_no: "WEE5YDGRQ", name: "徐億籃", email: "abc123@gmail.com", total: "$880", payment: "禮物卡", status: "已完成" },
             ],
+            searchResult: [],
+      showData: [],
         };
     },
-    methods: {},
-    components: { PageTitle }
+    methods: {
+    searchIdOrPhone() {
+      console.log(this.searchInput);
+      if (this.searchInput == '') {
+        this.searchResult = this.foodData
+      }
+      let idResult = this.foodData.filter(item => {
+        return item.ord_no.includes(this.searchInput)
+      })
+      let phoneResult = this.foodData.filter(item => {
+        return item.name.includes(this.searchInput)
+      })
+      if (idResult.length > 0) {
+        this.searchResult = idResult
+      } else if ((phoneResult.length > 0)) {
+        this.searchResult = phoneResult
+      }
+    },
+    getPageData(data) {
+      this.showData = data
+    },
+  },
+  created() {
+    this.searchResult = this.foodData
+  },
 };
 </script>
 
