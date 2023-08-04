@@ -2,6 +2,7 @@
 @import "variables";
 @import "../../../node_modules/bootstrap/scss/mixins";
 @import '~bootstrap';
+@import 'var';
 
 .btn.btn-outline-primary:hover {
     color: #fff;
@@ -16,4 +17,21 @@ tr {
 }
 td{
     line-height: 40px;
+}
+%scrollbar_style{
+
+    &::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background-color: rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: $primary--;
+        width: 5px;
+        border-radius: 8px;
+    }
 }

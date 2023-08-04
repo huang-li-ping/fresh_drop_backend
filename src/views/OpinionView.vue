@@ -47,8 +47,13 @@
                     </button>
                 </td>
                 <td>{{ item.id }}</td>
-                <td>{{ item.name }}</td>
-                <td>{{ item.allergen }}</td>
+                <td>{{ item.recipe }}</td>
+                <td>{{ item.pic }}</td>
+                <td>{{ truncateText(item.comment, 6) }}</td>
+                <td>{{ item.date }}</td>
+                <td>{{ item.state }}</td>
+                <td>{{ item.report }}</td>
+                <td><button class="btn btn-outline-primary btn-sm">查閱</button></td>
             </tr>
         </tbody>
     </table>
@@ -83,22 +88,29 @@ export default {
     },
     data() {
         return {
-            colTitle: ["", "食材編號", "食材名稱", "過敏原"],
+            colTitle: ["", "會員編號", "食譜標題", "照片", "評論", "日期", "狀態", "檢舉"],
             foodData: [
-                { id: "2-01-0-001", name: "越光米", allergen: "無" },
-                { id: "2-01-0-002", name: "牛番茄", allergen: "無" },
-                { id: "2-01-0-003", name: "伊比利豬", allergen: "有" },
-                { id: "2-01-0-001", name: "板腱牛", allergen: "無" },
-                { id: "2-01-0-002", name: "雞蛋", allergen: "雞蛋" },
-                { id: "2-01-0-003", name: "鱸魚", allergen: "無" },
-                { id: "2-01-0-001", name: "越光米", allergen: "無" },
-                { id: "2-01-0-002", name: "牛番茄", allergen: "無" },
-                { id: "2-01-0-003", name: "伊比利豬", allergen: "有" },
-                { id: "2-01-0-001", name: "板腱牛", allergen: "無" },
+                { id: "1", recipe: "綠咖哩", pic: "s1.jpg", comment: "我就說這道菜很屌~", date: "2023/5/12",state:"上架",report:"套用",},
+                { id: "2", recipe: "綠咖哩", pic: "s2.jpg", comment: "今天翹課坐火車回家，就是為了媽媽煮的這道菜！", date: "2023/5/12",state:"上架",report:"套用",},
+                { id: "3", recipe: "綠咖哩", pic: "s3.jpg", comment: "住太遠uber送不到，只好自己在家做了。", date: "2023/5/12",state:"上架",report:"套用",},
+                { id: "4", recipe: "綠咖哩", pic: "s3.jpg", comment: "覺得好吃的舉手~", date: "2023/5/12",state:"上架",report:"套用",},
+                { id: "5", recipe: "綠咖哩", pic: "s1.jpg", comment: "剛從美國釣到的鮮魚，拿來做菜最適合", date: "2023/5/12",state:"上架",report:"套用",},
+                { id: "6", recipe: "綠咖哩", pic: "s5.jpg", comment: "看到檸檬葉要怎麼樣~馬上做成綠咖哩", date: "2023/5/12",state:"上架",report:"套用",},
+                { id: "7", recipe: "綠咖哩", pic: "s6.jpg", comment: "做到第幾道菜了?", date: "2023/5/12",state:"上架",report:"套用",},
+                { id: "8", recipe: "綠咖哩", pic: "s1.jpg", comment: "感謝分享~~", date: "2023/5/12",state:"上架",report:"套用",},
+                { id: "9", recipe: "綠咖哩", pic: "s2.jpg", comment: "綠咖哩中加入椰奶可以平衡辣味~", date: "2023/5/12",state:"上架",report:"套用",},
+                { id: "10", recipe: "綠咖哩", pic: "s3.jpg", comment: "如果你喜歡海鮮，將鮮蝦或魚片加入綠咖哩中，可以有豐富的海鮮風味，讓整道菜更好吃。", date: "2023/5/12",state:"上架",report:"套用",},
             ],
         };
     },
-    methods: {},
+    methods: {
+    truncateText(text, length) {
+      if (text.length > length) {
+        return text.slice(0, length) + '...';
+      }
+      return text;
+    },
+    },
     components: { PageTitle }
 };
 </script>
