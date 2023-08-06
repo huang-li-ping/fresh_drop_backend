@@ -61,9 +61,9 @@
     <div class="show_modal d-flex flex-column align-items-start gap-2" v-if="showModal">
 
         <label for="">狀態:
-            <select name="" id="">
-                <option value="">套用</option>
-                <option value="">未套用</option>
+            <select v-model="newData.state">
+                <option value="套用">套用</option>
+                <option value="未套用">未套用</option>
             </select>
         </label>
 
@@ -78,13 +78,13 @@
 
 
         <label for="" style="display: flex;">分析結果:
-            <textarea name="" id="" cols="30" rows="10">{{ newData.txt }}</textarea>
+            <textarea name="" id="" cols="30" rows="6">{{ newData.txt }}</textarea>
         </label>
 
-        <button class="archive">存檔</button>
         <button class="delete">刪除</button>
+        <button class="archive">存檔</button>
         <!-- 關閉按鍵 -->
-        <button class="xmark btn btn-outline-secondary " @click="closeModal">
+        <button class="xmark" @click="closeModal">
             x
         </button>
     </div>
@@ -499,24 +499,32 @@ export default {
     border: 3px solid #1F8D61;
     border-radius: 20px;
     width: fit-content;
-    padding: 30px;
+    padding: $sp2;
     position: relative;
     position: fixed;
     left: 40%;
-    top: 5%;
+    top: 2%;
     font-weight: 700;
     background-color: #FFF7EA;
-    z-index: 99;
+    z-index: 5;
 
     .xmark {
-        S right: 5px;
+        right: 5px;
         top: 5px;
         position: absolute;
+        border: none;
+        background-color: #FFF7EA;
+        font-size: $m-font;
+        color: #aaa;
     }
 
     label {
+
+        select,
+        textarea,
         input {
             padding: 0 5px;
+            margin-left: 5px;
         }
     }
 
@@ -529,8 +537,8 @@ export default {
         margin: 10px auto 0;
 
         &:hover {
-            background-color: #1F8D61;
-            color: #FFF7EA;
+            background-color: #1f8d61;
+            color: #fff7ea;
         }
     }
 }
