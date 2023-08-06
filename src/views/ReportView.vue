@@ -1,5 +1,5 @@
 <template>
-    <PageTitle :title="'烹飪心得管理'" />
+    <PageTitle :title="'檢舉管理'" />
     <div class="container">
         <div class="row">
             <!-- 搜尋框 -->
@@ -47,7 +47,7 @@
                 <td>{{ item.state }}</td>
                 <td>{{ item.report }}</td>
                 <td>
-                    <button class="btn btn-outline-primary btn-sm">刪除</button>
+                    <button class="btn btn-outline-primary btn-sm">查閱</button>
                 </td>
             </tr>
         </tbody>
@@ -70,11 +70,8 @@
             </li>
         </ul>
     </nav>
-    <!-- 頁碼 -->
-    <PageComponent :data="searchResult" @changePage="getPageData"/>
 </template>
 <script>
-import PageComponent from '@/components/PageComponent.vue';
 import PageTitle from '@/components/PageTitle.vue';
 
 // import PageComponent from "@/components/PageComponent.vue";
@@ -83,7 +80,6 @@ export default {
     component: {
         // PageComponent,
         PageTitle,
-        PageComponent
     },
     data() {
         return {

@@ -5,11 +5,11 @@
             <div class="d-flex justify-content-between">
                 <div class="input-group" style="width: fit-content;">
                     <span class="input-group-text">搜尋結果</span>
-                    <input type="text" class="form-control" placeholder="請輸入狀態或菜色" @input="searchIdOrPhone"
+                    <input type="text" class="form-control" placeholder="請輸入人格種類或狀態" @input="searchIdOrPhone"
                         v-model="searchInput" />
                 </div>
                 <!-- 每頁顯示...筆 -->
-                <span>
+                <!-- <span>
                     每頁　
                     <div class="btn-group">
                         <button class="btn btn-outline-primary dropdown-toggle" type="button" id="defaultDropdown"
@@ -23,8 +23,7 @@
                         </ul>
                     </div>
                     　筆
-                </span>
-                <div class="btn btn-outline-primary" @click="searchIdOrPhone">搜尋</div>
+                </span> -->
             </div>
         </div>
         <!-- 表格 -->
@@ -35,12 +34,8 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="(item, index) in searchResult" :key="index">
-                    <td>
-                        <button class="edit-button btn btn-sm btn-outline-secondary rounded-5">
-                            <font-awesome-icon icon="fa-solid fa-pen" />
-                        </button>
-                    </td>
+                <tr v-for="(item, index) in showData" :key="index">
+
                     <td>{{ item.id }}</td>
                     <td>{{ item.personality }}</td>
                     <td>
@@ -52,47 +47,66 @@
                     </td>
                     <td>{{ truncateText(item.txt, 6) }}</td>
                     <td>{{ item.state }}</td>
-                    <td class="add_td">{{ item.add }}</td>
-                    <td><button class="btn btn-outline-primary btn-sm">查閱</button></td>
+                    <td><button class="btn btn-outline-primary btn-sm" @click="openModal(item)">查閱</button></td>
                 </tr>
             </tbody>
         </table>
     </div>
 
     <!-- 頁碼 -->
-    <nav style="padding: 15px">
-        <ul class="pagination">
-            <li class="page-item">
-                <a class="page-link" href="#" aria-label="Previous">
-                    <span aria-hidden="true">&laquo;</span>
-                </a>
-            </li>
-            <li class="page-item"><a class="page-link" href="#">1</a></li>
-            <li class="page-item"><a class="page-link" href="#">2</a></li>
-            <li class="page-item"><a class="page-link" href="#">3</a></li>
-            <li class="page-item">
-                <a class="page-link" href="#" aria-label="Next">
-                    <span aria-hidden="true">&raquo;</span>
-                </a>
-            </li>
-        </ul>
-    </nav>
+    <PageComponent :data="searchResult" @changePage="getPageData" />
+
+    <!-- 彈窗 -->
+
+    <div class="show_modal d-flex flex-column align-items-start gap-2" v-if="showModal">
+
+        <label for="">狀態:
+            <select name="" id="">
+                <option value="">套用</option>
+                <option value="">未套用</option>
+            </select>
+        </label>
+
+        <label for="">結果編號:<input type="text" :value="newData.id"></label>
+
+        <label for="">人格種類: <input type="text" :value="newData.personality"> </label>
+
+        <label for="">推薦菜色1: <input type="text" :value="newData.productLists[0][0].name"> </label>
+        <label for="">推薦菜色2: <input type="text" :value="newData.productLists[0][1].name"> </label>
+        <label for="">推薦菜色3: <input type="text" :value="newData.productLists[0][2].name"> </label>
+        <label for="">推薦菜色4: <input type="text" :value="newData.productLists[0][3].name"> </label>
+
+
+        <label for="" style="display: flex;">分析結果:
+            <textarea name="" id="" cols="30" rows="10">{{ newData.txt }}</textarea>
+        </label>
+
+        <button class="archive">存檔</button>
+        <button class="delete">刪除</button>
+        <!-- 關閉按鍵 -->
+        <button class="xmark btn btn-outline-secondary " @click="closeModal">
+            x
+        </button>
+    </div>
 </template>
 <script>
 import PageTitle from '@/components/PageTitle.vue';
+import PageComponent from '@/components/PageComponent.vue';
 
-// import PageComponent from "@/components/PageComponent.vue";
 export default {
     name: 'IngredientView',
     components: {
-        // PageComponent,
+        PageComponent,
         PageTitle,
     },
     data() {
         return {
+            showModal: false,
+            newData: [],
+            showData: [],
             searchInput: '',
             searchResult: [],
-            colTitle: ["", "結果編號", "人格種類", "推薦菜色", "分析結果", "狀態"],
+            colTitle: ["結果編號", "人格種類", "推薦菜色", "分析結果", "狀態", ""],
             result: [
                 {
                     id: 1,
@@ -262,6 +276,174 @@ export default {
                         }
                     ]]
                 },
+                {
+                    id: 1,
+                    personality: '冒險家',
+                    txt: `分析原因：對新奇和刺激的渴望使你喜歡嘗試不同的味道和料理、你尋求新的口味體驗、並享受冒烹飪過程。`,
+                    state: "未套用",
+                    productLists: [[
+                        {
+                            name: "西班牙海鮮燉飯",
+                            category: "主菜",
+                            amount: 1,
+                        },
+                        {
+                            name: "阿根廷燉牛肉",
+                            category: "主菜",
+                            amount: 1,
+                        },
+                        {
+                            name: "墨西哥辣味雞肉湯",
+                            category: "湯品",
+                            amount: 1,
+                        },
+                        {
+                            name: "泰式生菜包",
+                            category: "沙拉",
+                            amount: 1,
+                        }
+                    ]]
+                },
+                {
+                    id: 2,
+                    personality: '安逸享受者',
+                    txt: '分析原因：你對舒適和享受的追求使你喜歡選擇家常菜和溫和口味的食物。你尋求平衡和放鬆，享受那種讓你感到舒服和滿足的味道。',
+                    state: "未套用",
+                    productLists: [[
+                        {
+                            name: "日本櫻花蝦天婦羅",
+                            category: "主菜",
+                            amount: 1,
+                        },
+                        {
+                            name: "奶油啤酒蛤蠣",
+                            category: "主菜",
+                            amount: 1,
+                        },
+                        {
+                            name: "馬來西亞椰奶雞湯",
+                            category: "湯品",
+                            amount: 1,
+                        },
+                        {
+                            name: "巴西凱撒沙拉",
+                            category: "沙拉",
+                            amount: 1,
+                        }
+                    ]]
+                },
+                {
+                    id: 3,
+                    personality: '創意人格',
+                    txt: '分析原因：你的豐富創意和熱情驅使你追求獨特的飲食體驗。你喜歡嘗試新穎的料理和特色小吃，並將食物視為藝術和表達自我的方式。',
+                    state: "未套用",
+                    productLists: [[
+                        {
+                            name: "塔香茄子",
+                            category: "主菜",
+                            amount: 1,
+                        },
+                        {
+                            name: "中華彗星炒飯",
+                            category: "主菜",
+                            amount: 1,
+                        },
+                        {
+                            name: "法國洋蔥湯",
+                            category: "湯品",
+                            amount: 1,
+                        },
+                        {
+                            name: "印度瑪撒拉薯仔沙拉",
+                            category: "沙拉",
+                            amount: 1,
+                        }
+                    ]]
+                },
+                {
+                    id: 4,
+                    personality: '社交達人',
+                    txt: '分析原因：你喜歡社交和人際交往，食物在社交場合中扮演重要角色。你喜歡分享美食，享受小吃和下午茶點等輕鬆的社交餐點。',
+                    state: "未套用",
+                    productLists: [[
+                        {
+                            name: "泡椒炒鮮魚",
+                            category: "主菜",
+                            amount: 1,
+                        },
+                        {
+                            name: "希臘烤羊肉",
+                            category: "主菜",
+                            amount: 1,
+                        },
+                        {
+                            name: "意大利米蘭湯",
+                            category: "湯品",
+                            amount: 1,
+                        },
+                        {
+                            name: "糖漬番茄",
+                            category: "沙拉",
+                            amount: 1,
+                        }
+                    ]]
+                },
+                {
+                    id: 5,
+                    personality: '健康控',
+                    txt: '分析原因：你對健康和營養的關注使你傾向選擇健康沙拉、素食料理和天然有機食物。你重視身體健康和營養均衡的飲食習慣。',
+                    state: "未套用",
+                    productLists: [[
+                        {
+                            name: "滑嫩番茄蛋",
+                            category: "主菜",
+                            amount: 1,
+                        },
+                        {
+                            name: "麻婆豆腐",
+                            category: "主菜",
+                            amount: 1,
+                        },
+                        {
+                            name: "泰式酸辣湯",
+                            category: "湯品",
+                            amount: 1,
+                        },
+                        {
+                            name: "中東麥麩沙拉",
+                            category: "沙拉",
+                            amount: 1,
+                        }
+                    ]]
+                },
+                {
+                    id: 6,
+                    personality: '情感探索者',
+                    txt: '分析原因：你對情感和內心探索感興趣，食物對你來說是情感療癒的一部分。你喜歡享受舒緩心情的甜點和心靈療癒的食物，並創造溫馨的烹飪體驗。',
+                    state: "未套用",
+                    productLists: [[
+                        {
+                            name: "越南河粉湯",
+                            category: "主菜",
+                            amount: 1,
+                        },
+                        {
+                            name: "法國紅酒燉雞",
+                            category: "主菜",
+                            amount: 1,
+                        },
+                        {
+                            name: "意大利肉醬千層麵",
+                            category: "湯品",
+                            amount: 1,
+                        },
+                        {
+                            name: "加拿大蔓越莓野菜沙拉",
+                            category: "沙拉",
+                            amount: 1,
+                        }
+                    ]]
+                },
             ],
             itemsPerPage: 5, // 預設每頁顯示筆數
             options: [5, 10, 20], // 可選的每頁顯示筆數選項
@@ -273,17 +455,20 @@ export default {
             if (this.searchInput == '') {
                 this.searchResult = this.result
             }
-            let idResult = this.result.filter(item => {
-                return item.id.includes(this.searchInput)
+            let stateResult = this.result.filter(item => {
+                return item.state.includes(this.searchInput)
             })
-            let phoneResult = this.result.filter(item => {
-                return item.phone.includes(this.searchInput)
+            let personalityResult = this.result.filter(item => {
+                return item.personality.includes(this.searchInput)
             })
-            if (idResult.length > 0) {
-                this.searchResult = idResult
-            } else if ((phoneResult.length > 0)) {
-                this.searchResult = phoneResult
+            if (stateResult.length > 0) {
+                this.searchResult = stateResult
+            } else if ((personalityResult.length > 0)) {
+                this.searchResult = personalityResult
             }
+        },
+        getPageData(data) {
+            this.showData = data
         },
         //控制顯示字數 多的用"..."省略
         truncateText(text, length) {
@@ -292,33 +477,17 @@ export default {
             }
             return text;
         },
+        openModal(item) {
+            this.showModal = true;
+            this.newData = item;
+
+        },
+        closeModal() {
+            this.showModal = false;
+        },
     },
     created() {
         this.searchResult = this.result
-    },
-    computed: {
-        displayedItems() {
-            // 計算每頁顯示的品項
-            const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-            const endIndex = startIndex + this.itemsPerPage;
-            return this.searchResult.slice(startIndex, endIndex);
-        },
-        totalPageCount() {
-            // 計算總頁數
-            return Math.ceil(this.searchResult.length / this.itemsPerPage);
-        },
-        currentPage() {
-            // 計算目前頁數
-            return Math.ceil(this.startIndex / this.itemsPerPage) + 1;
-        },
-        startIndex() {
-            // 計算每頁顯示品項的起始索引
-            return (this.currentPage - 1) * this.itemsPerPage;
-        },
-        endIndex() {
-            // 計算每頁顯示品項的結束索引
-            return Math.min(this.startIndex + this.itemsPerPage, this.searchResult.length);
-        },
     },
 
 
@@ -326,7 +495,43 @@ export default {
 </script>
 
 <style lang="scss">
-// @import 'bootstrap/dist/css/bootstrap.min.css';
-// @import '@/assets/scss/all.scss';
-@import "@/assets/scss/page/ingredients.scss";
+.show_modal {
+    border: 3px solid #1F8D61;
+    border-radius: 20px;
+    width: fit-content;
+    padding: 30px;
+    position: relative;
+    position: fixed;
+    left: 40%;
+    top: 5%;
+    font-weight: 700;
+    background-color: #FFF7EA;
+    z-index: 99;
+
+    .xmark {
+        S right: 5px;
+        top: 5px;
+        position: absolute;
+    }
+
+    label {
+        input {
+            padding: 0 5px;
+        }
+    }
+
+    .archive,
+    .delete {
+        background-color: #FFF7EA;
+        border: #1F8D61 1px solid;
+        border-radius: 20px;
+        width: 90%;
+        margin: 10px auto 0;
+
+        &:hover {
+            background-color: #1F8D61;
+            color: #FFF7EA;
+        }
+    }
+}
 </style>
