@@ -41,7 +41,7 @@
                             <font-awesome-icon icon="fa-solid fa-pen" />
                         </button>
                     </td>
-                    <td>{{ item.number }}</td>
+                    <td>{{ item.id }}</td>
                     <td>{{ item.name }}</td>
                     <td>{{ item.category }}</td>
                     <td>{{ truncateText(item.ingred, 6) }}</td>
@@ -72,6 +72,10 @@ export default {
     },
     data() {
         return {
+            showModal: false,
+            newData: [],
+            searchInput: "",
+            searchResult: [],
             showData: [],
             colTitle: [
                 "",
@@ -86,9 +90,9 @@ export default {
             ],
             recipeData: [
                 {
-                    id: 1,
+                    id: "1",
                     name: "滑嫩番茄蛋",
-                    number: "1",
+                    number: 1,
                     category: "主菜",
                     ingred: "蛋：2個,番茄：1個，切成小塊,洋蔥：1/4個，切成薄片,蒜末：1茶匙,鹽和胡椒粉：適量,青蔥或香菜（可選）：作為裝飾。",
                     step: "炒煮番茄和洋蔥,在一個平底鍋中，加熱一些油。,加入洋蔥和蒜末，炒至洋蔥變軟。,加入番茄塊，繼續炒煮幾分鐘，直到番茄稍微軟化。加入蛋液,將打散的蛋液倒入鍋中。,用筷子或湯匙輕輕攪拌，使蛋液均勻分佈在番茄和洋蔥之間。,繼續翻炒幾分鐘，直到蛋液完全凝固，形成滑嫩的蛋花。上桌前處理,確認蛋已經熟透且番茄軟化。,將滑嫩番茄蛋盛入碗中。,可以撒上一些切碎的青蔥或香菜作為裝飾。",
@@ -97,9 +101,9 @@ export default {
                     state: "上架",
                 },
                 {
-                    id: 2,
+                    id: "2",
                     name: "奶油啤酒蛤蠣",
-                    number: "2",
+                    number: 2,
                     price: 200,
                     category: "主菜",
                     ingred: "蛤蠣：500克,奶油：50克,洋蔥：1顆，切碎,啤酒：2瓶,蒜末：適量,香菜：適量，切碎,鹽：適量,胡椒粉：適量",
@@ -109,9 +113,9 @@ export default {
                     state: "上架",
                 },
                 {
-                    id: 3,
+                    id: "3",
                     name: "塔香茄子",
-                    number: "3",
+                    number: 3,
                     price: 200,
                     category: "主菜",
                     ingred: "茄子：2個，切成長段,蒜末：2瓣,薑末：1小塊,辣椒粉：1/2茶匙,醬油：1湯匙,糖：1/2茶匙,白芝麻：適量，用於裝飾,香菜：適量，用於裝飾",
@@ -121,9 +125,9 @@ export default {
                     state: "上架",
                 },
                 {
-                    id: 4,
+                    id: "4",
                     name: "生烤貝",
-                    number: "4",
+                    number: 4,
                     price: 200,
                     category: "主菜",
                     ingred: "新鮮生貝：例如生蠔、生蛤蜊等,檸檬：適量，切片作為伴碟,牛油：1/2茶匙。,大蒜：1/4到1/2茶匙，切碎。,鹽和胡椒粉：根據個人口味調整。,新鮮香草：約1/4到1/2茶匙，切碎。",
@@ -133,7 +137,7 @@ export default {
                     state: "上架",
                 },
                 {
-                    id: 5,
+                    id: "5",
                     name: "麻婆豆腐",
                     number: "5",
                     price: 200,
@@ -145,7 +149,7 @@ export default {
                     state: "上架",
                 },
                 {
-                    id: 6,
+                    id: "6",
                     name: "中華彗星炒飯",
                     number: "6",
                     price: 200,
@@ -157,7 +161,7 @@ export default {
                     state: "上架",
                 },
                 {
-                    id: 7,
+                    id: "7",
                     name: "泡椒炒鮮魚",
                     number: "7",
                     price: 200,
@@ -169,7 +173,7 @@ export default {
                     state: "上架",
                 },
                 {
-                    id: 8,
+                    id: "8",
                     name: "法國紅酒燉雞",
                     number: "8",
                     price: 200,
@@ -181,7 +185,7 @@ export default {
                     state: "上架",
                 },
                 {
-                    id: 9,
+                    id: "9",
                     name: "阿根廷燉牛肉",
                     number: "9",
                     category: "主菜",
@@ -192,7 +196,7 @@ export default {
                     state: "上架",
                 },
                 {
-                    id: 10,
+                    id: "10",
                     name: "泰國綠咖喱",
                     number: "10",
                     category: "主菜",
@@ -203,7 +207,7 @@ export default {
                     state: "上架",
                 },
                 {
-                    id: 11,
+                    id: "11",
                     name: "希臘烤羊肉",
                     number: "11",
                     category: "主菜",
@@ -214,7 +218,7 @@ export default {
                     state: "上架",
                 },
                 {
-                    id: 12,
+                    id: "12",
                     name: "西班牙海鮮燉飯",
                     number: "12",
                     category: "主菜",
@@ -225,7 +229,7 @@ export default {
                     state: "上架",
                 },
                 {
-                    id: 13,
+                    id: "13",
                     name: "日本櫻花蝦天婦羅",
                     number: "13",
                     category: "主菜",
@@ -236,7 +240,7 @@ export default {
                     state: "上架",
                 },
                 {
-                    id: 14,
+                    id: "14",
                     name: "越南河粉湯",
                     number: "14",
                     category: "主菜",
@@ -247,7 +251,7 @@ export default {
                     state: "上架",
                 },
                 {
-                    id: 15,
+                    id: "15",
                     name: "意大利肉醬千層麵",
                     number: "15",
                     category: "主菜",
@@ -258,7 +262,7 @@ export default {
                     state: "上架",
                 },
                 {
-                    id: 16,
+                    id: "16",
                     name: "日本味噌鮮魚湯",
                     number: "16",
                     category: "湯品",
@@ -269,7 +273,7 @@ export default {
                     state: "上架",
                 },
                 {
-                    id: 17,
+                    id: "17",
                     name: "韓國辣椒醬湯",
                     number: "17",
                     category: "湯品",
@@ -280,7 +284,7 @@ export default {
                     state: "上架",
                 },
                 {
-                    id: 18,
+                    id: "18",
                     name: "法國洋蔥湯",
                     number: "18",
                     category: "湯品",
@@ -291,7 +295,7 @@ export default {
                     state: "上架",
                 },
                 {
-                    id: 19,
+                    id: "19",
                     name: "馬來西亞椰奶雞湯",
                     number: "19",
                     category: "湯品",
@@ -302,7 +306,7 @@ export default {
                     state: "上架",
                 },
                 {
-                    id: 20,
+                    id: "20",
                     name: "葡萄牙海鮮湯",
                     number: "20",
                     category: "湯品",
@@ -313,7 +317,7 @@ export default {
                     state: "上架",
                 },
                 {
-                    id: 21,
+                    id: "21",
                     name: "西班牙番茄湯",
                     number: "21",
                     category: "湯品",
@@ -324,7 +328,7 @@ export default {
                     state: "上架",
                 },
                 {
-                    id: 22,
+                    id: "22",
                     name: "墨西哥辣味雞肉湯",
                     number: "22",
                     category: "湯品",
@@ -335,7 +339,7 @@ export default {
                     state: "上架",
                 },
                 {
-                    id: 23,
+                    id: "23",
                     name: "泰式酸辣湯",
                     number: "23",
                     category: "湯品",
@@ -346,7 +350,7 @@ export default {
                     state: "上架",
                 },
                 {
-                    id: 24,
+                    id: "24",
                     name: "意大利米蘭湯",
                     number: "24",
                     category: "湯品",
@@ -357,7 +361,7 @@ export default {
                     state: "上架",
                 },
                 {
-                    id: 25,
+                    id: "25",
                     name: "糖漬番茄",
                     number: "25",
                     category: "沙拉",
@@ -368,7 +372,7 @@ export default {
                     state: "上架",
                 },
                 {
-                    id: 26,
+                    id: "26",
                     name: "泰式生菜包",
                     number: "26",
                     category: "沙拉",
@@ -379,7 +383,7 @@ export default {
                     state: "上架",
                 },
                 {
-                    id: 27,
+                    id: "27",
                     name: "中東麥麩沙拉",
                     number: "27",
                     category: "沙拉",
@@ -390,7 +394,7 @@ export default {
                     state: "上架",
                 },
                 {
-                    id: 28,
+                    id: "28",
                     name: "印度瑪撒拉薯仔沙拉",
                     number: "28",
                     category: "沙拉",
@@ -401,7 +405,7 @@ export default {
                     state: "上架",
                 },
                 {
-                    id: 29,
+                    id: "29",
                     name: "巴西凱撒沙拉",
                     number: "29",
                     category: "沙拉",
@@ -412,7 +416,7 @@ export default {
                     state: "上架",
                 },
                 {
-                    id: 30,
+                    id: "30",
                     name: "希臘風味水果沙拉",
                     number: "30",
                     category: "沙拉",
@@ -423,7 +427,7 @@ export default {
                     state: "上架",
                 },
                 {
-                    id: 31,
+                    id: "31",
                     name: "越南涼拌牛肉",
                     number: "31",
                     category: "沙拉",
@@ -434,7 +438,7 @@ export default {
                     state: "上架",
                 },
                 {
-                    id: 32,
+                    id: "32",
                     name: "加拿大蔓越莓野菜沙拉",
                     number: "32",
                     category: "沙拉",
@@ -445,7 +449,7 @@ export default {
                     state: "上架",
                 },
                 {
-                    id: 33,
+                    id: "33",
                     name: "日式涼拌海帶絲",
                     number: "33",
                     category: "沙拉",
@@ -479,9 +483,16 @@ export default {
             this.showData = data;
         },
         //控制顯示字數 多的用"..."省略
-        truncateText(text, length) {
-            if (text.length > length) {
-                return text.slice(0, length) + "...";
+        // truncateText(text, length) {
+        //     if (text.length > length) {
+        //         return text.slice(0, length) + "...";
+        //     }
+        //     return text;
+        // },
+        truncateText(text) {
+            if (text && text.length > 10) {
+                // 檢查 text 是否存在並且長度大於 10
+                return text.slice(0, 10) + "...";
             }
             return text;
         },

@@ -93,6 +93,8 @@ export default {
             showModal: false,
             newData: [],
             searchInput: "",
+            searchResult: [],
+            showData: [],
             colTitle: ["", "食材編號", "食材名稱", "過敏原", "不喜歡的食物"],
             foodData: [
                 { id: "1", name: "蛋", allergen: "是", dislike: "否" },
@@ -404,8 +406,6 @@ export default {
                 { id: "152", name: "西瓜", allergen: "無", dislike: "無" },
                 { id: "153", name: "蜜瓜", allergen: "無", dislike: "無" },
             ],
-            searchResult: [],
-            showData: [],
         };
     },
     methods: {

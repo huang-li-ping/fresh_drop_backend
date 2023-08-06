@@ -55,23 +55,23 @@
     <div class="show_modal d-flex flex-column align-items-start gap-2" v-if="showModal">
 
         <label for="">狀態:
-            <select name="" id="">
-                <option value="">套用</option>
-                <option value="">未套用</option>
+            <select v-model="newData.state">
+                <option value="套用">套用</option>
+                <option value="未套用">未套用</option>
             </select>
         </label>
 
 
-        <label for="">分類: <input type="text" :value="newData.type"> </label>
+        <label for="">分類:<input type="text" :value="newData.type"> </label>
 
         <label for="" style="display: flex;">標題:
-            <textarea name="" id="" cols="30" rows="5">{{ newData.questions }}</textarea>
+            <textarea name="" id="" cols="30" rows="3">{{ newData.questions }}</textarea>
         </label>
         <label for="" style="display: flex;">內容:
             <textarea name="" id="" cols="30" rows="10">{{ newData.answers }}</textarea>
         </label>
-        <button class="archive">存檔</button>
         <button class="delete">刪除</button>
+        <button class="archive">存檔</button>
 
         <!-- 關閉按鍵 -->
         <button class="xmark btn btn-outline-secondary " @click="closeModal">
@@ -379,7 +379,7 @@ export default {
     position: relative;
     position: fixed;
     left: 40%;
-    top: 10%;
+    top: 5%;
     font-weight: 700;
     background-color: #FFF7EA;
 
@@ -390,8 +390,12 @@ export default {
     }
 
     label {
+
+        select,
+        textarea,
         input {
             padding: 0 5px;
+            margin-left: 5px;
         }
     }
 
