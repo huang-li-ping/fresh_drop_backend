@@ -5,11 +5,11 @@
             <div class="d-flex justify-content-between">
                 <div class="input-group" style="width: fit-content;">
                     <span class="input-group-text">搜尋結果</span>
-                    <input type="text" class="form-control" placeholder="請輸入狀態或菜色" @input="searchIdOrPhone"
+                    <input type="text" class="form-control" placeholder="請輸入分類或狀態" @input="searchIdOrPhone"
                         v-model="searchInput" />
                 </div>
                 <!-- 每頁顯示...筆 -->
-                <span>
+                <!-- <span>
                     每頁　
                     <div class="btn-group">
                         <button class="btn btn-outline-primary dropdown-toggle" type="button" id="defaultDropdown"
@@ -24,7 +24,7 @@
                     </div>
                     　筆
                 </span>
-                <div class="btn btn-outline-primary" @click="searchIdOrPhone">搜尋</div>
+                <div class="btn btn-outline-primary" @click="searchIdOrPhone">搜尋</div> -->
             </div>
         </div>
         <!-- 表格 -->
@@ -35,52 +35,68 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="(item, index) in searchResult" :key="index">
+                <tr v-for="(item, index) in showData" :key="index">
 
                     <td>{{ item.type }}</td>
                     <td>{{ truncateText(item.questions, 6) }}</td>
                     <td>{{ truncateText(item.answers, 6) }}</td>
                     <td>{{ item.state }}</td>
-                    <td><button class="btn btn-outline-primary btn-sm">查閱</button></td>
+                    <td><button class="btn btn-outline-primary btn-sm" @click="openModal(item)">查閱</button></td>
                 </tr>
             </tbody>
         </table>
     </div>
 
     <!-- 頁碼 -->
-    <nav style="padding: 15px">
-        <ul class="pagination">
-            <li class="page-item">
-                <a class="page-link" href="#" aria-label="Previous">
-                    <span aria-hidden="true">&laquo;</span>
-                </a>
-            </li>
-            <li class="page-item"><a class="page-link" href="#">1</a></li>
-            <li class="page-item"><a class="page-link" href="#">2</a></li>
-            <li class="page-item"><a class="page-link" href="#">3</a></li>
-            <li class="page-item">
-                <a class="page-link" href="#" aria-label="Next">
-                    <span aria-hidden="true">&raquo;</span>
-                </a>
-            </li>
-        </ul>
-    </nav>
+    <PageComponent :data="searchResult" @changePage="getPageData" />
+
+    <!-- 彈窗 -->
+
+    <div class="show_modal d-flex flex-column align-items-start gap-2" v-if="showModal">
+
+        <label for="">狀態:
+            <select name="" id="">
+                <option value="">套用</option>
+                <option value="">未套用</option>
+            </select>
+        </label>
+
+
+        <label for="">分類: <input type="text" :value="newData.type"> </label>
+
+        <label for="" style="display: flex;">標題:
+            <textarea name="" id="" cols="30" rows="5">{{ newData.questions }}</textarea>
+        </label>
+        <label for="" style="display: flex;">內容:
+            <textarea name="" id="" cols="30" rows="10">{{ newData.answers }}</textarea>
+        </label>
+        <button class="archive">存檔</button>
+        <button class="delete">刪除</button>
+
+        <!-- 關閉按鍵 -->
+        <button class="xmark btn btn-outline-secondary " @click="closeModal">
+            x
+        </button>
+    </div>
 </template>
 <script>
 import PageTitle from '@/components/PageTitle.vue';
 
-// import PageComponent from "@/components/PageComponent.vue";
+import PageComponent from "@/components/PageComponent.vue";
 export default {
     name: 'IngredientView',
     components: {
-        // PageComponent,
+        PageComponent,
         PageTitle,
     },
     data() {
         return {
+            showModal: false,
+            newData: [],
+            showData: [],
             searchInput: '',
             searchResult: [],
-            colTitle: ["分類", "標題", "內容", "狀態"],
+            colTitle: ["分類", "標題", "內容", "狀態", ""],
             faq: [
                 {
                     id: 1,
@@ -280,13 +296,27 @@ export default {
                     questions: '我可以換成不同的商品嗎？',
                     answers: '通常情況下，如果您符合換貨的條件，您可以選擇將商品換成不同的商品。換貨的可行性取決於庫存狀況和可用性。請聯繫我們的客戶服務部門，向他們提出換貨要求，並告知您希望換成的商品',
                     open: false
+                },
+                {
+                    id: 25,
+                    type: '退換貨問題',
+                    state: '未套用',
+                    questions: '我可以換成不同的商品嗎？',
+                    answers: '通常情況下，如果您符合換貨的條件，您可以選擇將商品換成不同的商品。換貨的可行性取決於庫存狀況和可用性。請聯繫我們的客戶服務部門，向他們提出換貨要求，並告知您希望換成的商品',
+                    open: false
+                },
+                {
+                    id: 26,
+                    type: '退換貨問題',
+                    state: '未套用',
+                    questions: '我可以換成不同的商品嗎？',
+                    answers: '通常情況下，如果您符合換貨的條件，您可以選擇將商品換成不同的商品。換貨的可行性取決於庫存狀況和可用性。請聯繫我們的客戶服務部門，向他們提出換貨要求，並告知您希望換成的商品',
+                    open: false
                 }
 
 
 
             ],
-            itemsPerPage: 5, // 預設每頁顯示筆數
-            options: [5, 10, 20], // 可選的每頁顯示筆數選項
         };
     },
     methods: {
@@ -295,16 +325,16 @@ export default {
             if (this.searchInput == '') {
                 this.searchResult = this.faq
             }
-            let idResult = this.faq.filter(item => {
-                return item.id.includes(this.searchInput)
+            let typeResult = this.faq.filter(item => {
+                return item.type.includes(this.searchInput)
             })
-            let phoneResult = this.faq.filter(item => {
-                return item.phone.includes(this.searchInput)
+            let stateResult = this.faq.filter(item => {
+                return item.state.includes(this.searchInput)
             })
-            if (idResult.length > 0) {
-                this.searchResult = idResult
-            } else if ((phoneResult.length > 0)) {
-                this.searchResult = phoneResult
+            if (typeResult.length > 0) {
+                this.searchResult = typeResult
+            } else if ((stateResult.length > 0)) {
+                this.searchResult = stateResult
             }
         },
         //控制顯示字數 多的用"..."省略
@@ -314,34 +344,23 @@ export default {
             }
             return text;
         },
+        openModal(item) {
+            this.showModal = true;
+            this.newData = item;
+            console.log(this.newData)
+
+        },
+        closeModal() {
+            this.showModal = false;
+        },
+        getPageData(data) {
+            this.showData = data
+        },
     },
     created() {
         this.searchResult = this.faq
     },
-    computed: {
-        displayedItems() {
-            // 計算每頁顯示的品項
-            const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-            const endIndex = startIndex + this.itemsPerPage;
-            return this.searchResult.slice(startIndex, endIndex);
-        },
-        totalPageCount() {
-            // 計算總頁數
-            return Math.ceil(this.searchResult.length / this.itemsPerPage);
-        },
-        currentPage() {
-            // 計算目前頁數
-            return Math.ceil(this.startIndex / this.itemsPerPage) + 1;
-        },
-        startIndex() {
-            // 計算每頁顯示品項的起始索引
-            return (this.currentPage - 1) * this.itemsPerPage;
-        },
-        endIndex() {
-            // 計算每頁顯示品項的結束索引
-            return Math.min(this.startIndex + this.itemsPerPage, this.searchResult.length);
-        },
-    },
+
 
 
 };
@@ -350,5 +369,39 @@ export default {
 <style lang="scss">
 // @import 'bootstrap/dist/css/bootstrap.min.css';
 // @import '@/assets/scss/all.scss';
-@import "@/assets/scss/page/ingredients.scss";
+// @import "@/assets/scss/page/ingredients.scss";
+
+.show_modal {
+    border: 3px solid #1F8D61;
+    border-radius: 20px;
+    width: fit-content;
+    padding: 30px;
+    position: relative;
+    position: fixed;
+    left: 40%;
+    top: 10%;
+    font-weight: 700;
+    background-color: #FFF7EA;
+
+    .xmark {
+        right: 5px;
+        top: 5px;
+        position: absolute;
+    }
+
+    label {
+        input {
+            padding: 0 5px;
+        }
+    }
+
+    .archive,
+    .delete {
+        background-color: #FFF7EA;
+        border: #1F8D61 1px solid;
+        border-radius: 20px;
+        width: 90%;
+        margin: 10px auto 0;
+    }
+}
 </style>
