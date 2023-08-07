@@ -29,7 +29,8 @@
             </div>
         </div>
     </div>
-
+    <!-- 頁碼 -->
+    <PageComponent :data="searchResult" @changePage="getPageData" />
     <!-- 表格 -->
     <table class="table">
         <thead>
@@ -77,11 +78,9 @@
 import PageComponent from '@/components/PageComponent.vue';
 import PageTitle from '@/components/PageTitle.vue';
 
-// import PageComponent from "@/components/PageComponent.vue";
 export default {
     name: 'IngredientView',
     component: {
-        // PageComponent,
         PageTitle,
         PageComponent
     },
@@ -119,7 +118,9 @@ export default {
         }
       }
     },
-
+    getPageData(data) {
+            this.showData = data
+        },
     truncateText(text, length) {
       if (text.length > length) {
         return text.slice(0, length) + '...';
