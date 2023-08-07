@@ -147,12 +147,15 @@ export default {
         };
     },
     methods: {
+        
         showOrderDetail(ordNo) {
             console.log(ordNo);
             // this.$router.push('/ordDeatil')
         },
     },
-    created() {},
+    mounted() {
+        this.getMemDetailData()
+    },
 };
 </script>
 
