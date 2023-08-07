@@ -12,9 +12,9 @@
         </div>
       </div>
 
-     
+
       <div class="col-2 create" style="margin-left:auto">
-        <button class="btn btn-primary create-btn" type="button" style="margin-left: auto; color: #fff">新增帳號</button>
+        <button class="btn btn-primary create-btn" @click="openModal" type="button" style="margin-left: auto; color: #fff" >新增帳號</button>
       </div>
     </div>
 
@@ -31,7 +31,7 @@
     <tbody>
       <tr v-for="(item, index) in showData" :key="index">
         <td>
-          <button class="edit-button btn btn-sm btn-outline-secondary rounded-5">
+          <button class="edit-button btn btn-sm btn-outline-secondary rounded-5" @click="openModal(item)">
             <font-awesome-icon icon="fa-solid fa-pen" />
           </button>
         </td>
@@ -46,6 +46,35 @@
   <!-- 頁碼 -->
   <PageComponent :data="searchResult" @changePage="getPageData" />
 
+  <!-- 彈窗 -->
+
+  <div class="show_modal d-flex flex-column align-items-start gap-2" v-if="showModal">
+   
+    <label for="id">管理員編號：<input type="text" :value="newData.id || employeeIdNum()" id="id" disabled="disabled"></label>
+
+    <label for="name" class="inline-label">姓名　　　：<input type="text" :value="newData.name" id="name"></label>
+
+    <label for="account">帳號　　　：<input type="text" :value="newData.account" id="account"></label>
+
+    <label for="date">加入日期　：<input type="text" :value="newData.date || currentDate()" id="date" disabled="disabled" ></label>
+
+    <label for="status">狀態　　　：
+      <select name="" id="status">
+        <option value="">啟用</option>
+        <option value="">停用</option>
+      </select></label>
+
+
+    <button class="btn btn-primary col-12 " style="color:#fff">存檔</button>
+
+    <!-- 關閉按鍵 -->
+    <button class="xmark btn btn-outline-secondary rounded-5" @click="closeModal">
+      x
+    </button>
+  </div>
+
+
+
 </template>
 <script>
 import PageComponent from '@/components/PageComponent.vue';
@@ -59,6 +88,8 @@ export default {
   },
   data() {
     return {
+      showModal: false,
+      newData: [],
       searchInput: '',
       colTitle: ["", "管理員編號", "姓名", "帳號", "加入日期", "狀態"],
       employeeData: [
@@ -73,13 +104,13 @@ export default {
         { id: "9", name: "楊丞琳", account: "rainylove", date: "2023-07-20", status: "啟用" },
         { id: "10", name: "王心凌", account: "cindy555", date: "2023-07-25", status: "啟用" },
         { id: "11", name: "張韶涵", account: "angelinachang", date: "2023-07-31", status: "啟用" },
-        
+
       ],
       searchResult: [],
       showData: [],
     };
   },
- 
+
   methods: {
     searchIdOrPhone() {
       console.log(this.searchInput);
@@ -101,6 +132,26 @@ export default {
     getPageData(data) {
       this.showData = data
     },
+    openModal(item) {
+      this.showModal = true;
+      this.newData = item;
+      console.log(this.newData)
+
+    },
+    closeModal() {
+      this.showModal = false;
+    },
+    currentDate() {
+      const current = new Date();
+      const date = `${current.getFullYear()}-${current.getMonth()+1}-${current.getDate()}`;
+      return date;
+    },
+    employeeIdNum(){
+      const employeeIdNum = this.employeeData.length +1;
+      return employeeIdNum;
+    }
+ 
+
   },
   created() {
     this.searchResult = this.employeeData
@@ -124,4 +175,38 @@ export default {
 table {
   margin-top: 20px;
 }
+
+.show_modal {
+  border: 3px solid #1F8D61;
+  border-radius: 20px;
+  width: fit-content;
+  padding: 50px 30px 30px 30px;
+  position: absolute;
+  position: fixed;
+  left: 40%;
+  top: 30%;
+  font-weight: 700;
+  background-color: #FFF7EA;
+  z-index: 2;
+
+
+  .xmark {
+    right: 5px;
+    top: 5px;
+    position: absolute;
+  }
+
+   label {
+
+    input {
+      padding: 0 5px;
+      margin-left: 5px;
+    
+
+    }
+
+    select{
+      height: 28px;
+    }
+   }}
 </style>
