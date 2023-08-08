@@ -41,7 +41,8 @@
         </span>
       </div> -->
       <div class="col-2 create" style="margin-left:auto">
-        <button class="btn btn-primary create-btn" type="button" style="margin-left: auto; color: #fff">新增樣式</button>
+        <button class="btn btn-primary create-btn" type="button" style="margin-left: auto; color: #fff"
+          @click="openModal">新增樣式</button>
       </div>
     </div>
 
@@ -58,7 +59,7 @@
     <tbody>
       <tr v-for="(item, index) in showData" :key="index">
         <td>
-          <button class="edit-button btn btn-sm btn-outline-secondary rounded-5">
+          <button class="edit-button btn btn-sm btn-outline-secondary rounded-5" @click="openModal(item)">
             <font-awesome-icon icon="fa-solid fa-pen" />
           </button>
         </td>
@@ -79,6 +80,38 @@
   <!-- 頁碼 -->
   <PageComponent :data="searchResult" @changePage="getPageData" />
 
+  <!-- 彈窗 -->
+
+  <div class="show_modal d-flex flex-column align-items-start gap-2" v-if="showModal">
+    <div class="giftcardPic">
+      <img :src="uploadedImage || 'https://picsum.photos/300/200/?random=10'
+        " alt="">
+
+      <label for="fileInput" class="btn btn-primary" style="display: block; color:#fff">上傳圖片</label>
+      <input id="fileInput" type="file" ref="fileInput" style="display: none" @change="handleFileUpload">
+    </div>
+
+    <label for="id">樣式編號：<input type="text" :value="newData.id" id="id"></label>
+
+    <label for="name" class="inline-label">樣式名稱：<input type="text" :value="newData.name" id="name"></label>
+
+    <label for="catagory">類別　　：<input type="text" :value="newData.catogory" id="catagory"></label>
+
+    <label for="status">狀態　　：
+    <select name="" id="status">
+      <option value="">上架</option>
+      <option value="">下架</option>
+    </select></label>
+
+
+
+    <button class="btn btn-primary col-12" style="color:#fff">存檔</button>
+
+    <!-- 關閉按鍵 -->
+    <button class="xmark btn btn-outline-secondary rounded-5" @click="closeModal">
+      x
+    </button>
+  </div>
 </template>
 <script>
 import PageComponent from '@/components/PageComponent.vue';
@@ -92,6 +125,9 @@ export default {
   },
   data() {
     return {
+      uploadedImage: null,
+      showModal: false,
+      newData: [],
       searchInput: '',
       colTitle: ["", "編號", "樣式名稱", "類別", "圖片", "上架日期", "狀態", "上下架"],
       giftcardData: [
@@ -101,13 +137,13 @@ export default {
         { id: "4", name: "小動物生日快樂", catogory: "品牌", pic: "giftcard_defaultpic_004.svg", date: "2023-07-04", status: "上架" },
         { id: "5", name: "滿版生日快樂", catogory: "品牌", pic: "giftcard_defaultpic_005.svg", date: "2023-07-05", status: "上架" },
         { id: "6", name: "寫實新鮮蔬果", catogory: "品牌", pic: "giftcard_defaultpic_006.svg", date: "2023-07-06", status: "上架" },
- 
+
       ],
       searchResult: [],
       showData: [],
     };
   },
- 
+
   methods: {
     searchIdOrPhone() {
       console.log(this.searchInput);
@@ -129,10 +165,34 @@ export default {
     getPageData(data) {
       this.showData = data
     },
+    openModal(item) {
+      this.showModal = true;
+      this.newData = item;
+      console.log(this.newData)
+
+    },
+    closeModal() {
+      this.showModal = false;
+    },
+    handleFileUpload(event) {
+      const file = event.target.files[0];
+
+      // Validate the file format and size if needed
+      // For example, check if it's an image and meets size requirements
+
+      // Read the file as a Data URL to display the uploaded image
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.uploadedImage = reader.result;
+      };
+      reader.readAsDataURL(file);
+    },
+
   },
   created() {
     this.searchResult = this.giftcardData
   },
+
 };
 </script>
 
@@ -152,4 +212,51 @@ export default {
 table {
   margin-top: 20px;
 }
+
+.show_modal {
+  border: 3px solid #1F8D61;
+  border-radius: 20px;
+  width: fit-content;
+  padding: 30px;
+  position: absolute;
+  position: fixed;
+  left: 40%;
+  top: 10%;
+  font-weight: 700;
+  background-color: #FFF7EA;
+  z-index: 2;
+
+  .giftcardPic {
+
+    img {
+      padding-top: 20px;
+      padding-bottom: 10px;
+      width: 480px;
+      height: 300px;
+    }
+
+  }
+
+  .xmark {
+    right: 5px;
+    top: 5px;
+    position: absolute;
+  }
+
+   label {
+
+    input {
+      padding: 0 5px;
+      margin-left: 5px;
+    
+
+    }
+
+    select{
+      height: 28px;
+    }
+  }
+
+}
+
 </style>
