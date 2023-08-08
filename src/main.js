@@ -11,7 +11,9 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 //引入要用的icon
 import { faPen } from '@fortawesome/free-solid-svg-icons'
-library.add(faPen)
+import { faMinus } from '@fortawesome/free-solid-svg-icons'
+import { faPlus } from '@fortawesome/free-solid-svg-icons'
+library.add(faPen, faMinus, faPlus)
 
 //切換router後頁面跳到最上面
 router.afterEach(() => {
@@ -19,4 +21,3 @@ router.afterEach(() => {
 });
 
 createApp(App).use(store).use(router).component('font-awesome-icon', FontAwesomeIcon).mount('#app')
-

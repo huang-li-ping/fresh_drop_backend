@@ -37,6 +37,7 @@
                     <td>
                         <button
                             class="edit-button btn btn-sm btn-outline-secondary rounded-5"
+                            @click="openModal(item)"
                         >
                             <font-awesome-icon icon="fa-solid fa-pen" />
                         </button>
@@ -44,20 +45,119 @@
                     <td>{{ item.id }}</td>
                     <td>{{ item.name }}</td>
                     <td>{{ item.category }}</td>
-                    <td>{{ truncateText(item.ingred, 6) }}</td>
-                    <td>{{ truncateText(item.step, 6) }}</td>
-                    <td>{{ truncateText(item.img, 6) }}</td>
-                    <td>{{ truncateText(item.des, 6) }}</td>
-                    <td>{{ item.state }}</td>
+                    <td>{{ truncateText(item.ingred) }}</td>
+                    <td>{{ truncateText(item.step) }}</td>
+                    <td>{{ truncateText(item.img) }}</td>
+                    <td>{{ truncateText(item.des) }}</td>
+                    <td>
+                        <div class="input-group-append">
+                            <button
+                                class="btn btn-outline-primary"
+                                type="button"
+                            >
+                                {{ item.state }}
+                            </button>
+                        </div>
+                    </td>
                 </tr>
             </tbody>
         </table>
-        <!-- 彈窗 -->
-        <!-- <div class="show_model">
-            <div class="ingredients_no"><p>編號：</p></div>
-        </div> -->
         <!-- 頁碼 -->
         <PageComponent :data="searchResult" @changePage="getPageData" />
+        <!-- 彈窗 -->
+        <div
+            class="show_modal d-flex flex-column align-items-start gap-2"
+            v-if="showModal"
+        >
+            <!-- <div class="show_modal_wrap"> -->
+            <label for=""
+                >類別：
+                <select id="category" v-model="newData.category">
+                    <option :value="newData.category">主菜</option>
+                    <option :value="newData.category">湯品</option>
+                    <option :value="newData.category">沙拉</option>
+                </select>
+            </label>
+            <label for=""
+                >編號：
+                <input class="recipe_no" type="text" :value="newData.id"
+            /></label>
+            <label for=""
+                >名稱：
+                <input class="recipe_name" type="text" :value="newData.name" />
+            </label>
+            <label for="des">菜色描述：</label>
+            <textarea
+                class="recipe_des"
+                id="des"
+                v-model="newData.des"
+                rows="4"
+            ></textarea>
+            <div>食材表：</div>
+            <div class="ingred_wrap">
+                <div
+                    class="ingred_table"
+                    v-for="(inputData, index) in inputDataArray"
+                    :key="index"
+                >
+                    <div class="ingred_input">
+                        <!-- <label for="ingred_item">
+                                <input
+                                    type="text"
+                                    id="ingred_item"
+                                    v-model="newData.ingred"
+                                />
+                            </label>
+                            <label for="ingred_unit">
+                                <input
+                                    type="text"
+                                    id="ingred_unit"
+                                    v-model="newData.ingred"
+                                />
+                            </label> -->
+                        <label for="ingred_item">
+                            <input
+                                type="text"
+                                :id="'ingred_item_' + index"
+                                v-model="inputData.ingred"
+                            />
+                        </label>
+                        <label for="ingred_unit">
+                            <input
+                                type="text"
+                                :id="'ingred_unit_' + index"
+                                v-model="inputData.unit"
+                            />
+                        </label>
+                    </div>
+                    <div class="ingred_btn">
+                        <button class="reduce" @click="reduceInput(index)">
+                            <font-awesome-icon icon="fa-solid fa-minus" />
+                        </button>
+                        <button class="increase" @click="increaseInput(index)">
+                            <font-awesome-icon icon="fa-solid fa-plus" />
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <label for="step">製作步驟：</label>
+            <textarea
+                class="recipe_step"
+                id="step"
+                v-model="newData.step"
+                rows="6"
+            ></textarea>
+            <!-- <label for=""
+                    >照片： <input type="file" :value="newData.img" />
+                </label> -->
+            <!-- </div> -->
+            <div class="recipe_btn">
+                <button class="delete">刪除</button>
+                <button class="archive">存檔</button>
+            </div>
+            <!-- 關閉按鍵 -->
+            <button class="xmark" @click="closeModal">x</button>
+        </div>
     </div>
 </template>
 <script>
@@ -77,6 +177,10 @@ export default {
             searchInput: "",
             searchResult: [],
             showData: [],
+
+            inputDataArray: [
+                { ingred: "", unit: "" }, // 初始化一个输入
+            ],
             colTitle: [
                 "",
                 "菜色編號",
@@ -482,19 +586,30 @@ export default {
         getPageData(data) {
             this.showData = data;
         },
-        //控制顯示字數 多的用"..."省略
-        // truncateText(text, length) {
-        //     if (text.length > length) {
-        //         return text.slice(0, length) + "...";
-        //     }
-        //     return text;
-        // },
         truncateText(text) {
-            if (text && text.length > 10) {
+            if (text && text.length > 6) {
                 // 檢查 text 是否存在並且長度大於 10
-                return text.slice(0, 10) + "...";
+                return text.slice(0, 6) + "...";
             }
             return text;
+        },
+        //彈窗
+        openModal(item) {
+            this.showModal = true;
+            this.newData = item;
+        },
+        closeModal() {
+            this.showModal = false;
+        },
+        //增減欄位
+        reduceInput(index) {
+            if (this.inputDataArray.length > 1) {
+                this.inputDataArray.splice(index, 1);
+            }
+        },
+        increaseInput(index) {
+            const newInputData = { ingred: "", unit: "" };
+            this.inputDataArray.splice(index + 1, 0, newInputData);
         },
     },
     created() {
@@ -511,6 +626,7 @@ export default {
 .recipe_container {
     .input-group {
         width: fit-content;
+        position: relative;
     }
 
     .add_td {
@@ -518,6 +634,127 @@ export default {
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
+    }
+}
+
+.show_modal {
+    border: 3px solid #1f8d61;
+    border-radius: 20px;
+    width: fit-content;
+    padding: $sp4;
+    padding-top: 50px;
+    position: relative;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-weight: 700;
+    background-color: #fff7ea;
+    z-index: 5;
+    height: calc(100vh - 100px);
+    overflow: auto;
+
+    label {
+        select,
+        textarea,
+        input {
+            padding: 0 5px;
+            margin-left: 5px;
+        }
+    }
+}
+
+.xmark {
+    right: 20px;
+    top: 10px;
+    position: absolute;
+    border: none;
+    background-color: #fff7ea;
+    font-size: $m-font;
+    color: #aaa;
+}
+
+.recipe_btn {
+    width: 100%;
+    margin-top: 10px;
+    background-color: #fff7ea;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    // position: fixed;
+    // bottom: 0px;
+    // padding: 32px;
+    // border-radius: 0 0 20px 20px;
+
+    .delete,
+    .archive {
+        background-color: #fff7ea;
+        border: #1f8d61 1px solid;
+        border-radius: 20px;
+        // width: 90%;
+        // margin: 10px auto 0;
+
+        &:hover {
+            background-color: #1f8d61;
+            color: #fff7ea;
+        }
+    }
+}
+
+// .show_modal_wrap {
+//     padding: $sp4;
+//     display: flex;
+//     flex-direction: column;
+//     align-items: flex-start;
+//     gap: 5px;
+//     overflow: auto;
+//     height: calc(100vh - 50px);
+// }
+
+.recipe_des {
+    width: 100%;
+    min-height: 100px;
+}
+
+.recipe_step {
+    width: 100%;
+    min-height: 150px;
+}
+
+.ingred_wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.ingred_table {
+    width: 100%;
+    display: flex;
+
+    .ingred_input {
+        display: flex;
+    }
+
+    .ingred_btn {
+        width: 20%;
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+        padding: 0 5px;
+
+        .reduce,
+        .increase {
+            border: none;
+            background-color: $primary;
+            color: #ffffff;
+            width: 25px;
+            height: 25px;
+            text-align: center;
+            display: inline-block;
+            cursor: pointer;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
     }
 }
 </style>

@@ -52,9 +52,7 @@
     </div>
     <!-- 頁碼 -->
     <PageComponent :data="searchResult" @changePage="getPageData" />
-
     <!-- 彈窗 -->
-
     <div
         class="show_modal d-flex flex-column align-items-start gap-2"
         v-if="showModal"
@@ -69,7 +67,6 @@
             ><input type="checkbox" id="dislike" v-model="dislikeChecked" />
             不喜歡的食物</label
         >
-
         <button class="delete">刪除</button>
         <button class="archive">存檔</button>
         <!-- 關閉按鍵 -->
@@ -460,6 +457,7 @@ export default {
 .ingredient_container {
     .input-group {
         width: fit-content;
+        position: relative;
     }
 
     .add_td {
@@ -478,21 +476,15 @@ export default {
     padding-top: 50px;
     position: relative;
     position: fixed;
-    left: 40%;
-    top: 20%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     font-weight: 700;
     background-color: #fff7ea;
     z-index: 5;
-
-    .xmark {
-        right: 5px;
-        top: 5px;
-        position: absolute;
-        border: none;
-        background-color: #fff7ea;
-        font-size: $m-font;
-        color: #aaa;
-    }
+    // height: calc(100vh - 100px);
+    height: fit-content;
+    overflow: auto;
 
     label {
         select,
@@ -508,8 +500,18 @@ export default {
         background-color: #fff7ea;
         border: #1f8d61 1px solid;
         border-radius: 20px;
-        width: 90%;
+        width: 100%;
         margin: 10px auto 0;
     }
+}
+
+.xmark {
+    right: 20px;
+    top: 10px;
+    position: absolute;
+    border: none;
+    background-color: #fff7ea;
+    font-size: $m-font;
+    color: #aaa;
 }
 </style>
