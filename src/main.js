@@ -3,6 +3,8 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 
+const app = createApp(App)
+
 import 'bootstrap/js/dist/dropdown';
 
 ///基本引入
@@ -20,4 +22,11 @@ router.afterEach(() => {
     window.scrollTo(0, 0);
 });
 
-createApp(App).use(store).use(router).component('font-awesome-icon', FontAwesomeIcon).mount('#app')
+//全域引用axios
+import axios from 'axios';
+import VueAxios from 'vue-axios'
+const apiURL = 'http://localhost/fresh_drop_backend/public/phps/'
+app.config.globalProperties.$url = apiURL
+
+
+app.use(store).use(router).use(VueAxios, axios).component('font-awesome-icon', FontAwesomeIcon).mount('#app')

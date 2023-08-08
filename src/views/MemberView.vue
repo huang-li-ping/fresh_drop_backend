@@ -19,13 +19,13 @@
             </thead>
             <tbody>
                 <tr v-for="(item, index) in showData" :key="index">
-                    <td>{{ item.id }}</td>
-                    <td>{{ item.name }}</td>
-                    <td>{{ item.email }}</td>
+                    <td>{{ parseInt(item.cus_no) + 1000}}</td>
+                    <td>{{ item.cus_name }}</td>
+                    <td>{{ item.cus_email }}</td>
                     <td>{{ item.phone }}</td>
                     <td>{{ item.birth }}</td>
-                    <td class="add_td">{{ item.add }}</td>
-                    <td><button class="btn btn-outline-primary btn-sm">查閱</button></td>
+                    <td class="add_td">{{ item.address }}</td>
+                    <td><button class="btn btn-outline-primary btn-sm" @click="goMemberDetail(item.cus_no);">查閱</button></td>
                 </tr>
             </tbody>
         </table>
@@ -46,119 +46,31 @@ export default {
 },
     data() {
         return {
+            showData: [],
             searchInput: '',
             colTitle: ["會員編號", "會員名稱", "會員信箱", "手機號碼", "生日", "住址", ""],
-            memData: [
-                {
-                    id: "98765425",
-                    name: "蔡宗驊",
-                    email: "abc@gamil.com",
-                    phone: "0913-986754",
-                    birth: "1994-05-26",
-                    add: "桃園市中壢區復興路48號8樓",
-                },
-                {
-                    id: "98757322",
-                    name: "熊毅",
-                    email: "abc@gamil.com",
-                    phone: "0987-987554",
-                    birth: "1994-05-26",
-                    add: "桃園市中壢區復興路48號8樓",
-                },
-                {
-                    id: "98732586",
-                    name: "徐億籃",
-                    email: "abc@gamil.com",
-                    phone: "0956-909854",
-                    birth: "1994-05-26",
-                    add: "桃園市中壢區復興路48號8樓",
-                },
-                {
-                    id: "98768925",
-                    name: "黃莉萍",
-                    email: "abc@gamil.com",
-                    phone: "0952-973454",
-                    birth: "1994-05-26",
-                    add: "桃園市中壢區復興路48號8樓",
-                },
-                {
-                    id: "95609322",
-                    name: "李岱霖",
-                    email: "abc@gamil.com",
-                    phone: "0952-123354",
-                    birth: "1994-05-26",
-                    add: "桃園市中壢區復興路48號8樓",
-                },
-                {
-                    id: "98432586",
-                    name: "江瑀庭",
-                    email: "abc@gamil.com",
-                    phone: "0952-909090",
-                    birth: "1994-05-26",
-                    add: "桃園市中壢區復興路48號8樓",
-                },
-                {
-                    id: "98765425",
-                    name: "蔡宗驊",
-                    email: "abc@gamil.com",
-                    phone: "0909-332876",
-                    birth: "1994-05-26",
-                    add: "桃園市中壢區復興路48號8樓",
-                },
-                {
-                    id: "98753452",
-                    name: "李岱霖",
-                    email: "abc@gamil.com",
-                    phone: "0919-202043",
-                    birth: "1994-05-26",
-                    add: "桃園市中壢區復興路48號8樓",
-                },
-                {
-                    id: "09433586",
-                    name: "江瑀庭",
-                    email: "abc@gamil.com",
-                    phone: "0930-808095",
-                    birth: "1994-05-26",
-                    add: "桃園市中壢區復興路48號8樓",
-                },
-                {
-                    id: "98719325",
-                    name: "徐億籃",
-                    email: "abc@gamil.com",
-                    phone: "0990-354667",
-                    birth: "1994-05-26",
-                    add: "桃園市中壢區復興路48號8樓",
-                },
-                {
-                    id: "98432586",
-                    name: "江瑀庭",
-                    email: "abc@gamil.com",
-                    phone: "0952-909090",
-                    birth: "1994-05-26",
-                    add: "桃園市中壢區復興路48號8樓",
-                },
-                {
-                    id: "98765425",
-                    name: "蔡宗驊",
-                    email: "abc@gamil.com",
-                    phone: "0909-332876",
-                    birth: "1994-05-26",
-                    add: "桃園市中壢區復興路48號8樓",
-                },
-                {
-                    id: "98753452",
-                    name: "李岱霖",
-                    email: "abc@gamil.com",
-                    phone: "0919-202043",
-                    birth: "1994-05-26",
-                    add: "桃園市中壢區復興路48號8樓",
-                },
-            ],
+            memData: [],
             searchResult: [],
-            showData: [],
         };
     },
     methods: {
+        getMemData() {
+            let url = `${this.$url}memberRows.php`
+            this.axios.get(url).then(res => {
+                res.data.forEach(item => {
+                    if (item.phone.substr(4, 1) == '-' && item.phone.length == 10) {
+                        let front4 = item.phone.substr(0, 4)
+                        let back6 = item.phone.substr(4, 6)
+                        item.phone = front4.concat('-', back6)
+                    } else if (item.phone.length !== 10) {
+                        console.log(item.phone);
+                    }
+                })
+                this.memData = res.data
+            }).catch(err => {
+                console.log(err);
+            })
+        },
         searchIdOrPhone() {
             if (this.searchInput == '') {
                 this.searchResult = this.memData
@@ -175,12 +87,35 @@ export default {
                 this.searchResult = phoneResult
             }
         },
+        goMemberDetail(id) {
+            let url = `${this.$url}memberDetail.php`
+            let params = new URLSearchParams()
+            params.append("cusNo", id)
+            this.axios.post(url, params).then(res => {
+                console.log(res.data)
+                this.$store.commit('sendMemDetail', res.data);
+                if (this.$route.path == '/member') {
+                    this.$router.push('/memDetail')
+                }
+            }).catch(err => {
+                console.log(err);
+            })
+
+        },
         getPageData(data) {
             this.showData = data
         },
     },
-    created (){
-        this.searchResult = this.memData
+    watch: {
+        memData: {
+            handler: function () {
+                this.searchResult = this.memData
+            },
+            deep:true
+        },
+    },
+    mounted (){
+        this.getMemData()
     },
 };
 </script>
