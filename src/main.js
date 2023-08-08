@@ -26,5 +26,6 @@ import VueAxios from 'vue-axios'
 const apiURL = 'http://localhost/fresh_drop_backend/public/phps/'
 app.config.globalProperties.$url = apiURL
 
+
 app.use(store).use(router).use(VueAxios, axios).component('font-awesome-icon', FontAwesomeIcon).mount('#app')
 
