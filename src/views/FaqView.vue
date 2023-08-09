@@ -8,23 +8,12 @@
                     <input type="text" class="form-control" placeholder="請輸入分類或狀態" @input="searchIdOrPhone"
                         v-model="searchInput" />
                 </div>
-                <!-- 每頁顯示...筆 -->
-                <!-- <span>
-                    每頁　
-                    <div class="btn-group">
-                        <button class="btn btn-outline-primary dropdown-toggle" type="button" id="defaultDropdown"
-                            data-bs-toggle="dropdown" data-bs-auto-close="true" aria-expanded="false">
-                            {{ itemsPerPage }}
-                        </button>
-                        <ul class="dropdown-menu" aria-labelledby="defaultDropdown">
-                            <li v-for="option in options" :key="option">
-                                <a class="dropdown-item" href="#" @click="itemsPerPage = option">{{ option }}</a>
-                            </li>
-                        </ul>
-                    </div>
-                    　筆
-                </span>
-                <div class="btn btn-outline-primary" @click="searchIdOrPhone">搜尋</div> -->
+
+                <!-- 新增 -->
+                <div class="create">
+                    <button class="btn btn-primary create-btn" @click="openModal(null)" type="button"
+                        style="margin-left: auto; color: #fff">新增問答</button>
+                </div>
             </div>
         </div>
         <!-- 表格 -->
@@ -62,7 +51,17 @@
         </label>
 
 
-        <label for="">分類:<input type="text" :value="newData.type"> </label>
+        <label for="">分類:<select v-model="newData.type">
+                <option value="常見問題">常見問題</option>
+                <option value="會員註冊">會員註冊</option>
+                <option value="付款問題">付款問題</option>
+                <option value="寄送問題">寄送問題</option>
+                <option value="購物相關">購物相關</option>
+                <option value="訂單問題">訂單問題</option>
+                <option value="禮物卡相關">禮物卡相關</option>
+                <option value="退換貨問題">退換貨問題</option>
+            </select> </label>
+
 
         <label for="" style="display: flex;">標題:
             <textarea name="" id="" cols="30" rows="3">{{ newData.questions }}</textarea>
@@ -84,7 +83,7 @@ import PageTitle from '@/components/PageTitle.vue';
 
 import PageComponent from "@/components/PageComponent.vue";
 export default {
-    name: 'IngredientView',
+    name: 'FaqView',
     components: {
         PageComponent,
         PageTitle,
@@ -92,7 +91,15 @@ export default {
     data() {
         return {
             showModal: false,
-            newData: [],
+            presetData: {
+                id: null,
+                type: null,
+                state: '未套用',
+                questions: ' ',
+                answers: ' ',
+                open: false
+            },
+            newData: null,
             showData: [],
             searchInput: '',
             searchResult: [],
@@ -344,11 +351,15 @@ export default {
             }
             return text;
         },
+        //開啟彈窗,帶入data值
         openModal(item) {
             this.showModal = true;
-            this.newData = item;
-            console.log(this.newData)
-
+            console.log(this.presetData);
+            if (item === null) {
+                this.newData = this.presetData;
+            } else {
+                this.newData = item;
+            }
         },
         closeModal() {
             this.showModal = false;
@@ -378,10 +389,13 @@ export default {
     padding: 30px;
     position: relative;
     position: fixed;
-    left: 40%;
-    top: 5%;
     font-weight: 700;
     background-color: #FFF7EA;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    overflow: auto;
+    height: fit-content;
 
     .xmark {
         right: 5px;
