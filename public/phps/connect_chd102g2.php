@@ -1,8 +1,8 @@
 <?php
 //開發用
 $user = "root";
-$psw = "";
-$port = 3306;
+$psw = "root";
+$port = 8889;
 
 //上線用
 // $user = "tibamefe_since2021";

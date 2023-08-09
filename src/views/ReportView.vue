@@ -64,12 +64,20 @@
         <h4>被檢舉內容：</h4>
         <div class="report_content" >
             <div class="report_pic">
+<<<<<<< HEAD
                 <img :src="newData.pic" :alt="newData.pic">
+=======
+                <img src="./@/../../../../fresh_drop/src/assets/images/product/11greece_roast_lamb.jpg" alt="">
+>>>>>>> dev
             </div>
             <div class="report_name">
                 <div class="report_member">
                     <div class="report_name_pic">
+<<<<<<< HEAD
                         <img src="./@/../../../../fresh_drop/src/assets/images/member/membk.png" alt="">
+=======
+                        <img src="./@/../../../../fresh_drop/src/assets/images/product/p1.jpg" alt="">
+>>>>>>> dev
                     </div>  
                     <div class="report_me">
                         <h6>{{ newData.report_no }}</h6>
