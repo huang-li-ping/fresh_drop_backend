@@ -93,10 +93,10 @@
 </template>
 <script>
 import PageTitle from '@/components/PageTitle.vue';
-import PageComponent from '@/component/PageComponent.vue';
+import PageComponent from '@/components/PageComponent.vue';
 
 export default {
-    name: 'ReportView',
+    name: 'IngredientView',
     components: {
         PageComponent,
         PageTitle,

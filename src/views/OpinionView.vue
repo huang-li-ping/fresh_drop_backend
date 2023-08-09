@@ -56,14 +56,14 @@
     </nav>
 </template>
 <script>
-import PageComponent from '@/components/PageComponent.vue';
 import PageTitle from '@/components/PageTitle.vue';
+import PageComponent from '@/components/PageComponent.vue';
 
 export default {
     name: 'IngredientView',
     component: {
         PageTitle,
-        PageComponent
+        PageComponent,
     },
     data() {
         return {
