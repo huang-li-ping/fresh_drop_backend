@@ -55,12 +55,12 @@
         <h4>被檢舉內容：</h4>
         <div class="report_content">
             <div class="report_pic">
-                <img src="./@/../../../../fresh_drop_i/src/assets/images/product/11greece_roast_lamb.jpg" alt="">
+                <img src="./@/../../../../fresh_drop/src/assets/images/product/11greece_roast_lamb.jpg" alt="">
             </div>
             <div class="report_name">
                 <div class="report_member">
                     <div class="report_name_pic">
-                        <img src="./@/../../../../fresh_drop_i/src/assets/images/product/p1.jpg" alt="">
+                        <img src="./@/../../../../fresh_drop/src/assets/images/product/p1.jpg" alt="">
                     </div>  
                     <div class="report_name">
                         <h4>sukl4;g</h4>
