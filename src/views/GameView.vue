@@ -25,6 +25,9 @@
                     　筆
                 </span> -->
             </div>
+            <div class="col-2 create" style="margin-left:auto">
+        <button class="btn btn-primary create-btn" @click="openModal" type="button" style="margin-left: auto; color: #fff" >新增帳號</button>
+      </div>
         </div>
         <!-- 表格 -->
         <table class="table table-hover">

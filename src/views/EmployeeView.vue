@@ -35,11 +35,11 @@
             <font-awesome-icon icon="fa-solid fa-pen" />
           </button>
         </td>
-        <td>{{ item.id }}</td>
-        <td>{{ item.name }}</td>
-        <td>{{ item.account }}</td>
-        <td>{{ item.date }}</td>
-        <td>{{ item.status }}</td>
+        <td>{{ item.emp_no }}</td>
+        <td>{{ item.emp_name }}</td>
+        <td>{{ item.emp_id }}</td>
+        <td>{{ item.emp_date }}</td>
+        <td>{{ status(item) }}</td>
       </tr>
     </tbody>
   </table>
@@ -50,13 +50,13 @@
 
   <div class="show_modal d-flex flex-column align-items-start gap-2" v-if="showModal">
    
-    <label for="id">管理員編號：<input type="text" :value="newData.id || employeeIdNum()" id="id" disabled="disabled"></label>
+    <label for="id">管理員編號：<input type="text" :value="newData.emp_no " id="id" disabled="disabled"></label>
 
-    <label for="name" class="inline-label">姓名　　　：<input type="text" :value="newData.name" id="name"></label>
+    <label for="name" class="inline-label">姓名　　　：<input type="text" :value="newData.emp_name" id="name"></label>
 
-    <label for="account">帳號　　　：<input type="text" :value="newData.account" id="account"></label>
+    <label for="account">帳號　　　：<input type="text" :value="newData.emp_id" id="account"></label>
 
-    <label for="date">加入日期　：<input type="text" :value="newData.date || currentDate()" id="date" disabled="disabled" ></label>
+    <label for="date">加入日期　：<input type="text" :value="newData.emp_date || currentDate()" id="date" disabled="disabled" ></label>
 
     <label for="status">狀態　　　：
       <select name="" id="status">
@@ -65,7 +65,7 @@
       </select></label>
 
 
-    <button class="btn btn-primary col-12 " style="color:#fff">存檔</button>
+    <button class="btn btn-primary col-12 " style="color:#fff" @click="insert()">存檔</button>
 
     <!-- 關閉按鍵 -->
     <button class="xmark btn btn-outline-secondary rounded-5" @click="closeModal">
@@ -93,17 +93,17 @@ export default {
       searchInput: '',
       colTitle: ["", "管理員編號", "姓名", "帳號", "加入日期", "狀態"],
       employeeData: [
-        { id: "1", name: "蔡宗華", account: "abc134", date: "2023-07-01", status: "啟用" },
-        { id: "2", name: "黃莉平", account: "qqq12", date: "2023-07-02", status: "停用" },
-        { id: "3", name: "李岱林", account: "asd111", date: "2023-07-03", status: "啟用" },
-        { id: "4", name: "江瑀停", account: "zzz666", date: "2023-07-04", status: "啟用" },
-        { id: "5", name: "許弘義", account: "zxc000", date: "2023-07-05", status: "啟用" },
-        { id: "6", name: "徐億藍", account: "qwe122", date: "2023-07-06", status: "啟用" },
-        { id: "7", name: "周杰倫", account: "jaychou", date: "2023-07-08", status: "停用" },
-        { id: "8", name: "蔡依林", account: "jolin520", date: "2023-07-09", status: "啟用" },
-        { id: "9", name: "楊丞琳", account: "rainylove", date: "2023-07-20", status: "啟用" },
-        { id: "10", name: "王心凌", account: "cindy555", date: "2023-07-25", status: "啟用" },
-        { id: "11", name: "張韶涵", account: "angelinachang", date: "2023-07-31", status: "啟用" },
+        // { id: "1", name: "蔡宗華", account: "abc134", date: "2023-07-01", status: "啟用" },
+        // { id: "2", name: "黃莉平", account: "qqq12", date: "2023-07-02", status: "停用" },
+        // { id: "3", name: "李岱林", account: "asd111", date: "2023-07-03", status: "啟用" },
+        // { id: "4", name: "江瑀停", account: "zzz666", date: "2023-07-04", status: "啟用" },
+        // { id: "5", name: "許弘義", account: "zxc000", date: "2023-07-05", status: "啟用" },
+        // { id: "6", name: "徐億藍", account: "qwe122", date: "2023-07-06", status: "啟用" },
+        // { id: "7", name: "周杰倫", account: "jaychou", date: "2023-07-08", status: "停用" },
+        // { id: "8", name: "蔡依林", account: "jolin520", date: "2023-07-09", status: "啟用" },
+        // { id: "9", name: "楊丞琳", account: "rainylove", date: "2023-07-20", status: "啟用" },
+        // { id: "10", name: "王心凌", account: "cindy555", date: "2023-07-25", status: "啟用" },
+        // { id: "11", name: "張韶涵", account: "angelinachang", date: "2023-07-31", status: "啟用" },
 
       ],
       searchResult: [],
@@ -118,10 +118,10 @@ export default {
         this.searchResult = this.employeeData
       }
       let idResult = this.employeeData.filter(item => {
-        return item.id.includes(this.searchInput)
+        return item.emp_no.includes(this.searchInput)
       })
       let phoneResult = this.employeeData.filter(item => {
-        return item.name.includes(this.searchInput)
+        return item.emp_name.includes(this.searchInput)
       })
       if (idResult.length > 0) {
         this.searchResult = idResult
@@ -146,15 +146,59 @@ export default {
       const date = `${current.getFullYear()}-${current.getMonth()+1}-${current.getDate()}`;
       return date;
     },
-    employeeIdNum(){
-      const employeeIdNum = this.employeeData.length +1;
-      return employeeIdNum;
-    }
+    // employeeIdNum(){
+    //   const employeeIdNum = this.employeeData.length +1;
+    //   return employeeIdNum;
+    // },
+    getEmployeeData() {
+      let url = `${this.$url}employeeRows.php`
+      this.axios.get(url).then(res => {
+        // res.data.forEach(item => {
+        //     if (item.phone.substr(4, 1) == '-' && item.phone.length == 10) {
+        //         let front4 = item.phone.substr(0, 4)
+        //         let back6 = item.phone.substr(4, 6)
+        //         item.phone = front4.concat('-', back6)
+        //     } else if (item.phone.length !== 10) {
+        //         console.log(item.phone);
+        //     }
+        //})
+        this.employeeData = res.data
+      }).catch(err => {
+        console.log(err);
+      })
+    },
+    status(item){
+      let status = item.emp_status;
+      if( status == 1){
+        return "啟用";
+      }else if( status == 0){
+        return "停用";
+      }
+    },
+    insert() {
+        //新增員工
+        let xhr = new XMLHttpRequest();
+        xhr.onload = function () {
+          let result = JSON.parse(xhr.responseText);
+          alert(result.msg);
+        };
+        xhr.open("post", `${this.$url}employeeInsert.php`, true);
+        xhr.send(new FormData(document.getElementById("add_employee")));
+        lightbox.classList.remove("active"); // 關新增燈箱
+      },
  
 
   },
-  created() {
-    this.searchResult = this.employeeData
+  watch: {
+    employeeData: {
+      handler: function () {
+        this.searchResult = this.employeeData
+      },
+      deep: true
+    },
+  },
+  mounted() {
+    this.getEmployeeData()
   },
 };
 </script>
