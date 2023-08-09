@@ -47,77 +47,53 @@
     <div class="order_bottom" style="display: flex;">
         <div class="deatils_box">
             <div class="ord_details" style="display: flex;">
-                <ul class="nav nav-tabs">
-                    <li class="nav-item">
-                        <a class="nav-link" :class="{ active: currentTab === 'WEEK1' }" @click="currentTab = 'WEEK1'" href="#">
-                            WEEK1
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" :class="{ active: currentTab === 'WEEK2' }" @click="currentTab = 'WEEK2'" href="#">
-                            WEEK2
+                <ul class="nav nav-tabs" v-show="orderList.length > 1">
+                    <li class="nav-item" v-for="n in orderList.length" :key="n">
+                        <a class="nav-link" :class="{ active: currentTab === 'WEEK1' }" @click="showCurrentData(n)"
+                            href="#">
+                            WEEK{{ n }}
                         </a>
                     </li>
                 </ul>
             </div>
-            <div v-if="currentTab === 'WEEK1'">
-                <!-- WEEK1的内容 -->
-                <table class="table" style="border: solid 1px #1F8D61;">
-                    <thead>
-                        <tr>
-                            <th scope="col" v-for="(item, index) in colTitle" :key="index">{{ item }}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="(item, index) in week1Data" :key="index">
-                            <td>{{ item.recipe }}</td>
-                            <td>{{ item.qty }}</td>
-                            <td>{{ item.status }}</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div v-else-if="currentTab === 'WEEK2'">
-                <!-- WEEK2的内容 -->
-                <table class="table" style="border: solid 1px #1F8D61;">
-                    <thead>
-                        <tr>
-                            <th scope="col" v-for="(item, index) in colTitle" :key="index">{{ item }}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="(item, index) in week2Data" :key="index">
-                            <td>{{ item.recipe }}</td>
-                            <td>{{ item.qty }}</td>
-                            <td>{{ item.status }}</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+            <!-- <div v-if="currentTab === 'WEEK1'"> -->
+            <!-- WEEK1的内容 -->
+            <table class="table" style="border: solid 1px #1F8D61;">
+                <thead>
+                    <tr>
+                        <th scope="col" v-for="(item, index) in colTitle" :key="index">{{ item }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(item, index) in currentData" :key="index">
+                        <td>{{ item.recipe }}</td>
+                        <td>{{ item.qty }}</td>
+                        <td>{{ item.status }}</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
         <div class="bill_container">
             <p>訂單金額明細</p>
             <div class="frist">
-                <p>$800 /週</p>
-                <p>X2</p>
-                <P>金額：$1600</P>
+                <p>{{ billDetails.week }}</p>
+                <p>{{ billDetails.qty }}</p>
+                <P>{{ billDetails.amount }}</P>
             </div>
-            <p style="text-align: right;">運費：$80</p>
-            <p style="text-align: right;">禮物卡折抵：-$100</p>
-            <p style="text-align: right;">禮物卡編號：01234567</p>
+            <p style="text-align: right;">{{ billDetails.deliv_m }}</p>
+            <p style="text-align: right;">{{ billDetails.giftcard_m }}</p>
+            <p style="text-align: right;">{{ billDetails.giftcard_n }}</p>
             <hr>
-            <p style="text-align: right;">總金額：$1580</p>
+            <p style="text-align: right;">{{ billDetails.total }}</p>
         </div>
     </div>
 </template>
 <script>
 import PageTitle from '@/components/PageTitle.vue';
 
-// import PageComponent from "@/components/PageComponent.vue";
 export default {
     name: 'IngredientView',
     component: {
-        // PageComponent,
         PageTitle,
     },
     data() {
@@ -125,7 +101,7 @@ export default {
             order:
             {
                 ord_date: "2023-07-02",
-                ord_no: "WEE5YDGRQ",
+                ord_no: "1",
                 mem_name: "蔡宗驊",
                 deliv_no: "定期配送",
                 total: "$1680",
@@ -136,25 +112,45 @@ export default {
                 cus_phone: "0933-099932",
                 cus_add: "320 桃園市中壢區復興路46號",
                 email: "abc123@gmail.com",
-                ord_credit_no:"1234-1234-1234-1234",
+                ord_credit_no: "1234-1234-1234-1234",
             },
-            currentTab: 'WEEK1',
+            currentTab: 1,
             colTitle: ["品項", "份數", "出貨狀態",],
-            week1Data: [
-                { recipe: "滑嫩蕃茄蛋", qty: "X1", status: "已出貨\n(2023-07-05)" },
-                { recipe: "蒸蛋", qty: "X1", },
-                { recipe: "味噌鮮魚湯", qty: "X1", },
-                { recipe: "塔香茄子", qty: "X1", },
+            currentData: {},
+            orderList: [
+                [
+                    { recipe: "滑嫩蕃茄蛋", qty: "X1", status: "已出貨\n(2023-07-05)" },
+                    { recipe: "蒸蛋", qty: "X1", },
+                    { recipe: "味噌鮮魚湯", qty: "X1", },
+                    { recipe: "塔香茄子", qty: "X1", },
+                ],
+                [
+                    { recipe: "越南河粉湯", qty: "X1", status: "處理中" },
+                    { recipe: "泰式生菜包", qty: "X1", },
+                    { recipe: "麻婆豆腐", qty: "X1", },
+                    { recipe: "巴西凱撒沙拉", qty: "X1", },
+                ],
             ],
-            week2Data: [
-                { recipe: "越南河粉湯", qty: "X1", status: "處理中" },
-                { recipe: "泰式生菜包", qty: "X1", },
-                { recipe: "麻婆豆腐", qty: "X1", },
-                { recipe: "巴西凱撒沙拉", qty: "X1", },
-            ],
+            billDetails: {
+                week: "$800 /週",
+                qty: "X2",
+                amount: "金額：$1600",
+                deliv_m: "運費：$80",
+                giftcard_m: "禮物卡折抵：-$100",
+                giftcard_n: "禮物卡編號：01234567",
+                total: "總金額：$1580",
+            }
         };
     },
-    methods: {},
+    methods: {
+        showCurrentData(n) {
+            // this.currentData = this.orderList[this.currentTab-1]
+            this.currentData = this.orderList[n - 1];
+        }
+    },
+    mounted() {
+        this.showCurrentData(1);
+    },
     components: { PageTitle }
 };
 </script>
@@ -175,22 +171,26 @@ export default {
         border-radius: $m-br;
     }
 }
-.frist{
+
+.frist {
     display: flex;
     justify-content: space-between;
 }
-.bill_container{
+
+.bill_container {
     border: solid 1px #1F8D61;
     border-radius: $s-br;
     margin: 50px 20px;
     width: 450px;
-    padding: 10px;
+    padding: 20px;
 }
-.deatils_box{
+
+.deatils_box {
     width: 350px;
     margin: 0 20px;
 }
-.ord_details{
+
+.ord_details {
     margin: 20px 20px 0 0;
 }
 </style>
