@@ -25,7 +25,7 @@
                     <td>{{ item.phone }}</td>
                     <td>{{ item.birth }}</td>
                     <td class="add_td">{{ item.address }}</td>
-                    <td><button class="btn btn-outline-primary btn-sm" @click="goMemberDetail(item.cus_no)">查閱</button></td>
+                    <td><button class="btn btn-outline-primary btn-sm" @click="goMemberDetail(item.cus_no);">查閱</button></td>
                 </tr>
             </tbody>
         </table>
@@ -51,7 +51,6 @@ export default {
             colTitle: ["會員編號", "會員名稱", "會員信箱", "手機號碼", "生日", "住址", ""],
             memData: [],
             searchResult: [],
-            
         };
     },
     methods: {
@@ -93,10 +92,15 @@ export default {
             let params = new URLSearchParams()
             params.append("cusNo", id)
             this.axios.post(url, params).then(res => {
-                console.log(res.data);
+                console.log(res.data)
+                this.$store.commit('sendMemDetail', res.data);
+                if (this.$route.path == '/member') {
+                    this.$router.push('/memDetail')
+                }
             }).catch(err => {
                 console.log(err);
             })
+
         },
         getPageData(data) {
             this.showData = data

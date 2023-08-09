@@ -6,41 +6,23 @@
             <div class="col-3" style="width: 350px;">
                 <div class="input-group mb-3">
                     <span class="input-group-text">訂單編號</span>
-                    <input type="text" class="form-control" style="width: 100px;" placeholder="搜尋" @input="searchIdOrPhone" v-model="searchInput" />
-                    <div class="input-group-append">
-                        <button @click="searchIdOrPhone" class="btn btn-outline-primary"  type="button" style="margin-left: 10px" >search</button>
-                    </div>
+                    <input type="text" class="form-control" style="width: 100px;" placeholder="搜尋" @input="searchOrdNo"
+                        v-model="searchInput" />
                 </div>
             </div>
             <div class="btn-group" style="width: 150px;padding: 10px;">
                 <button class="btn btn-outline-primary dropdown-toggle" type="button" id="defaultDropdown"
                     data-bs-toggle="dropdown" data-bs-auto-close="true" aria-expanded="false">
-                    訂單狀態
+                    {{ selectedStatus ? selectedStatus : '訂單狀態' }}
                 </button>
                 <ul class="dropdown-menu" aria-labelledby="defaultDropdown">
-                    <li><a class="dropdown-item" href="#">處理中</a></li>
-                    <li><a class="dropdown-item" href="#">已完成</a></li>
-                    <li><a class="dropdown-item" href="#">訂單取消</a></li>
+                    <li><a class="dropdown-item" @click="selectedStatus = '處理中'">處理中</a></li>
+                    <li><a class="dropdown-item" @click="selectedStatus = '配送中'">配送中</a></li>
+                    <li><a class="dropdown-item" @click="selectedStatus = '已完成'">已完成</a></li>
+                    <li><a class="dropdown-item" @click="selectedStatus = '已取消'">已取消</a></li>
+                    <li><a class="dropdown-item" @click="selectedStatus = ''">顯示全部</a></li>
                 </ul>
             </div>
-            <!-- 每頁顯示...筆 -->
-            <!-- <div class="col-4">
-                <span>
-                    每頁　
-                    <div class="btn-group">
-                        <button class="btn btn-outline-primary dropdown-toggle" type="button" id="defaultDropdown"
-                            data-bs-toggle="dropdown" data-bs-auto-close="true" aria-expanded="false">
-                            10
-                        </button>
-                        <ul class="dropdown-menu" aria-labelledby="defaultDropdown">
-                            <li><a class="dropdown-item" href="#">10</a></li>
-                            <li><a class="dropdown-item" href="#">20</a></li>
-                            <li><a class="dropdown-item" href="#">30</a></li>
-                        </ul>
-                    </div>
-                    　筆
-                </span>
-            </div> -->
         </div>
     </div>
 
@@ -52,26 +34,20 @@
             </tr>
         </thead>
         <tbody>
-            <tr v-for="(item, index) in showData" :key="index">
-                <!-- <td>
-                    <button class="edit-button btn btn-sm btn-outline-secondary rounded-5">
-                        <font-awesome-icon icon="fa-solid fa-pen" />
-                    </button>
-                </td> -->
+            <tr v-for="(item, index) in filteredData" :key="index">
                 <td>{{ item.ord_date }}</td>
-                <td>{{ item.ord_no }}</td>
-                <td>{{ item.name }}</td>
-                <td>{{ item.email }}</td>
-                <td>{{ item.total }}</td>
+                <td>{{ parseInt(item.ord_no) + 2000 }}</td>
+                <td>{{ item.cus_name }}</td>
+                <td>{{ item.cus_email }}</td>
+                <td>{{ item.total_price }}</td>
                 <td>{{ item.payment }}</td>
-                <td>{{ item.status }}</td>
-                <td><button class="btn btn-outline-primary btn-sm">查閱</button></td>
+                <td>{{ item.ord_status }}</td>
+                <td><button class="btn btn-outline-primary btn-sm" @click="goOrderDetails(item.ord_no)">查閱</button></td>
             </tr>
         </tbody>
     </table>
     <!-- 頁碼 -->
     <PageComponent :data="searchResult" @changePage="getPageData" />
-
 </template>
 <script>
 import PageComponent from '@/components/PageComponent.vue';
@@ -87,51 +63,65 @@ export default {
     },
     data() {
         return {
+            searchInput: '',
             colTitle: ["訂單日期", "訂單編號", "會員姓名", "會員信箱", "訂單金額", "付款方式", "訂單狀態", ""],
-            foodData: [
-                { ord_date: "2023-07-02", ord_no: "WEE5YDGRQ", name: "蔡宗驊", email: "abc123@gmail.com", total: "$3680", payment: "信用卡+禮物卡", status: "處理中" },
-                { ord_date: "2023-07-02", ord_no: "WEE5YDGRQ", name: "黃莉萍", email: "abc123@gmail.com", total: "$680", payment: "ATM匯款", status: "訂單取消" },
-                { ord_date: "2023-07-02", ord_no: "WEE5YDGRQ", name: "李岱霖", email: "abc123@gmail.com", total: "$680", payment: "信用卡", status: "處理中" },
-                { ord_date: "2023-07-02", ord_no: "WEE5YDGRQ", name: "江瑀庭", email: "abc123@gmail.com", total: "$480", payment: "信用卡", status: "訂單取消" },
-                { ord_date: "2023-07-02", ord_no: "WEE5YDGRQ", name: "許弘毅", email: "abc123@gmail.com", total: "$1080", payment: "信用卡+禮物卡", status: "已完成" },
-                { ord_date: "2023-07-02", ord_no: "WEE5YDGRQ", name: "徐億籃", email: "abc123@gmail.com", total: "$880", payment: "禮物卡", status: "已完成" },
-                { ord_date: "2023-07-02", ord_no: "WEE5YDGRQ", name: "徐億籃", email: "abc123@gmail.com", total: "$880", payment: "禮物卡", status: "已完成" },
-                { ord_date: "2023-07-02", ord_no: "WEE5YDGRQ", name: "徐億籃", email: "abc123@gmail.com", total: "$880", payment: "禮物卡", status: "已完成" },
-                { ord_date: "2023-07-02", ord_no: "WEE5YDGRQ", name: "徐億籃", email: "abc123@gmail.com", total: "$880", payment: "禮物卡", status: "已完成" },
-                { ord_date: "2023-07-02", ord_no: "THISISAPP", name: "徐億籃", email: "abc123@gmail.com", total: "$880", payment: "禮物卡", status: "已完成" },
-                { ord_date: "2023-07-02", ord_no: "WEE5YDGRQ", name: "徐億籃", email: "abc123@gmail.com", total: "$880", payment: "禮物卡", status: "已完成" },
-                { ord_date: "2023-07-02", ord_no: "WEE5YDGRQ", name: "徐億籃", email: "abc123@gmail.com", total: "$880", payment: "禮物卡", status: "已完成" },
-                { ord_date: "2023-07-02", ord_no: "WEE5YDGRQ", name: "徐億籃", email: "abc123@gmail.com", total: "$880", payment: "禮物卡", status: "已完成" },
-            ],
+            orderData: [],
             searchResult: [],
-      showData: [],
+            showData: [],
+            selectedStatus: '',
         };
     },
+    computed: {
+        filteredData() {
+            if (this.selectedStatus === '') {
+                return this.searchResult;
+            } else {
+                return this.searchResult.filter(item => item.ord_status === this.selectedStatus);
+            }
+        }
+    },
+
     methods: {
-    searchIdOrPhone() {
-      console.log(this.searchInput);
-      if (this.searchInput == '') {
-        this.searchResult = this.foodData
-      }
-      let idResult = this.foodData.filter(item => {
-        return item.ord_no.includes(this.searchInput)
-      })
-      let phoneResult = this.foodData.filter(item => {
-        return item.name.includes(this.searchInput)
-      })
-      if (idResult.length > 0) {
-        this.searchResult = idResult
-      } else if ((phoneResult.length > 0)) {
-        this.searchResult = phoneResult
-      }
+        getOrderData() {
+            let url = `${this.$url}orderRows.php`
+            this.axios.get(url).then(res => {
+                console.log(res.data)
+                this.orderData = res.data
+            }).catch(err => {
+                console.log(err);
+            })
+        },
+
+        searchOrdNo() {
+            console.log(this.searchInput);
+            if (this.searchInput == '') {
+                this.searchResult = this.orderData;
+            } else {
+                let idResult = this.orderData.filter(item => {
+                    return item.ord_no.includes(this.searchInput);
+                });
+                this.searchResult = idResult;
+            }
+        },
+
+        getPageData(data) {
+            this.showData = data
+        },
+        // goOrderDetails(ord_no) {
+        //     this.$router.push({ name: 'OrderDetails', params: { ord_no } });
+        // }
     },
-    getPageData(data) {
-      this.showData = data
+    watch: {
+        orderData: {
+            handler: function () {
+                this.searchResult = this.orderData
+            },
+            deep: true
+        },
     },
-  },
-  created() {
-    this.searchResult = this.foodData
-  },
+    mounted() {
+        this.getOrderData();
+    },
 };
 </script>
 
