@@ -1,15 +1,14 @@
 <template>
-    <!-- {{ reportData }} -->
     <PageTitle :title="'烹飪檢舉管理'" />
     <div class="report_container">
-            <!-- 搜尋框 -->
-            <div class="mb-3 ps-3 pe-3 search_bar_group">
+        <!-- 搜尋框 -->
+        <div class="mb-3 ps-3 pe-3 search_bar_group">
             <div class="d-flex justify-content-between">
                 <div class="input-group">
                     <span class="input-group-text">搜尋菜色</span>
                     <input type="text" class="form-control" placeholder="請輸入菜色" @input="searchIdOrPhone" v-model="searchInput"/>
+                    <div class="btn btn-outline-primary" @click="searchIdOrPhone">搜尋</div> 
                 </div>
-                <div class="btn btn-outline-primary" @click="searchIdOrPhone">搜尋</div>
             </div>
         </div>
     </div>
@@ -21,13 +20,13 @@
             </tr>
         </thead>
         <tbody>
-            <tr v-for="(item, index) in reportData" :key="index">
-                <td>{{ item.opinion_no }}</td>
+            <tr v-for="(item, index) in showData" :key="index">
                 <td>{{ item.report_no }}</td>
+                <td>{{ item.opinion_no }}</td>
                 <td>{{ item.member_fk }}</td>
                 <td>
                     <div class="recipe_pic">
-                        <img :src="item.pic" alt="">
+                        <img :src="require(`./@/../../../../fresh_drop/src/assets/images/product/${item.report_pic}`)" alt="">
                     </div>
                 </td>
                 <td>{{ truncateText(item.reason, 4) }}</td>
@@ -39,54 +38,31 @@
         </tbody>
     </table>
     <!-- 頁碼 -->
-        <!-- 頁碼 -->
-        <nav style="padding: 15px">
-        <ul class="pagination">
-            <li class="page-item">
-                <a class="page-link" href="#" aria-label="Previous">
-                    <span aria-hidden="true">&laquo;</span>
-                </a>
-            </li>
-            <li class="page-item"><a class="page-link" href="#">1</a></li>
-            <li class="page-item"><a class="page-link" href="#">2</a></li>
-            <li class="page-item"><a class="page-link" href="#">3</a></li>
-            <li class="page-item">
-                <a class="page-link" href="#" aria-label="Next">
-                    <span aria-hidden="true">&raquo;</span>
-                </a>
-            </li>
-        </ul>
-    </nav>
     <PageComponent :data="searchResult" @changePage="getPageData" />
-
     <!-- 彈窗 -->
     <div class="show_modal d-flex flex-column align-items-start gap-2" v-if="showModal">
         <h4>被檢舉內容：</h4>
         <div class="report_content" >
             <div class="report_pic">
-<<<<<<< HEAD
-                <img :src="newData.pic" :alt="newData.pic">
-=======
-                <img src="./@/../../../../fresh_drop/src/assets/images/product/11greece_roast_lamb.jpg" alt="">
->>>>>>> dev
+                <img :src="require(`./@/../../../../fresh_drop/src/assets/images/product/${newData.report_pic}`)" alt="">
             </div>
             <div class="report_name">
                 <div class="report_member">
                     <div class="report_name_pic">
-<<<<<<< HEAD
-                        <img src="./@/../../../../fresh_drop/src/assets/images/member/membk.png" alt="">
-=======
-                        <img src="./@/../../../../fresh_drop/src/assets/images/product/p1.jpg" alt="">
->>>>>>> dev
+                        <img src="./@/../../../../fresh_drop/src/assets/images/logo/robo.png" alt="">
                     </div>  
                     <div class="report_me">
-                        <h6>{{ newData.report_no }}</h6>
+                        <h6>{{ newData.member }}</h6>
                     </div>  
                 </div>
                 <div class="report_text">
-                    <p>{{ newData.reason }}</p>
+                    <p>{{ newData.experience }}</p>
                 </div>
             </div>
+        </div>
+        <div class="report_text">
+            <p>檢舉原因：{{ newData.reason }}</p>
+
         </div>
         <div class="button_bt">
             <button class="dismissed">檢舉駁回</button>
@@ -100,11 +76,11 @@
     </div>
 </template>
 <script>
-import PageTitle from '@/components/PageTitle.vue';
 import PageComponent from '@/components/PageComponent.vue';
+import PageTitle from '@/components/PageTitle.vue';
 
 export default {
-    name: 'IngredientView',
+    name: 'ReportView',
     components: {
         PageComponent,
         PageTitle,
@@ -112,16 +88,16 @@ export default {
     data() {
         return {
             colTitle: ["檢舉編號", "心得分享編號", "會員編號", "照片", "檢舉原因", "日期", "狀態","",""],
-            reportData: [
-            ],
+            reportData: [],
             showModal: false,
             newData: [],
-            searchInput: '',
+            searchInput: "",
             searchResult: [],
             showData: [],
         };
     },
     methods: {
+        //串接ingred資料庫        
         getreportData() {
             let url = `${this.$url}report.php`
             this.axios.get(url).then(res => {
@@ -131,19 +107,21 @@ export default {
             })
         },
         searchIdOrPhone() {
-            console.log('type')
-        if (this.searchInput == '') {
-            this.searchResult = this.reportData;
-        } else {
-            let idResult = this.reportData.filter(item => {
-            return item.recipe.includes(this.searchInput);
-            });
-            console.log(idResult)
-            if (idResult.length > 0) {
-                    this.searchResult = idResult
+            if (this.searchInput == "") {
+                this.searchResult = this.reportData;
             }
-        }
-        },
+            let idResult = this.reportData.filter((item) => {
+                return item.report_no.includes(this.searchInput);
+            });
+            let nameResult = this.reportData.filter((item) => {
+                return item.member_fk.includes(this.searchInput);
+            });
+            if (idResult.length > 0) {
+                this.searchResult = idResult;
+            } else if (nameResult.length > 0) {
+                this.searchResult = nameResult;
+            }
+        },    
         getPageData(data) {
                 this.showData = data
             },
@@ -165,10 +143,21 @@ export default {
     created() {
         this.searchResult = this.reportData;
     },
-    mounted (){
-        this.getreportData()
+    //串接ingred資料庫
+    watch:{
+        reportData: {
+        handler: function () {
+            console.log('watch');
+            this.searchResult = this.reportData;
+        },
+        deep: true,
+        },
+
     },
-    components: { PageTitle }
+    mounted (){
+    //串接ingred資料庫
+    this.getreportData()
+    },
 };
 </script>
 
@@ -223,10 +212,10 @@ export default {
     }
     .report_content{
         border: 3px solid #1F8D61;
-        width: 500px;
+        width: 400px;
         display: flex;
         .report_pic{
-            width: 200px;
+            width: 150px;
             margin: 20px;
         }
         img{
@@ -237,14 +226,12 @@ export default {
     .report_name{
         margin: auto;
         display: block;
-        width: 200px;
+        width: 150px;
         .report_member{
             display: flex;
             text-align: left;
-            gap: 15px;
             .report_name_pic{
-                width: 50px;
-                border-radius: 20px;
+                width: 60px;
                 img{
                     width: 100%;
                 }
@@ -252,7 +239,8 @@ export default {
         }
         .report_me{
             h6{
-                line-height: 45px;
+            line-height: 60px;
+            font-size: 20px;
             }
         }
         .report_text{
@@ -264,6 +252,7 @@ export default {
         display: flex;
         margin: auto;
         gap: 10px;
+        width: 400px;
       .dismissed,
     .reported {
         background-color: #FFF7EA;
