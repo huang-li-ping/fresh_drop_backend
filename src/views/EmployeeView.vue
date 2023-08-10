@@ -14,7 +14,7 @@
 
 
       <div class="col-2 create" style="margin-left:auto">
-        <button class="btn btn-primary create-btn" @click="openModal" type="button" style="margin-left: auto; color: #fff" >新增帳號</button>
+        <button class="btn btn-primary create-btn" @click="openAddModal" type="button" value="新增" style="margin-left: auto; color: #fff" >新增帳號</button>
       </div>
     </div>
 
@@ -31,7 +31,7 @@
     <tbody>
       <tr v-for="(item, index) in showData" :key="index">
         <td>
-          <button class="edit-button btn btn-sm btn-outline-secondary rounded-5" @click="openModal(item)">
+          <button class="edit-button btn btn-sm btn-outline-secondary rounded-5" @click="openModal(item)" value="修改">
             <font-awesome-icon icon="fa-solid fa-pen" />
           </button>
         </td>
@@ -46,33 +46,72 @@
   <!-- 頁碼 -->
   <PageComponent :data="searchResult" @changePage="getPageData" />
 
-  <!-- 彈窗 -->
+  <!-- 修改刪除彈窗 -->
 
+ <form id="revise_employee" method="POST" enctype="multipart/form-data" @submit.prevent action="#">
   <div class="show_modal d-flex flex-column align-items-start gap-2" v-if="showModal">
    
-    <label for="id">管理員編號：<input type="text" :value="newData.emp_no " id="id" disabled="disabled"></label>
+   
+    <label for="emp_no">管理員編號：<input type="text" :value="newData.emp_no ||  employeeIdNum()" id="emp_no" name="emp_no"></label>
 
-    <label for="name" class="inline-label">姓名　　　：<input type="text" :value="newData.emp_name" id="name"></label>
+    <label for="emp_name" class="inline-label">姓名　　　：<input type="text" :value="newData.emp_name" id="emp_name" name="emp_name" ></label>
 
-    <label for="account">帳號　　　：<input type="text" :value="newData.emp_id" id="account"></label>
+    <label for="emp_id">帳號　　　：<input type="text" :value="newData.emp_id" id="emp_id" name="emp_id"></label>
 
-    <label for="date">加入日期　：<input type="text" :value="newData.emp_date || currentDate()" id="date" disabled="disabled" ></label>
+    <label for="emp_psw">密碼　　　：<input type="text" :value="newData.emp_psw" id="emp_psw" name="emp_psw"></label>
+
+    <label for="date">加入日期　：<input type="text" :value="newData.emp_date || currentDate()" id="emp_date"  name="emp_date"></label>
 
     <label for="status">狀態　　　：
-      <select name="" id="status">
-        <option value="">啟用</option>
-        <option value="">停用</option>
+      <select name="emp_status" id="emp_status">
+        <option value=1>啟用</option>
+        <option value=0>停用</option>
       </select></label>
 
 
-    <button class="btn btn-primary col-12 " style="color:#fff" @click="insert()">存檔</button>
+      <button class="btn btn-primary col-12" style="color:#fff" type="submit" name="submit" value="修改" @click="handleSubmit('存檔')">存檔</button>
+      <button class="btn btn-outline-secondary col-12" type="submit" name="submit" value="刪除" @click="handleSubmit('刪除')" >刪除</button>
+
 
     <!-- 關閉按鍵 -->
     <button class="xmark btn btn-outline-secondary rounded-5" @click="closeModal">
       x
     </button>
+ 
   </div>
+ </form>
 
+ <!-- 新增彈窗 -->
+
+ <form id="revise_employee" method="POST" enctype="multipart/form-data" @submit.prevent action="#">
+  <div class="show_modal d-flex flex-column align-items-start gap-2" v-if="showAddModal">
+      
+    <label for="emp_no">管理員編號：<input type="text" :value="employeeIdNum()" id="emp_no" name="emp_no"></label>
+
+    <label for="emp_name" class="inline-label">姓名　　　：<input type="text" value="" id="emp_name" name="emp_name" ></label>
+
+    <label for="emp_id">帳號　　　：<input type="text" value="" id="emp_id" name="emp_id"></label>
+
+    <label for="emp_psw">密碼　　　：<input type="text" value="" id="emp_psw" name="emp_psw"></label>
+
+    <label for="date">加入日期　：<input type="text" :value="currentDate()" id="emp_date" name="emp_date"></label>
+
+    <label for="status">狀態　　　：
+      <select name="emp_status" id="emp_status">
+        <option value=1>啟用</option>
+        <option value=0>停用</option>
+      </select></label>
+
+
+      <button class="btn btn-primary col-12" style="color:#fff" type="submit" name="submit" value="新增" @click="handleSubmit('新增')">新增</button>
+    
+    <!-- 關閉按鍵 -->
+    <button class="xmark btn btn-outline-secondary rounded-5" @click="closeModal">
+      x
+    </button>
+ 
+  </div>
+ </form>
 
 
 </template>
@@ -88,24 +127,12 @@ export default {
   },
   data() {
     return {
-      showModal: false,
+      showModal: false, // 修改刪除的彈窗
+      showAddModal:false, //新增的彈窗
       newData: [],
       searchInput: '',
       colTitle: ["", "管理員編號", "姓名", "帳號", "加入日期", "狀態"],
-      employeeData: [
-        // { id: "1", name: "蔡宗華", account: "abc134", date: "2023-07-01", status: "啟用" },
-        // { id: "2", name: "黃莉平", account: "qqq12", date: "2023-07-02", status: "停用" },
-        // { id: "3", name: "李岱林", account: "asd111", date: "2023-07-03", status: "啟用" },
-        // { id: "4", name: "江瑀停", account: "zzz666", date: "2023-07-04", status: "啟用" },
-        // { id: "5", name: "許弘義", account: "zxc000", date: "2023-07-05", status: "啟用" },
-        // { id: "6", name: "徐億藍", account: "qwe122", date: "2023-07-06", status: "啟用" },
-        // { id: "7", name: "周杰倫", account: "jaychou", date: "2023-07-08", status: "停用" },
-        // { id: "8", name: "蔡依林", account: "jolin520", date: "2023-07-09", status: "啟用" },
-        // { id: "9", name: "楊丞琳", account: "rainylove", date: "2023-07-20", status: "啟用" },
-        // { id: "10", name: "王心凌", account: "cindy555", date: "2023-07-25", status: "啟用" },
-        // { id: "11", name: "張韶涵", account: "angelinachang", date: "2023-07-31", status: "啟用" },
-
-      ],
+      employeeData: [],
       searchResult: [],
       showData: [],
     };
@@ -138,30 +165,24 @@ export default {
       console.log(this.newData)
 
     },
+    openAddModal() {
+      this.showAddModal = true;
+
+    },
     closeModal() {
       this.showModal = false;
+      this.showAddModal = false;
+
     },
     currentDate() {
       const current = new Date();
       const date = `${current.getFullYear()}-${current.getMonth()+1}-${current.getDate()}`;
       return date;
     },
-    // employeeIdNum(){
-    //   const employeeIdNum = this.employeeData.length +1;
-    //   return employeeIdNum;
-    // },
+
     getEmployeeData() {
       let url = `${this.$url}employeeRows.php`
       this.axios.get(url).then(res => {
-        // res.data.forEach(item => {
-        //     if (item.phone.substr(4, 1) == '-' && item.phone.length == 10) {
-        //         let front4 = item.phone.substr(0, 4)
-        //         let back6 = item.phone.substr(4, 6)
-        //         item.phone = front4.concat('-', back6)
-        //     } else if (item.phone.length !== 10) {
-        //         console.log(item.phone);
-        //     }
-        //})
         this.employeeData = res.data
       }).catch(err => {
         console.log(err);
@@ -175,20 +196,42 @@ export default {
         return "停用";
       }
     },
-    insert() {
-        //新增員工
-        let xhr = new XMLHttpRequest();
-        xhr.onload = function () {
-          let result = JSON.parse(xhr.responseText);
-          alert(result.msg);
-        };
-        xhr.open("post", `${this.$url}employeeInsert.php`, true);
-        xhr.send(new FormData(document.getElementById("add_employee")));
-        lightbox.classList.remove("active"); // 關新增燈箱
-      },
- 
+    employeeIdNum(){
+      const employeeIdNum = this.employeeData.length +1;
+      return employeeIdNum;
+    },
+    handleSubmit(submitType) {
+      let url = `${this.$url}employeeInsertUpdate.php`
+      const formData = new FormData();
+      const emp_id = document.querySelector('#emp_id')?.value;
+      const emp_no = document.querySelector('#emp_no')?.value;
+      const emp_name = document.querySelector('#emp_name')?.value;
+      const emp_psw = document.querySelector('#emp_psw')?.value;
+      const emp_date = document.querySelector('#emp_date')?.value;
+      const emp_status = document.querySelector('#emp_status')?.value;
+      formData.append("emp_no", emp_no);
+      formData.append("emp_name", emp_name);
+      formData.append("emp_id", emp_id);
+      formData.append("emp_psw", emp_psw);
+      formData.append("emp_date", emp_date);
+      formData.append("emp_status", emp_status);
+      formData.append("submit", submitType);
 
+      this.axios.post(url, formData).then(res => {
+        console.log(res)
+        this.getEmployeeData()
+        this.closeModal()
+      }).catch(err => {
+        console.log(err);
+      })
+    },
+
+    
+    
+   
   },
+
+
   watch: {
     employeeData: {
       handler: function () {
@@ -231,7 +274,7 @@ table {
   top: 30%;
   font-weight: 700;
   background-color: #FFF7EA;
-  z-index: 2;
+  z-index: 10;
 
 
   .xmark {

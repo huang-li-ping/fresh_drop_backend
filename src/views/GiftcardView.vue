@@ -66,7 +66,7 @@
         <td>{{ parseInt(item.giftcard_pic_no) + 3000 }}</td>
         <td>{{ item.giftcard_pic_name }}</td>
         <td>{{ item.giftcard_pic_type }}</td>
-        <td> <img :src="giftcardPic(item)" alt=""></td>
+        <td><img :src="require(`./@/../../../../fresh_drop/src/assets/images/gift/${item.giftcard_defaultpic_url}`)" alt=""></td>
         <td>{{ item.giftcard_pic_date }}</td>
         <td>{{ status(item) }}</td>
         <td>
@@ -83,18 +83,20 @@
   <!-- 彈窗 -->
 
   <div class="show_modal d-flex flex-column align-items-start gap-2" v-if="showModal">
+  
+
     <div class="giftcardPic">
-      <img :src="uploadedImage || giftcardPic(item)" alt="">
+      <img :src="uploadedImage || require(`./@/../../../../fresh_drop/src/assets/images/gift/${newData.giftcard_defaultpic_url}`)" alt="">
 
       <label for="fileInput" class="btn btn-primary" style="display: block; color:#fff">上傳圖片</label>
       <input id="fileInput" type="file" ref="fileInput" style="display: none" @change="handleFileUpload">
     </div>
 
-    <label for="id">樣式編號：<input type="text" :value="parseInt(item.giftcard_pic_no) + 3000" id="id"></label>
+    <label for="id">樣式編號：<input type="text" :value="parseInt(newData.giftcard_pic_no) + 3000" id="id"></label>
 
-    <label for="name" class="inline-label">樣式名稱：<input type="text" :value="item.giftcard_pic_name" id="name"></label>
+    <label for="name" class="inline-label">樣式名稱：<input type="text" :value="newData.giftcard_pic_name" id="name"></label>
 
-    <label for="catagory">類別　　：<input type="text" :value="item.giftcard_pic_type" id="catagory"></label>
+    <label for="catagory">類別　　：<input type="text" :value="newData.giftcard_pic_type" id="catagory"></label>
 
     <label for="status">狀態　　：
       <select name="" id="status">
@@ -110,6 +112,7 @@
     <button class="xmark btn btn-outline-secondary rounded-5" @click="closeModal">
       x
     </button>
+ 
   </div>
 </template>
 <script>
@@ -129,16 +132,7 @@ export default {
       newData: [],
       searchInput: '',
       colTitle: ["", "編號", "樣式名稱", "類別", "圖片", "上架日期", "狀態", "上下架"],
-      giftcardData: [
-
-        //   { id: "1", name: "經典鮮食空投箱", catogory: "品牌", pic: require('./@/../../../../fresh_drop/src/assets/images/gift/giftcard_defaultpic_001.svg'), date: "2023-07-01", status: "上架" },
-        //   { id: "2", name: "香菇經典空投箱", catogory: "品牌", pic: require('./@/../../../../fresh_drop/src/assets/images/gift/giftcard_defaultpic_002.svg'), date: "2023-07-02", status: "上架" },
-        //   { id: "3", name: "新鮮蔬果", catogory: "品牌", pic: require('./@/../../../../fresh_drop/src/assets/images/gift/giftcard_defaultpic_003.svg'), date: "2023-07-03", status: "上架" },
-        //   { id: "4", name: "小動物生日快樂", catogory: "品牌", pic: require('./@/../../../../fresh_drop/src/assets/images/gift/giftcard_defaultpic_004.svg'), date: "2023-07-04", status: "上架" },
-        //   { id: "5", name: "滿版生日快樂", catogory: "品牌", pic: require('./@/../../../../fresh_drop/src/assets/images/gift/giftcard_defaultpic_005.svg'), date: "2023-07-05", status: "上架" },
-        //   { id: "6", name: "寫實新鮮蔬果", catogory: "品牌", pic: require('./@/../../../../fresh_drop/src/assets/images/gift/giftcard_defaultpic_006.svg'), date: "2023-07-06", status: "上架" },
-
-      ],
+      giftcardData: [],
       searchResult: [],
       showData: [],
     };
@@ -204,10 +198,10 @@ export default {
         console.log(err);
       })
     },
-    giftcardPic(item) {
-      let imgurl = require(`./@/../../../../fresh_drop/src/assets/images/gift/${item.giftcard_defaultpic_url}`);
-      return imgurl;
-    },
+    // giftcardPic(item) {
+    //   let imgurl = require(`./@/../../../../fresh_drop/src/assets/images/gift/${item.giftcard_defaultpic_url}`);
+    //   return imgurl;
+    // },
     status(item){
       let status = item.giftcard_pic_status;
       if( status == 0){
