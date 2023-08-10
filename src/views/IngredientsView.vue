@@ -14,9 +14,6 @@
                         v-model="searchInput"
                     />
                 </div>
-                <!-- <div class="btn btn-outline-primary" @click="searchIdOrName">
-                    搜尋
-                </div> -->
                 <!-- 新增 -->
                 <div class="btn btn-outline-primary">新增</div>
             </div>
@@ -46,14 +43,8 @@
                     </td>
                     <td>{{ item.ingred_no }}</td>
                     <td>{{ item.ingred_name }}</td>
-                    <td>
-                        <span v-if="item.allergy == 0">否</span>
-                        <span v-if="item.allergy == 1">是</span>
-                    </td>
-                    <td>
-                        <span v-if="item.dislike == 0">否</span>
-                        <span v-if="item.dislike == 1">是</span>
-                    </td>
+                    <td>{{ item.allergy }}</td>
+                    <td>{{ item.dislike }}</td>
                 </tr>
             </tbody>
         </table>
@@ -65,8 +56,12 @@
         class="show_modal d-flex flex-column align-items-start gap-2"
         v-if="showModal"
     >
-        <label for="">編號：<input type="text" :value="newData.id" /></label>
-        <label for="">名稱：<input type="text" :value="newData.name" /> </label>
+        <label for=""
+            >編號：<input type="text" :value="newData.ingred_no" disabled
+        /></label>
+        <label for=""
+            >名稱：<input type="text" :value="newData.ingred_name" />
+        </label>
         <label for="allergy"
             ><input type="checkbox" id="allergy" v-model="allergyChecked" />
             過敏原</label
@@ -224,6 +219,11 @@ export default {
         border-radius: 20px;
         width: 100%;
         margin: 10px auto 0;
+
+        &:hover {
+            background-color: #1f8d61;
+            color: #fff7ea;
+        }
     }
 }
 

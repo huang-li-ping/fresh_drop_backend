@@ -42,7 +42,7 @@
                 <td>{{ item.total_price }}</td>
                 <td>{{ item.payment }}</td>
                 <td>{{ item.ord_status }}</td>
-                <td><button class="btn btn-outline-primary btn-sm" @click="goOrderDetails(item.ord_no)">查閱</button></td>
+                <td><button class="btn btn-outline-primary btn-sm" @click="goOrderDetail(item.ord_no)">查閱</button></td>
             </tr>
         </tbody>
     </table>
@@ -107,9 +107,21 @@ export default {
         getPageData(data) {
             this.showData = data
         },
-        // goOrderDetails(ord_no) {
-        //     this.$router.push({ name: 'OrderDetails', params: { ord_no } });
-        // }
+        goOrderDetail(ord_no) {
+            sessionStorage.setItem('ord_no',ord_no);
+            let url = `${this.$url}orderDetail.php`
+            let params = new URLSearchParams()
+            params.append("ordNo", ord_no)
+            this.axios.post(url, params).then(res => {
+                console.log(res.data)
+                this.$store.commit('sendOrdDetail', res.data);
+                if (this.$route.path == '/order') {
+                    this.$router.push('/ordDetail');
+                }
+            }).catch(err => {
+                console.log(err);
+            })
+        }
     },
     watch: {
         orderData: {
