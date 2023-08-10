@@ -7,11 +7,24 @@ try{
     $sql = "select o.ord_date, o.ord_no, c.cus_name,c.cus_email, o.total_price, o.payment, d.ord_status
     from orders o
     join customer c on o.cus_no = c.cus_no
-    join delivery d on o.ord_no = d.ord_no";
+    join delivery d on o.ord_no = d.ord_no
+    order by o.ord_no desc";
+    
     $order = $pdo->query($sql);
     $orderRows = $order->fetchAll(PDO::FETCH_ASSOC);
+    
+    $uniqueOrders = [];
+    foreach ($orderRows as $row) {
+        $ord_no = $row['ord_no'];
+        if (!isset($uniqueOrders[$ord_no])) {
+            $uniqueOrders[$ord_no] = $row;
+        }
+    }
 
-    foreach ($orderRows as &$row) {
+    $uniqueOrderRows = array_values($uniqueOrders); 
+
+
+    foreach ($uniqueOrderRows as &$row) {
         switch ($row['payment']) {
             case 0:
                 $row['payment'] = 'ATM轉帳';
@@ -54,7 +67,7 @@ try{
         }
     }
 
-    echo json_encode($orderRows);
+    echo json_encode($uniqueOrderRows);
 }catch(Exception $e){
     echo json_encode(["連線失敗"]);
 }
