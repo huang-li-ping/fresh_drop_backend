@@ -14,9 +14,6 @@
                         v-model="searchInput"
                     />
                 </div>
-                <!-- <div class="btn btn-outline-primary" @click="searchIdOrName">
-                    搜尋
-                </div> -->
                 <!-- 新增 -->
                 <div class="btn btn-outline-primary">新增</div>
             </div>
@@ -47,16 +44,25 @@
                     <td>{{ item.recipe_no }}</td>
                     <td>{{ item.recipe_name }}</td>
                     <td>
+                        <!-- {{ item.class }} -->
                         <span v-if="item.class == 0">主菜</span>
                         <span v-if="item.class == 1">湯品</span>
                         <span v-if="item.class == 2">沙拉</span>
                     </td>
                     <td>
-                        {{ truncateText(item.quantity_unit) }}
+                        {{ truncateText(getFirstIngredName(item)) }}
                     </td>
-
                     <td>{{ truncateText(item.step) }}</td>
-                    <td>{{ truncateText(item.recipe_pic) }}</td>
+                    <td>
+                        <div class="recipe_pic">
+                            <img
+                                :src="
+                                    require(`./@/../../../../fresh_drop/src/assets/images/product/${item.recipe_pic}`)
+                                "
+                                alt=""
+                            />
+                        </div>
+                    </td>
                     <td>{{ truncateText(item.des) }}</td>
                     <td>
                         <div class="input-group-append">
@@ -79,22 +85,29 @@
             class="show_modal d-flex flex-column align-items-start gap-2"
             v-if="showModal"
         >
-            <!-- <div class="show_modal_wrap"> -->
             <label for=""
                 >類別：
-                <select id="category" v-model="newData.category">
-                    <option :value="newData.category">主菜</option>
-                    <option :value="newData.category">湯品</option>
-                    <option :value="newData.category">沙拉</option>
+                <select id="category" v-model="newData.class">
+                    <option value="0">主菜</option>
+                    <option value="1">湯品</option>
+                    <option value="2">沙拉</option>
                 </select>
             </label>
             <label for=""
                 >編號：
-                <input class="recipe_no" type="text" :value="newData.id"
+                <input
+                    class="recipe_no"
+                    type="text"
+                    :value="newData.recipe_no"
+                    disabled
             /></label>
             <label for=""
                 >名稱：
-                <input class="recipe_name" type="text" :value="newData.name" />
+                <input
+                    class="recipe_name"
+                    type="text"
+                    :value="newData.recipe_name"
+                />
             </label>
             <label for="des">菜色描述：</label>
             <textarea
@@ -111,28 +124,14 @@
                     :key="index"
                 >
                     <div class="ingred_input">
-                        <!-- <label for="ingred_item">
-                                <input
-                                    type="text"
-                                    id="ingred_item"
-                                    v-model="newData.ingred"
-                                />
-                            </label>
-                            <label for="ingred_unit">
-                                <input
-                                    type="text"
-                                    id="ingred_unit"
-                                    v-model="newData.ingred"
-                                />
-                            </label> -->
-                        <label for="ingred_item">
+                        <label :for="'ingred_item' + index">
                             <input
                                 type="text"
                                 :id="'ingred_item_' + index"
                                 v-model="inputData.ingred"
                             />
                         </label>
-                        <label for="ingred_unit">
+                        <label :for="'ingred_unit' + index">
                             <input
                                 type="text"
                                 :id="'ingred_unit_' + index"
@@ -157,10 +156,10 @@
                 v-model="newData.step"
                 rows="6"
             ></textarea>
-            <!-- <label for=""
-                    >照片： <input type="file" :value="newData.img" />
-                </label> -->
-            <!-- </div> -->
+            <div>
+                <label for="">照片：</label>
+                <input type="file" :value="newData.img" />
+            </div>
             <div class="recipe_btn">
                 <button class="delete">刪除</button>
                 <button class="archive">存檔</button>
@@ -211,6 +210,7 @@ export default {
             this.axios
                 .get(url)
                 .then((res) => {
+                    console.log(res.data);
                     this.recipeData = res.data;
                 })
                 .catch((err) => {
@@ -261,9 +261,39 @@ export default {
             const newInputData = { ingred: "", unit: "" };
             this.inputDataArray.splice(index + 1, 0, newInputData);
         },
+        // 食材表Rows
+        getFirstIngredName(item) {
+            if (item.ingreds && item.ingreds.length > 0) {
+                const firstIngred = item.ingreds[0];
+                return `${firstIngred.ingred_name}：${firstIngred.quantity_unit}`;
+            }
+            return "";
+        },
+        updateInputDataArray(index) {
+            const item = this.recipeDataArray[index]; // 这里的 recipeDataArray 是你的数据源
+            if (item.ingreds && item.ingreds.length > 0) {
+                const values = this.getFirstIngredName(item).split("：");
+                this.inputDataArray[index].ingred = values[0];
+                this.inputDataArray[index].unit = values[1];
+            }
+        },
+        initializeInputDataArray() {
+            this.inputDataArray = this.newData.map((item) => {
+                if (item.ingreds && item.ingreds.length > 0) {
+                    const firstIngred = item.ingreds[0];
+                    return {
+                        ingred: firstIngred.ingred_name,
+                        unit: firstIngred.quantity_unit,
+                    };
+                } else {
+                    return { ingred: "", unit: "" };
+                }
+            });
+        },
     },
     created() {
         this.searchResult = this.recipeData;
+        this.initializeInputDataArray();
     },
     watch: {
         //串接recipe資料庫
@@ -297,6 +327,15 @@ export default {
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
+    }
+}
+
+.recipe_pic {
+    display: block;
+    margin: auto;
+    width: 80px;
+    img {
+        width: 100%;
     }
 }
 
@@ -363,16 +402,6 @@ export default {
         }
     }
 }
-
-// .show_modal_wrap {
-//     padding: $sp4;
-//     display: flex;
-//     flex-direction: column;
-//     align-items: flex-start;
-//     gap: 5px;
-//     overflow: auto;
-//     height: calc(100vh - 50px);
-// }
 
 .recipe_des {
     width: 100%;

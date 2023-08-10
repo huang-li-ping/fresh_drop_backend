@@ -32,7 +32,6 @@
                 <tr v-for="(item, index) in showData" :key="index">
 
                     <td>{{ item.result_no }}</td>
-                    <td>{{ item.id }}</td>
                     <td>{{ item.personality }}</td>
                     <td>
                         <select name="" id="" style="width: 200px; border-radius: 20px; padding: 4px;">
@@ -40,15 +39,7 @@
                             <option>{{ item.dish2_recipe }}</option>
                             <option>{{ item.dish3_recipe }}</option>
                             <option>{{ item.dish4_recipe }}</option>
-                            <select name="" id="" style="
-                                width: 200px;
-                                border-radius: 20px;
-                                padding: 4px;
-                            ">
-                                <option value="" v-for="(proItem, proIndex) in item.productLists" :key="proIndex">
-                                    {{ proItem.name }}
-                                </option>
-                            </select>
+                        </select>
                     </td>
                     <td>{{ truncateText(item.content) }}</td>
                     <td>

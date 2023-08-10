@@ -6,8 +6,9 @@
             <div class="d-flex justify-content-between">
                 <div class="input-group">
                     <span class="input-group-text">搜尋菜色</span>
-                    <input type="text" class="form-control" placeholder="請輸入菜色" @input="searchIdOrPhone" v-model="searchInput"/>
-                    <div class="btn btn-outline-primary" @click="searchIdOrPhone">搜尋</div> 
+                    <input type="text" class="form-control" placeholder="請輸入菜色" @input="searchIdOrPhone"
+                        v-model="searchInput" />
+                    <div class="btn btn-outline-primary" @click="searchIdOrPhone">搜尋</div>
                 </div>
             </div>
         </div>
@@ -26,7 +27,7 @@
                 <td>{{ item.member_fk }}</td>
                 <td>
                     <div class="recipe_pic">
-                        <img :src="require(`./@/../../../../fresh_drop/src/assets/images/product/${item.report_pic}`)" alt="">
+                        <!-- <img :src="require(`./@/../../../../fresh_drop/src/assets/images/product/${item.report_pic}`)" alt=""> -->
                     </div>
                 </td>
                 <td>{{ truncateText(item.reason, 4) }}</td>
@@ -42,18 +43,18 @@
     <!-- 彈窗 -->
     <div class="show_modal d-flex flex-column align-items-start gap-2" v-if="showModal">
         <h4>被檢舉內容：</h4>
-        <div class="report_content" >
+        <div class="report_content">
             <div class="report_pic">
-                <img :src="require(`./@/../../../../fresh_drop/src/assets/images/product/${newData.report_pic}`)" alt="">
+                <!-- <img :src="require(`./@/../../../../fresh_drop/src/assets/images/product/${newData.report_pic}`)" alt=""> -->
             </div>
             <div class="report_name">
                 <div class="report_member">
                     <div class="report_name_pic">
-                        <img src="./@/../../../../fresh_drop/src/assets/images/logo/robo.png" alt="">
-                    </div>  
+                        <!-- <img src="./@/../../../../fresh_drop/src/assets/images/logo/robo.png" alt=""> -->
+                    </div>
                     <div class="report_me">
                         <h6>{{ newData.member }}</h6>
-                    </div>  
+                    </div>
                 </div>
                 <div class="report_text">
                     <p>{{ newData.experience }}</p>
@@ -66,7 +67,7 @@
         </div>
         <div class="button_bt">
             <button class="dismissed">檢舉駁回</button>
-            <button class="reported">檢舉通過</button> 
+            <button class="reported">檢舉通過</button>
         </div>
 
         <!-- 關閉按鍵 -->
@@ -87,7 +88,7 @@ export default {
     },
     data() {
         return {
-            colTitle: ["檢舉編號", "心得分享編號", "會員編號", "照片", "檢舉原因", "日期", "狀態","",""],
+            colTitle: ["檢舉編號", "心得分享編號", "會員編號", "照片", "檢舉原因", "日期", "狀態", "", ""],
             reportData: [],
             showModal: false,
             newData: [],
@@ -121,10 +122,10 @@ export default {
             } else if (nameResult.length > 0) {
                 this.searchResult = nameResult;
             }
-        },    
+        },
         getPageData(data) {
-                this.showData = data
-            },
+            this.showData = data
+        },
         truncateText(text) {
             if (text && text.length > 10) {
                 // 檢查 text 是否存在並且長度大於 10
@@ -133,9 +134,9 @@ export default {
             return text;
         },
         openModal(item) {
-                this.showModal = true;
-                this.newData = item;
-            },
+            this.showModal = true;
+            this.newData = item;
+        },
         closeModal() {
             this.showModal = false;
         },
@@ -144,29 +145,31 @@ export default {
         this.searchResult = this.reportData;
     },
     //串接ingred資料庫
-    watch:{
+    watch: {
         reportData: {
-        handler: function () {
-            console.log('watch');
-            this.searchResult = this.reportData;
-        },
-        deep: true,
+            handler: function () {
+                console.log('watch');
+                this.searchResult = this.reportData;
+            },
+            deep: true,
         },
 
     },
-    mounted (){
-    //串接ingred資料庫
-    this.getreportData()
+    mounted() {
+        //串接ingred資料庫
+        this.getreportData()
     },
 };
 </script>
 
 <style lang="scss">
 @import "@/assets/scss/page/ingredients.scss";
+
 .report_container {
     .input-group {
         width: fit-content;
     }
+
     .add_td {
         max-width: 150px;
         overflow: hidden;
@@ -174,12 +177,11 @@ export default {
         white-space: nowrap;
     }
 }
-</style>
-<style lang="scss">
+
 .show_modal {
     position: fixed;
     left: 50%;
-    transform: translate(-50%,-50%);
+    transform: translate(-50%, -50%);
     top: 50%;
     border: 3px solid #1F8D61;
     border-radius: 20px;
@@ -210,75 +212,88 @@ export default {
             margin-left: 5px;
         }
     }
-    .report_content{
+
+    .report_content {
         border: 3px solid #1F8D61;
         width: 400px;
         display: flex;
-        .report_pic{
+
+        .report_pic {
             width: 150px;
             margin: 20px;
         }
-        img{
+
+        img {
             width: 100%;
             border-radius: 20px;
         }
     }
-    .report_name{
+
+    .report_name {
         margin: auto;
         display: block;
         width: 150px;
-        .report_member{
+
+        .report_member {
             display: flex;
             text-align: left;
-            .report_name_pic{
+
+            .report_name_pic {
                 width: 60px;
-                img{
+
+                img {
                     width: 100%;
                 }
             }
         }
-        .report_me{
-            h6{
-            line-height: 60px;
-            font-size: 20px;
+
+        .report_me {
+            h6 {
+                line-height: 60px;
+                font-size: 20px;
             }
         }
-        .report_text{
+
+        .report_text {
             text-align: left;
             margin-top: 18px;
         }
     }
-    .button_bt{
+
+    .button_bt {
         display: flex;
         margin: auto;
         gap: 10px;
         width: 400px;
-      .dismissed,
-    .reported {
-        background-color: #FFF7EA;
-        border: #1F8D61 1px solid;
-        border-radius: 20px;
-        width: 90%;
-        margin: 10px auto 0;
 
-        &:hover {
-            background-color: #1f8d61;
-            color: #fff7ea;
+        .dismissed,
+        .reported {
+            background-color: #FFF7EA;
+            border: #1F8D61 1px solid;
+            border-radius: 20px;
+            width: 90%;
+            margin: 10px auto 0;
+
+            &:hover {
+                background-color: #1f8d61;
+                color: #fff7ea;
+            }
         }
-    }  
     }
-    
+
 }
-td{
+
+td {
     align-items: center;
     vertical-align: middle;
 }
-.recipe_pic{
-        display: block;
-        margin: auto;
-        width: 80px;
-        img{
-            width: 100%;
-        }
+
+.recipe_pic {
+    display: block;
+    margin: auto;
+    width: 80px;
+
+    img {
+        width: 100%;
     }
-</style>
+}</style>
