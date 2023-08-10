@@ -1,35 +1,17 @@
 <template>
-    <PageTitle :title="'檢舉管理'" />
-    <div class="container">
-        <div class="row">
-            <!-- 搜尋框 -->
-            <div class="col-3">
+    <PageTitle :title="'烹飪檢舉管理'" />
+    <div class="report_container">
+        <!-- 搜尋框 -->
+        <div class="mb-3 ps-3 pe-3 search_bar_group">
+            <div class="d-flex justify-content-between">
                 <div class="input-group">
                     <span class="input-group-text">搜尋菜色</span>
                     <input type="text" class="form-control" placeholder="請輸入菜色" @input="searchIdOrPhone" v-model="searchInput"/>
+                    <div class="btn btn-outline-primary" @click="searchIdOrPhone">搜尋</div> 
                 </div>
-            </div>
-            <!-- 每頁顯示...筆 -->
-            <div class="col-4">
-                <span>
-                    每頁　
-                    <div class="btn-group">
-                        <button class="btn btn-outline-primary dropdown-toggle" type="button" id="defaultDropdown"
-                            data-bs-toggle="dropdown" data-bs-auto-close="true" aria-expanded="false">
-                            10
-                        </button>
-                        <ul class="dropdown-menu" aria-labelledby="defaultDropdown">
-                            <li><a class="dropdown-item" href="#">10</a></li>
-                            <li><a class="dropdown-item" href="#">20</a></li>
-                            <li><a class="dropdown-item" href="#">30</a></li>
-                        </ul>
-                    </div>
-                    　筆
-                </span>
             </div>
         </div>
     </div>
-
     <!-- 表格 -->
     <table class="table">
         <thead>
@@ -38,100 +20,265 @@
             </tr>
         </thead>
         <tbody>
-            <tr v-for="(item, index) in searchResult" :key="index">
-                <td>{{ item.id }}</td>
-                <td>{{ item.recipe }}</td>
-                <td>{{ item.pic }}</td>
-                <td>{{ truncateText(item.comment, 6) }}</td>
+            <tr v-for="(item, index) in showData" :key="index">
+                <td>{{ item.report_no }}</td>
+                <td>{{ item.opinion_no }}</td>
+                <td>{{ item.member_fk }}</td>
+                <td>
+                    <div class="recipe_pic">
+                        <img :src="require(`./@/../../../../fresh_drop/src/assets/images/product/${item.report_pic}`)" alt="">
+                    </div>
+                </td>
+                <td>{{ truncateText(item.reason, 4) }}</td>
                 <td>{{ item.date }}</td>
                 <td>{{ item.state }}</td>
                 <td>{{ item.report }}</td>
-                <td>
-                    <button class="btn btn-outline-primary btn-sm">查閱</button>
-                </td>
+                <td><button class="btn btn-outline-primary btn-sm" @click="openModal(item)">查閱</button></td>
             </tr>
         </tbody>
     </table>
     <!-- 頁碼 -->
-    <nav style="padding: 15px">
-        <ul class="pagination">
-            <li class="page-item">
-                <a class="page-link" href="#" aria-label="Previous">
-                    <span aria-hidden="true">&laquo;</span>
-                </a>
-            </li>
-            <li class="page-item"><a class="page-link" href="#">1</a></li>
-            <li class="page-item"><a class="page-link" href="#">2</a></li>
-            <li class="page-item"><a class="page-link" href="#">3</a></li>
-            <li class="page-item">
-                <a class="page-link" href="#" aria-label="Next">
-                    <span aria-hidden="true">&raquo;</span>
-                </a>
-            </li>
-        </ul>
-    </nav>
+    <PageComponent :data="searchResult" @changePage="getPageData" />
+    <!-- 彈窗 -->
+    <div class="show_modal d-flex flex-column align-items-start gap-2" v-if="showModal">
+        <h4>被檢舉內容：</h4>
+        <div class="report_content" >
+            <div class="report_pic">
+                <img :src="require(`./@/../../../../fresh_drop/src/assets/images/product/${newData.report_pic}`)" alt="">
+            </div>
+            <div class="report_name">
+                <div class="report_member">
+                    <div class="report_name_pic">
+                        <img src="./@/../../../../fresh_drop/src/assets/images/logo/robo.png" alt="">
+                    </div>  
+                    <div class="report_me">
+                        <h6>{{ newData.member }}</h6>
+                    </div>  
+                </div>
+                <div class="report_text">
+                    <p>{{ newData.experience }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="report_text">
+            <p>檢舉原因：{{ newData.reason }}</p>
+
+        </div>
+        <div class="button_bt">
+            <button class="dismissed">檢舉駁回</button>
+            <button class="reported">檢舉通過</button> 
+        </div>
+
+        <!-- 關閉按鍵 -->
+        <button class="xmark" @click="closeModal">
+            x
+        </button>
+    </div>
 </template>
 <script>
+import PageComponent from '@/components/PageComponent.vue';
 import PageTitle from '@/components/PageTitle.vue';
 
-// import PageComponent from "@/components/PageComponent.vue";
 export default {
-    name: 'IngredientView',
-    component: {
-        // PageComponent,
+    name: 'ReportView',
+    components: {
+        PageComponent,
         PageTitle,
     },
     data() {
         return {
-            colTitle: ["會員編號", "食譜標題", "照片", "評論", "日期", "狀態", "檢舉",""],
-            foodData: [
-                { id: "1", recipe: "綠咖哩", pic: "s1.jpg", comment: "我就說這道菜很屌~", date: "2023/5/12",state:"上架",report:"套用",},
-                { id: "2", recipe: "綠咖哩", pic: "s2.jpg", comment: "今天翹課坐火車回家，就是為了媽媽煮的這道菜！", date: "2023/5/12",state:"上架",report:"套用",},
-                { id: "3", recipe: "綠咖哩", pic: "s3.jpg", comment: "住太遠uber送不到，只好自己在家做了。", date: "2023/5/12",state:"上架",report:"套用",},
-                { id: "4", recipe: "綠咖哩", pic: "s3.jpg", comment: "覺得好吃的舉手~", date: "2023/5/12",state:"上架",report:"套用",},
-                { id: "5", recipe: "綠咖哩", pic: "s1.jpg", comment: "剛從美國釣到的鮮魚，拿來做菜最適合", date: "2023/5/12",state:"上架",report:"套用",},
-                { id: "6", recipe: "綠咖哩", pic: "s5.jpg", comment: "看到檸檬葉要怎麼樣~馬上做成綠咖哩", date: "2023/5/12",state:"上架",report:"套用",},
-                { id: "7", recipe: "綠咖哩", pic: "s6.jpg", comment: "做到第幾道菜了?", date: "2023/5/12",state:"上架",report:"套用",},
-                { id: "8", recipe: "綠咖哩", pic: "s1.jpg", comment: "感謝分享~~", date: "2023/5/12",state:"上架",report:"套用",},
-                { id: "9", recipe: "綠咖哩", pic: "s2.jpg", comment: "綠咖哩中加入椰奶可以平衡辣味~", date: "2023/5/12",state:"上架",report:"套用",},
-                { id: "10", recipe: "111", pic: "s3.jpg", comment: "如果你喜歡海鮮，將鮮蝦或魚片加入綠咖哩中，可以有豐富的海鮮風味，讓整道菜更好吃。", date: "2023/5/12",state:"上架",report:"套用",},
-            ],
+            colTitle: ["檢舉編號", "心得分享編號", "會員編號", "照片", "檢舉原因", "日期", "狀態","",""],
+            reportData: [],
+            showModal: false,
+            newData: [],
+            searchInput: "",
             searchResult: [],
             showData: [],
         };
     },
     methods: {
-    searchIdOrPhone() {
-        console.log('type')
-      if (this.searchInput == '') {
-        this.searchResult = this.foodData;
-      } else {
-        let idResult = this.foodData.filter(item => {
-          return item.recipe.includes(this.searchInput);
-        });
-        console.log(idResult)
-        if (idResult.length > 0) {
-                this.searchResult = idResult
-        }
-      }
+        //串接ingred資料庫        
+        getreportData() {
+            let url = `${this.$url}report.php`
+            this.axios.get(url).then(res => {
+                this.reportData = res.data
+            }).catch(err => {
+                console.log(err);
+            })
+        },
+        searchIdOrPhone() {
+            if (this.searchInput == "") {
+                this.searchResult = this.reportData;
+            }
+            let idResult = this.reportData.filter((item) => {
+                return item.report_no.includes(this.searchInput);
+            });
+            let nameResult = this.reportData.filter((item) => {
+                return item.member_fk.includes(this.searchInput);
+            });
+            if (idResult.length > 0) {
+                this.searchResult = idResult;
+            } else if (nameResult.length > 0) {
+                this.searchResult = nameResult;
+            }
+        },    
+        getPageData(data) {
+                this.showData = data
+            },
+        truncateText(text) {
+            if (text && text.length > 10) {
+                // 檢查 text 是否存在並且長度大於 10
+                return text.slice(0, 10) + "...";
+            }
+            return text;
+        },
+        openModal(item) {
+                this.showModal = true;
+                this.newData = item;
+            },
+        closeModal() {
+            this.showModal = false;
+        },
     },
-
-    truncateText(text, length) {
-      if (text.length > length) {
-        return text.slice(0, length) + '...';
-      }
-      return text;
-    },
-},
     created() {
-        this.searchResult = this.foodData;
+        this.searchResult = this.reportData;
     },
-    components: { PageTitle }
+    //串接ingred資料庫
+    watch:{
+        reportData: {
+        handler: function () {
+            console.log('watch');
+            this.searchResult = this.reportData;
+        },
+        deep: true,
+        },
+
+    },
+    mounted (){
+    //串接ingred資料庫
+    this.getreportData()
+    },
 };
 </script>
 
 <style lang="scss">
-// @import 'bootstrap/dist/css/bootstrap.min.css';
-// @import '@/assets/scss/all.scss';
 @import "@/assets/scss/page/ingredients.scss";
+.report_container {
+    .input-group {
+        width: fit-content;
+    }
+    .add_td {
+        max-width: 150px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+}
+</style>
+<style lang="scss">
+.show_modal {
+    position: fixed;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    top: 50%;
+    border: 3px solid #1F8D61;
+    border-radius: 20px;
+    width: fit-content;
+    padding: $sp2;
+    position: relative;
+    position: fixed;
+    font-weight: 700;
+    background-color: #FFF7EA;
+    z-index: 5;
+
+    .xmark {
+        right: 5px;
+        top: 5px;
+        position: absolute;
+        border: none;
+        background-color: #FFF7EA;
+        font-size: $m-font;
+        color: #aaa;
+    }
+
+    label {
+
+        select,
+        textarea,
+        input {
+            padding: 0 5px;
+            margin-left: 5px;
+        }
+    }
+    .report_content{
+        border: 3px solid #1F8D61;
+        width: 400px;
+        display: flex;
+        .report_pic{
+            width: 150px;
+            margin: 20px;
+        }
+        img{
+            width: 100%;
+            border-radius: 20px;
+        }
+    }
+    .report_name{
+        margin: auto;
+        display: block;
+        width: 150px;
+        .report_member{
+            display: flex;
+            text-align: left;
+            .report_name_pic{
+                width: 60px;
+                img{
+                    width: 100%;
+                }
+            }
+        }
+        .report_me{
+            h6{
+            line-height: 60px;
+            font-size: 20px;
+            }
+        }
+        .report_text{
+            text-align: left;
+            margin-top: 18px;
+        }
+    }
+    .button_bt{
+        display: flex;
+        margin: auto;
+        gap: 10px;
+        width: 400px;
+      .dismissed,
+    .reported {
+        background-color: #FFF7EA;
+        border: #1F8D61 1px solid;
+        border-radius: 20px;
+        width: 90%;
+        margin: 10px auto 0;
+
+        &:hover {
+            background-color: #1f8d61;
+            color: #fff7ea;
+        }
+    }  
+    }
+    
+}
+td{
+    align-items: center;
+    vertical-align: middle;
+}
+.recipe_pic{
+        display: block;
+        margin: auto;
+        width: 80px;
+        img{
+            width: 100%;
+        }
+    }
 </style>
