@@ -8,7 +8,7 @@
                 <p>訂單日期：<span>{{ order.ord_date }}</span></p>
             </div>
             <div class="ord_number">
-                <p>訂單編號：<span>{{ order.ord_no }}</span></p>
+                <p>訂單編號：<span>{{ parseInt(order.ord_no) + 2000 }}</span></p>
             </div>
             <div class="mem_name">
                 <p>會員姓名：<span>{{ order.mem_name }}</span></p>
