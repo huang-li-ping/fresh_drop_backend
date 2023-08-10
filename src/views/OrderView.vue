@@ -36,7 +36,7 @@
         <tbody>
             <tr v-for="(item, index) in filteredData" :key="index">
                 <td>{{ item.ord_date }}</td>
-                <td>{{ item.ord_no }}</td>
+                <td>{{ parseInt(item.ord_no) + 2000 }}</td>
                 <td>{{ item.cus_name }}</td>
                 <td>{{ item.cus_email }}</td>
                 <td>{{ item.total_price }}</td>
@@ -85,15 +85,7 @@ export default {
         getOrderData() {
             let url = `${this.$url}orderRows.php`
             this.axios.get(url).then(res => {
-                // res.data.forEach(item => {
-                //     if (item.phone.substr(4, 1) == '-' && item.phone.length == 10) {
-                //         let front4 = item.phone.substr(0, 4)
-                //         let back6 = item.phone.substr(4, 6)
-                //         item.phone = front4.concat('-', back6)
-                //     } else if (item.phone.length !== 10) {
-                //         console.log(item.phone);
-                //     }
-                // })
+                console.log(res.data)
                 this.orderData = res.data
             }).catch(err => {
                 console.log(err);
