@@ -25,7 +25,7 @@ router.afterEach(() => {
 //全域引用axios
 import axios from 'axios';
 import VueAxios from 'vue-axios'
-const apiURL = 'http://localhost:8888/'
+const apiURL = 'http://localhost/fresh_drop_backend/public/phps/'
 app.config.globalProperties.$url = apiURL
 
 
