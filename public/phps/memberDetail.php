@@ -29,9 +29,7 @@ try{
                     "phone"=>$detailRows[0]["phone"],
                     "birth"=>$detailRows[0]["birth"],
                     "address"=>$detailRows[0]["address"]);
-    $front4 = substr($memInfo["phone"],0,4);
-    $back6 = substr($memInfo["phone"],4,6);
-    $memInfo["phone"] = $front4. "-". $back6;
+    
     //整理禮物卡資料
     $originLen = count($detailRows);
     $giftcardRows = array();
@@ -59,15 +57,15 @@ try{
                 }
     
             }
-            if ($index >= 0 && $historyItem["ord_status"] != "4") {
-                if ($historyItem["ord_status"] == "5") {
+            if ($index >= 0 && $historyItem["ord_status"] != "3") {
+                if ($historyItem["ord_status"] == "4") {
                     $shopHistory[$index]["ord_status"] = "已取消";
                 } else {
                     $shopHistory[$index]["ord_status"] = "未完成";
                 }
             }else if($index < 0){
-                if($historyItem["ord_status"] != "4"){
-                    if ($historyItem["ord_status"] == "5") {
+                if($historyItem["ord_status"] != "3"){
+                    if ($historyItem["ord_status"] == "4") {
                         $historyItem["ord_status"] = "已取消";
                     } else {
                         $historyItem["ord_status"] = "未完成";
