@@ -11,7 +11,6 @@ try{
     $memberRows = $member->fetchAll(PDO::FETCH_ASSOC);
     // echo json_encode(["連線成功"]);
     echo json_encode($memberRows);
-    
 }catch(Exception $e){
     echo json_encode(["連線失敗"]);
 }

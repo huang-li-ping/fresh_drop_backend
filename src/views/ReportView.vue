@@ -174,8 +174,6 @@ export default {
         white-space: nowrap;
     }
 }
-</style>
-<style lang="scss">
 .show_modal {
     position: fixed;
     left: 50%;
