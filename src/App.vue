@@ -3,19 +3,26 @@
 </template>
 
 <script>
-import SideMenu from "@/components/SideMenu.vue";
-import TopNav from "@/components/TopNav.vue";
 
 export default {
     name: "HomeView",
-    components: {
-        SideMenu,
-        TopNav,
-    },
     data() {
         return {};
     },
     methods: {},
+    watch: {
+        "$route.path": {
+            handler: function () {
+                console.log('watch');
+                console.log(this.$route.path);
+                if (this.$route.path !== '/' && !this.$store.state.isLogin) {
+                    this.$router.push('/')
+                    alert('請先登入')
+                }
+            },
+            deep:true
+        }
+    },
 };
 </script>
 

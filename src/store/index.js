@@ -1,9 +1,9 @@
 import { createStore } from "vuex";
-import axios from "axios";
 
 export default createStore({
     state: {
         memDetail: [],
+        isLogin: false,
     },
     getters: {},
     mutations: {

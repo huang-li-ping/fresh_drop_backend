@@ -58,13 +58,15 @@ export default {
             let url = `${this.$url}memberRows.php`
             this.axios.get(url).then(res => {
                 res.data.forEach(item => {
-                    if (item.phone.substr(4, 1) == '-' && item.phone.length == 10) {
-                        let front4 = item.phone.substr(0, 4)
-                        let back6 = item.phone.substr(4, 6)
-                        item.phone = front4.concat('-', back6)
-                    } else if (item.phone.length !== 10) {
-                        console.log(item.phone);
-                    }
+                    if (item.phone.substr(4, 1) !== '-') {
+                        if (item.phone.length == 10) { 
+                            let front4 = item.phone.substr(0, 4)
+                            let back6 = item.phone.substr(4, 6)
+                            item.phone = front4.concat('-', back6)
+                        }else if (item.phone.length !== 10) {
+                            console.log(item.phone);
+                        }
+                    } 
                 })
                 this.memData = res.data
             }).catch(err => {

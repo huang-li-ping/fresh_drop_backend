@@ -5,7 +5,7 @@ try{
     require_once("connect_chd102g2.php");
 
     $cusNo = $_POST["cusNo"];
-    // $cusNo = 2;
+    // $cusNo = 1;
 
     $sql = "select c.cus_no, c.cus_name, c.cus_email, c.phone, c.birth, c.address,
                     o.ord_date, o.ord_no, d.ord_status,
@@ -15,7 +15,8 @@ try{
                             left join delivery d on o.ord_no=d.ord_no
                             left join giftcard g on c.cus_no=g.owner
                             left join customer c2 on c2.cus_no=g.giver
-            where c.cus_no=:cusNo";
+            where c.cus_no=:cusNo
+            order by g.giftcard_purchase_date desc,o.ord_no desc";
     
     $memDetail = $pdo->prepare($sql);
     $memDetail->bindValue(":cusNo", $cusNo);
@@ -33,16 +34,28 @@ try{
     //整理禮物卡資料
     $originLen = count($detailRows);
     $giftcardRows = array();
+    $giftAdded = array();
     if ($detailRows[0]["giftcard_no"] !== null) {
         foreach ($detailRows as $index => $item) {
-            $giftcardItem = array("cus_no"=>$item["cus_no"],"giftcard_no"=>$item["giftcard_no"],"giver_name"=>$item["giver_name"], "giftcard_balance"=>$item["giftcard_balance"], "giftcard_purchase_date"=>$item["giftcard_purchase_date"],);
-            if ($index == $GLOBALS['originLen']-1) {
+            $giftcardItem = array(
+                "cus_no"=>$item["cus_no"],
+                "giftcard_no"=>$item["giftcard_no"],
+                "giver_name"=>$item["giver_name"], 
+                "giftcard_balance"=>$item["giftcard_balance"], 
+                "giftcard_purchase_date"=>$item["giftcard_purchase_date"]
+            );
+            if ($item["cus_name"] == $item["giver_name"]) {
+                $giftcardItem["giver_name"] = "自己";
+            }
+            if (!in_array($item["giftcard_no"], $giftAdded)) {
                 array_push($giftcardRows, $giftcardItem);
-            }else if ($item["giftcard_no"] !== $detailRows[$index + 1]["giftcard_no"]) {
-                array_push($giftcardRows, $giftcardItem);
+                array_push($giftAdded,$item["giftcard_no"]);
             }
         }
     }
+
+    // var_dump($giftcardRows);
+    // exit();
     //整理訂單資料
     #有未完成的week就整單呈現"未完成"
     $shopHistory = array();
