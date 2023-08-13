@@ -82,6 +82,7 @@
                 <option :value="newData.dish2_recipe">{{ newData.dish2_recipe }}</option>
                 <option :value="newData.dish3_recipe">{{ newData.dish3_recipe }}</option>
                 <option :value="newData.dish4_recipe">{{ newData.dish4_recipe }}</option>
+                <option v-for="(item) in recipeData" :key="item">{{ item.recipe_name }}</option>
             </select>
         </label>
 
@@ -142,42 +143,43 @@ export default {
             searchInput: "",
             searchResult: [],
             colTitle: ["結果編號", "人格種類", "推薦菜色", "分析結果", "狀態", ""],
-            productName: [
-                { name: "滑嫩番茄蛋" },
-                { name: "奶油啤酒蛤蠣" },
-                { name: "塔香茄子" },
-                { name: "生烤貝" },
-                { name: "麻婆豆腐" },
-                { name: "中華彗星炒飯" },
-                { name: "泡椒炒鮮魚" },
-                { name: "法國紅酒燉雞" },
-                { name: "阿根廷燉牛肉" },
-                { name: "泰國綠咖喱" },
-                { name: "希臘烤羊肉" },
-                { name: "西班牙海鮮燉飯" },
-                { name: "日本櫻花蝦天婦羅" },
-                { name: "越南河粉湯" },
-                { name: "意大利肉醬千層麵" },
-                { name: "日本味噌鮮魚湯" },
-                { name: "韓國辣椒醬湯" },
-                { name: "法國洋蔥湯" },
-                { name: "馬來西亞椰奶雞湯" },
-                { name: "葡萄牙海鮮湯" },
-                { name: "西班牙番茄湯" },
-                { name: "墨西哥辣味雞肉湯" },
-                { name: "泰式酸辣湯" },
-                { name: "意大利米蘭湯" },
-                { name: "糖漬番茄" },
-                { name: "泰式生菜包" },
-                { name: "中東麥麩沙拉" },
-                { name: "印度瑪撒拉薯仔沙拉" },
-                { name: "巴西凱撒沙拉" },
-                { name: "希臘風味水果沙拉" },
-                { name: "越南涼拌牛肉" },
-                { name: "加拿大蔓越莓野菜沙拉" },
-                { name: "日式涼拌海帶絲" },
-            ],
-            gameData: []
+            // productName: [
+            //     { name: "滑嫩番茄蛋" },
+            //     { name: "奶油啤酒蛤蠣" },
+            //     { name: "塔香茄子" },
+            //     { name: "生烤貝" },
+            //     { name: "麻婆豆腐" },
+            //     { name: "中華彗星炒飯" },
+            //     { name: "泡椒炒鮮魚" },
+            //     { name: "法國紅酒燉雞" },
+            //     { name: "阿根廷燉牛肉" },
+            //     { name: "泰國綠咖喱" },
+            //     { name: "希臘烤羊肉" },
+            //     { name: "西班牙海鮮燉飯" },
+            //     { name: "日本櫻花蝦天婦羅" },
+            //     { name: "越南河粉湯" },
+            //     { name: "意大利肉醬千層麵" },
+            //     { name: "日本味噌鮮魚湯" },
+            //     { name: "韓國辣椒醬湯" },
+            //     { name: "法國洋蔥湯" },
+            //     { name: "馬來西亞椰奶雞湯" },
+            //     { name: "葡萄牙海鮮湯" },
+            //     { name: "西班牙番茄湯" },
+            //     { name: "墨西哥辣味雞肉湯" },
+            //     { name: "泰式酸辣湯" },
+            //     { name: "意大利米蘭湯" },
+            //     { name: "糖漬番茄" },
+            //     { name: "泰式生菜包" },
+            //     { name: "中東麥麩沙拉" },
+            //     { name: "印度瑪撒拉薯仔沙拉" },
+            //     { name: "巴西凱撒沙拉" },
+            //     { name: "希臘風味水果沙拉" },
+            //     { name: "越南涼拌牛肉" },
+            //     { name: "加拿大蔓越莓野菜沙拉" },
+            //     { name: "日式涼拌海帶絲" },
+            // ],
+            gameData: [],
+            recipeData: [],
         };
     },
     methods: {
@@ -237,7 +239,20 @@ export default {
         },
         updateDishRecipe(index, value) {
             this.newData['dish' + index + '_recipe'] = value;
-        }
+        },
+        //串接recipe資料庫
+        getRecipeData() {
+            let url = `${this.$url}recipeRows.php`;
+            this.axios
+                .get(url)
+                .then((res) => {
+                    console.log(res.data);
+                    this.recipeData = res.data;
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+        },
     },
     created() {
         this.searchResult = this.gameData
@@ -251,7 +266,9 @@ export default {
         },
     },
     mounted() {
-        this.getGameData()
+        this.getGameData();
+        //串接recipe資料庫
+        this.getRecipeData();
     },
 };
 </script>
