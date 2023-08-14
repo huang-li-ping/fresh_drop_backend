@@ -89,7 +89,7 @@
 </template>
 <script>
 import PageTitle from '@/components/PageTitle.vue';
-
+import axios from 'axios';
 export default {
     name: 'IngredientView',
     component: {
