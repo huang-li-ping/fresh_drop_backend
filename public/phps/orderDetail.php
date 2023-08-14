@@ -3,15 +3,15 @@ header('Access-Control-Allow-Origin:*');
 
 try{
     require_once("connect_chd102g2.php");
+    var_dump($pdo);
 
     $ordNo = $_POST["ordNo"];
 
-    $sql = "select o.ord_date, o.ord_no, o.total_price, o.payment,  o.ord_cus, o.ord_phone, o.ord_addr
+    $sql = "select o.ord_date, o.ord_no, o.total_price, o.payment,  o.ord_cus, o.ord_phone, o.ord_addr,
     c.cus_name,c.cus_email, 
     d.ord_status, d.week,
     d2.dishno,d2.qty,
     r.recipe_no,r.recipe_name
-
     from orders o
     left join customer c on o.cus_no = c.cus_no
     left join delivery d on o.ord_no = d.ord_no
@@ -25,36 +25,45 @@ try{
     $orderRows = $ordDetail->fetchAll(PDO::FETCH_ASSOC);
 
     $orderDetail = array();
-    $orderInfo = array("ord_date"=>$row["ord_date"],
-                        "ord_no"=>$row["ord_no"],
-                        "cus_name"=>$row["cus_name"],
-                        "cus_email"=>$row["cus_email"],
-                        "total_price"=>$row["total_price"],
-                        "payment"=>$row["payment"],
-                        "ord_status"=>$row["ord_status"],
-                        "week"=>$row["week"],
-                        "ord_cus"=>$row["ord_cus"],
-                        "ord_phone"=>$row["ord_phone"],
-                        "ord_addr"=>$row["ord_addr"],
-                        "ord_phone"=>$row["ord_phone"],
-                    );
+    if (!empty($orderRows)) {
+        $orderInfo = array(
+            "ord_date" => $orderRows[0]["ord_date"],
+            "ord_no" => $orderRows[0]["ord_no"],
+            "cus_name" => $orderRows[0]["cus_name"],
+            "cus_email" => $orderRows[0]["cus_email"],
+            "total_price" => $orderRows[0]["total_price"],
+            "payment" => $orderRows[0]["payment"],
+            "ord_status" => $orderRows[0]["ord_status"],
+            "week" => $orderRows[0]["week"],
+            "ord_cus" => $orderRows[0]["ord_cus"],
+            "ord_phone" => $orderRows[0]["ord_phone"],
+            "ord_addr" => $orderRows[0]["ord_addr"],
+        );
     $orderDetail["orderInfo"] = $orderInfo;
+    
     // 處理 orderList 資料
     $orderList = array();
-    $orderDetail["orderList"] = $orderList;
+        foreach ($orderRows as $row) {
+            $ord_no = $row['ord_no'];
+            $orderList[$ord_no][] = array(
+                "recipe" => $row["recipe_name"],
+                "qty" => $row["qty"],
+                "status" => $row["ord_status"]
+            );
+        }
+        $orderDetail["orderList"] = $orderList;
+
     // 處理 billDetail 資料
-    $billDetail = array("week"=>$row["week"],
-                        "qty"=>$row["qty"],
-                    );
-    $orderDetail["billDetail"] = $billDetail;
-    //訂單購買人收件人資料
-    // $ordInfo = array("cus_name"=>$orderRows[0]["cus_name"],
-    //                 "cus_email"=>$orderRows[0]["cus_email"],
-    //                 "ord_phone"=>$orderRows[0]["ord_phone"],
-    //                 "ord_addr"=>$orderRows[0]["ord_addr"]);
-    $front4 = substr($ordInfo["ord_phone"],0,4);
-    $back6 = substr($ordInfo["ord_phone"],4,6);
-    $ordInfo["ord_phone"] = $front4. "-". $back6;
+    $billDetail = array(
+            "week" => $orderRows[0]["week"],
+            "qty" => array_sum(array_column($orderRows, 'qty'))
+        );
+        $orderDetail["billDetail"] = $billDetail;
+    }
+
+    // $front4 = substr($ordInfo["ord_phone"],0,4);
+    // $back6 = substr($ordInfo["ord_phone"],4,6);
+    // $ordInfo["ord_phone"] = $front4. "-". $back6;
     
     $uniqueOrders = [];
     foreach ($orderRows as $row) {
@@ -112,6 +121,7 @@ try{
 
     echo json_encode($orderDetail);
 }catch(Exception $e){
+    var_dump($e->getMessage());
     echo json_encode(["連線失敗"]);
 }
 ?>
