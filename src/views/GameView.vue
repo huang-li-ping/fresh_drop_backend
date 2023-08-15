@@ -11,15 +11,12 @@
 
                 <!-- 新增 -->
                 <div class="create">
-                    <button class="btn btn-primary create-btn" @click="openModal(null)" type="button"
+                    <button class="btn btn-primary create-btn" @click="openAddModal" type="button"
                         style="margin-left: auto; color: #fff">
                         新增結果
                     </button>
                 </div>
             </div>
-            <div class="col-2 create" style="margin-left:auto">
-        <button class="btn btn-primary create-btn" @click="openModal" type="button" style="margin-left: auto; color: #fff" >新增帳號</button>
-      </div>
         </div>
 
         <!-- 表格 -->
@@ -39,9 +36,9 @@
                     <td>
                         <select name="" id="" style="width: 200px; border-radius: 20px; padding: 4px;">
                             <option>{{ item.dish1_recipe }}</option>
-                            <option>{{ item.dish2_recipe }}</option>
-                            <option>{{ item.dish3_recipe }}</option>
-                            <option>{{ item.dish4_recipe }}</option>
+                            <option disabled="disabled">{{ item.dish2_recipe }}</option>
+                            <option disabled="disabled">{{ item.dish3_recipe }}</option>
+                            <option disabled="disabled">{{ item.dish4_recipe }}</option>
                         </select>
                     </td>
                     <td>{{ truncateText(item.content) }}</td>
@@ -58,44 +55,147 @@
     <!-- 頁碼 -->
     <PageComponent :data="searchResult" @changePage="getPageData" />
 
-    <!-- 彈窗 -->
+    <!-- 修改&刪除彈窗 -->
+    <form id="revise_faq" method="POST" enctype="multipart/form-data" @submit.prevent action="#">
+        <div class="show_modal d-flex flex-column align-items-start gap-2" v-if="showModal">
 
-    <div class="show_modal d-flex flex-column align-items-start gap-2" v-if="showModal">
+            <label for="result_no">結果編號:<input type="text" :value="newData.result_no || gameIdNum()" id="result_no"
+                    name="result_no" disabled="disabled"></label>
 
-        <label for="">狀態:
-            <select v-model="newData.status">
-                <option value="1">套用</option>
-                <option value="0">未套用</option>
-            </select>
-        </label>
-
-        <label for="id">結果編號:<input type="text" :value="newData.result_no || gameIdNum()" id="id"
-                disabled="disabled"></label>
-
-        <label for="personality">人格種類:
-            <input type="text" :value="newData.personality" id="personality" />
-        </label>
-
-        <label for="" v-for="index in 4" :key="index">推薦菜色{{ index }}:
-            <select :value="newData['dish' + index + '_recipe']" @input="updateDishRecipe(index, $event.target.value)">
-                <option :value="newData.dish1_recipe">{{ newData.dish1_recipe }}</option>
-                <option :value="newData.dish2_recipe">{{ newData.dish2_recipe }}</option>
-                <option :value="newData.dish3_recipe">{{ newData.dish3_recipe }}</option>
-                <option :value="newData.dish4_recipe">{{ newData.dish4_recipe }}</option>
-                <option v-for="(item) in recipeData" :key="item">{{ item.recipe_name }}</option>
-            </select>
-        </label>
+            <label for="status">狀態:
+                <select v-model="newData.status" id="status" name="status">
+                    <option value="1">套用</option>
+                    <option value="0">未套用</option>
+                </select>
+            </label>
 
 
-        <label for="txt" style="display: flex;">分析結果:
-            <textarea name="" id="txt" cols="30" rows="6">{{ newData.content }}</textarea>
-        </label>
+            <label for="personality">人格種類:
+                <input type="text" :value="newData.personality" id="personality" name="personality" />
+            </label>
 
-        <button class="delete">刪除</button>
-        <button class="archive">存檔</button>
-        <!-- 關閉按鍵 -->
-        <button class="xmark" @click="closeModal">x</button>
-    </div>
+            <!-- <label for="recipe_name" v-for="index in 4" :key="index">推薦菜色{{ index }}:
+                <select :value="newData['dish' + index + '_recipe']" @input="updateDishRecipe(index, $event.target.value)">
+                    <option v-for="(item) in recipeData" :key="item">{{ item.recipe_name }}</option>
+                </select>
+            </label>
+
+            <label for="recipe_name" v-for="index in  4 " :key="index">推薦菜色{{ index }}:
+                <select :v-model="`dish${index}`" :name="`dish${index}`" :id="`dish${index}`">
+                    <option v-for="( item ) in  recipeData " :key="item" :value="`${item.recipe_no}`">{{
+                        item.recipe_name }}
+                    </option>
+                </select>
+            </label> -->
+
+            <label for="">推薦菜色1:
+                <select name="dish1" id="dish1" v-model="newData.dish1">
+                    <option v-for="(item) in recipeData" :key="item.recipe_no" :value="item.recipe_no">
+                        {{ item.recipe_name }}
+                    </option>
+                </select>
+            </label>
+            <label for="">推薦菜色2:
+                <select name="dish2" id="dish2" v-model="newData.dish2">
+                    <option v-for="(item) in recipeData" :key="item.recipe_no" :value="item.recipe_no">
+                        {{ item.recipe_name }}
+                    </option>
+                </select>
+            </label>
+            <label for="">推薦菜色3:
+                <select name="dish3" id="dish3" v-model="newData.dish3">
+                    <option v-for="(item) in recipeData" :key="item.recipe_no" :value="item.recipe_no">
+                        {{ item.recipe_name }}
+                    </option>
+                </select>
+            </label>
+            <label for="">推薦菜色4:
+                <select name="dish4" id="dish4" v-model="newData.dish4">
+                    <option v-for="(item) in recipeData" :key="item.recipe_no" :value="item.recipe_no">
+                        {{ item.recipe_name }}
+                    </option>
+                </select>
+            </label>
+
+
+
+            <label for="content" style="display: flex;">分析結果:
+                <textarea id="content" name="content" cols="30" rows="6">{{ newData.content }}</textarea>
+            </label>
+
+            <button class="btn btn-primary col-12" style="color:#fff" type="submit" name="submit" value="修改"
+                @click="handleSubmit('存檔')">存檔</button>
+            <button class="btn btn-outline-secondary col-12" type="submit" name="submit" value="刪除"
+                @click="handleSubmit('刪除')">刪除</button>
+
+            <!-- 關閉按鍵 -->
+            <button class="xmark btn btn-outline-secondary rounded-5" @click="closeModal">
+                x
+            </button>
+        </div>
+    </form>
+
+    <!-- 新增彈窗 -->
+
+    <form id="revise_game" method="POST" enctype="multipart/form-data" @submit.prevent action="#">
+        <div class="show_modal d-flex flex-column align-items-start gap-2" v-if="showAddModal">
+
+            <label for="result_no">結果編號：<input type="text" :value="gameIdNum()" id="result_no" name="result_no"></label>
+
+            <label for="status">狀態:
+                <select id="status" name="status">
+                    <option value="1">套用</option>
+                    <option value="0">未套用</option>
+                </select>
+            </label>
+
+            <label for="personality" class="inline-label">人格種類:<input type="text" value="" id="personality"
+                    name="personality"></label>
+
+            <label for="">推薦菜色1:
+                <select name="dish1" id="dish1">
+                    <option v-for="(item) in recipeData" :key="item.recipe_no" :value="item.recipe_no">
+                        {{ item.recipe_name }}
+                    </option>
+                </select>
+            </label>
+            <label for="">推薦菜色2:
+                <select name="dish2" id="dish2">
+                    <option v-for="(item) in recipeData" :key="item.recipe_no" :value="item.recipe_no">
+                        {{ item.recipe_name }}
+                    </option>
+                </select>
+            </label>
+            <label for="">推薦菜色3:
+                <select name="dish3" id="dish3">
+                    <option v-for="(item) in recipeData" :key="item.recipe_no" :value="item.recipe_no">
+                        {{ item.recipe_name }}
+                    </option>
+                </select>
+            </label>
+            <label for="">推薦菜色4:
+                <select name="dish4" id="dish4">
+                    <option v-for="(item) in recipeData" :key="item.recipe_no" :value="item.recipe_no">
+                        {{ item.recipe_name }}
+                    </option>
+                </select>
+            </label>
+
+            <label for="content" style="display: flex;">分析結果:
+                <textarea id="content" name="content" cols="30" rows="6"></textarea>
+            </label>
+
+
+            <button class="btn btn-primary col-12" style="color:#fff" type="submit" name="submit" value="新增"
+                @click="handleSubmit('新增')">新增</button>
+
+            <!-- 關閉按鍵 -->
+            <button class="xmark btn btn-outline-secondary rounded-5" @click="closeModal">
+                x
+            </button>
+
+        </div>
+    </form>
 </template>
 <script>
 import PageTitle from "@/components/PageTitle.vue";
@@ -109,7 +209,8 @@ export default {
     },
     data() {
         return {
-            showModal: false,
+            showModal: false, // 修改刪除的彈窗
+            showAddModal: false, //新增的彈窗
             presetData: {
                 id: null,
                 personality: " ",
@@ -143,41 +244,6 @@ export default {
             searchInput: "",
             searchResult: [],
             colTitle: ["結果編號", "人格種類", "推薦菜色", "分析結果", "狀態", ""],
-            // productName: [
-            //     { name: "滑嫩番茄蛋" },
-            //     { name: "奶油啤酒蛤蠣" },
-            //     { name: "塔香茄子" },
-            //     { name: "生烤貝" },
-            //     { name: "麻婆豆腐" },
-            //     { name: "中華彗星炒飯" },
-            //     { name: "泡椒炒鮮魚" },
-            //     { name: "法國紅酒燉雞" },
-            //     { name: "阿根廷燉牛肉" },
-            //     { name: "泰國綠咖喱" },
-            //     { name: "希臘烤羊肉" },
-            //     { name: "西班牙海鮮燉飯" },
-            //     { name: "日本櫻花蝦天婦羅" },
-            //     { name: "越南河粉湯" },
-            //     { name: "意大利肉醬千層麵" },
-            //     { name: "日本味噌鮮魚湯" },
-            //     { name: "韓國辣椒醬湯" },
-            //     { name: "法國洋蔥湯" },
-            //     { name: "馬來西亞椰奶雞湯" },
-            //     { name: "葡萄牙海鮮湯" },
-            //     { name: "西班牙番茄湯" },
-            //     { name: "墨西哥辣味雞肉湯" },
-            //     { name: "泰式酸辣湯" },
-            //     { name: "意大利米蘭湯" },
-            //     { name: "糖漬番茄" },
-            //     { name: "泰式生菜包" },
-            //     { name: "中東麥麩沙拉" },
-            //     { name: "印度瑪撒拉薯仔沙拉" },
-            //     { name: "巴西凱撒沙拉" },
-            //     { name: "希臘風味水果沙拉" },
-            //     { name: "越南涼拌牛肉" },
-            //     { name: "加拿大蔓越莓野菜沙拉" },
-            //     { name: "日式涼拌海帶絲" },
-            // ],
             gameData: [],
             recipeData: [],
         };
@@ -223,6 +289,13 @@ export default {
         },
         closeModal() {
             this.showModal = false;
+            this.showAddModal = false;
+
+        },
+        //開啟新增視窗
+        openAddModal() {
+            this.showAddModal = true;
+
         },
         gameIdNum() {
             const gameIdNum = this.gameData.length + 1;
@@ -253,6 +326,43 @@ export default {
                     console.log(err);
                 });
         },
+        //新增&修改&刪除
+        handleSubmit(submitType) {
+            let url = `${this.$url}gameInsertUpdate.php`
+            const formData = new FormData();
+            const result_no = document.querySelector('#result_no')?.value;
+            const status = document.querySelector('#status')?.value;
+            const personality = document.querySelector('#personality')?.value;
+            const dish1 = document.querySelector('#dish1')?.value;
+            const dish2 = document.querySelector('#dish2')?.value;
+            const dish3 = document.querySelector('#dish3')?.value;
+            const dish4 = document.querySelector('#dish4')?.value;
+            const content = document.querySelector('#content')?.value;
+            formData.append("result_no", result_no);
+            formData.append("status", status);
+            formData.append("personality", personality);
+            formData.append("dish1", dish1);
+            formData.append("dish2", dish2);
+            formData.append("dish3", dish3);
+            formData.append("dish4", dish4);
+            formData.append("content", content);
+            formData.append("submit", submitType);
+
+            this.axios.post(url, formData).then(res => {
+                console.log(res)
+                this.getGameData()
+                this.closeModal()
+            }).catch(err => {
+                console.log(err);
+            })
+        },
+        // 改變顯示菜名
+        // changeRecipeName(num) {
+        //     const selectedRecipe = this.recipeData.find(item => item.recipe_no === this.newData[`dish${num}`]);
+        //     if (selectedRecipe) {
+        //         this[`dish${num}_recipe`] = selectedRecipe.recipe_name;
+        //     }
+        // },
     },
     created() {
         this.searchResult = this.gameData
