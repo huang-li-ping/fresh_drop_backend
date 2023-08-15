@@ -26,6 +26,7 @@ router.afterEach(() => {
 import axios from 'axios';
 import VueAxios from 'vue-axios'
 const apiURL = 'http://localhost/fresh_drop_backend/public/phps/'
+// const apiURL = 'http://localhost:8888/'
 app.config.globalProperties.$url = apiURL
 
 
