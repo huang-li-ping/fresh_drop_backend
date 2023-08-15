@@ -1,9 +1,10 @@
 <?php
 header('Access-Control-Allow-Origin:*');
 
+
 try{
     require_once("connect_chd102g2.php");
-    var_dump($pdo);
+    // var_dump($pdo);
 
     $ordNo = $_POST["ordNo"];
 
@@ -43,13 +44,32 @@ try{
     
     // 處理 orderList 資料
     $orderList = array();
+    $weekAdded = array();
         foreach ($orderRows as $row) {
-            $ord_no = $row['ord_no'];
-            $orderList[$ord_no][] = array(
-                "recipe" => $row["recipe_name"],
-                "qty" => $row["qty"],
-                "status" => $row["ord_status"]
-            );
+            $week=array();
+            if(!in_array($row["week"],$weekAdded)){
+                foreach($orderRows as $row2){
+                    $dish = array(
+                        "recipe" => $row2["recipe_name"],
+                        "qty" => $row2["qty"],
+                        "status" => $row2["ord_status"]
+                    );
+                    if($row["week"] == $row2["week"]){
+                        $week[]=$dish;
+                    }
+                }
+                $orderList[]=$week;
+                $weekAdded[]=$row["week"];
+            }
+            
+            
+            
+            
+            // $orderList[$ord_no][] = array(
+            //     "recipe" => $row["recipe_name"],
+            //     "qty" => $row["qty"],
+            //     "status" => $row["ord_status"]
+            // );
         }
         $orderDetail["orderList"] = $orderList;
 
@@ -118,7 +138,8 @@ try{
                 break;
         }
     }
-
+    // var_dump($orderDetail);
+    // exit();
     echo json_encode($orderDetail);
 }catch(Exception $e){
     var_dump($e->getMessage());

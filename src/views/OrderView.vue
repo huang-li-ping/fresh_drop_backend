@@ -114,10 +114,9 @@ export default {
             params.append("ordNo", ord_no)
             this.axios.post(url, params).then(res => {
                 console.log(res.data)
+                console.log(typeof res.data)
                 this.$store.commit('sendOrdDetail', res.data);
-                if (this.$route.path == '/order') {
-                    this.$router.push('/ordDetail');
-                }
+                this.$router.push('/ordDetail');
             }).catch(err => {
                 console.log(err);
             })

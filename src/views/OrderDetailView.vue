@@ -3,7 +3,7 @@
 
     <!-- 表格 -->
     <div class="details_container">
-        <div class="top" style="display: flex;">
+        <div class="top" style="display: flex;" v-if="orderInfo">
             <div class="date">
                 <p>訂單日期：<span>{{ orderInfo.ord_date }}</span></p>
             </div>
@@ -64,7 +64,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="(item, index) in currentData" :key="index">
+                    <tr v-if="orderList" v-for="(item, index) in currentData" :key="index">
                         <td>{{ item.recipe }}</td>
                         <td>{{ item.qty }}</td>
                         <td>{{ item.status }}</td>
@@ -72,13 +72,14 @@
                 </tbody>
             </table>
         </div>
-        <div class="bill_container">
+        <div class="bill_container" v-if="billDetail">
             <p>訂單金額明細</p>
             <div class="frist">
                 <p>{{ billDetail.week }}</p>
                 <p>{{ billDetail.qty }}</p>
                 <P>{{ billDetail.amount }}</P>
             </div>
+            <p style="text-align: right;">{{ billDetail.sale }}</p>
             <p style="text-align: right;">{{ billDetail.deliv_m }}</p>
             <p style="text-align: right;">{{ billDetail.giftcard_m }}</p>
             <p style="text-align: right;">{{ billDetail.giftcard_n }}</p>
@@ -97,37 +98,49 @@ export default {
     },
     data() {
         return {
-            orderInfo: {},
+            orderInfo: [],
             // orderInfo:
             // {
-            //     ord_date: "2023-07-02",
-            //     ord_no: "1",
-            //     cus_name: "蔡宗驊",
-            //     cus_email:"Andy_Evans@freshdrop.com",
+            //     ord_date: "2023-07-04",
+            //     ord_no: "4",
+            //     cus_name: "藍奕柯",
+            //     cus_email:"Alice_Mckenzie@fresh.com",
             //     deliv_no: "定期配送",
-            //     total_price: "$1680",
+            //     total_price: "$1480",
             //     payment: "信用卡+禮物卡",
             //     ord_status: "處理中",
             //     week: "WEEK1",
-            //     ord_cus: "江瑀庭",
-            //     ord_phone: "0933-099932",
-            //     ord_addr: "320 桃園市中壢區復興路46號",
-            //     ord_credit_no: "1234-1234-1234-1234",
+            //     ord_cus: "陳小廷",
+            //     ord_phone: "0966-987654",
+            //     ord_addr: "320 桃園市中壢區哀哀路3號",
+            //     ord_credit_no: "6548-9989-6564-3221",
             // },
 
             currentTab: 1,
             colTitle: ["品項", "份數", "出貨狀態",],
-            currentData: {},
+            currentData: [],
             orderList: [
                 [],
                 [],
                 [],
                 [],
             ],
-            
+
             // orderList: [
             //     [
             //         { recipe: "滑嫩蕃茄蛋", qty: "X1", status: "已出貨(2023-07-05)" },
+            //         { recipe: "蒸蛋", qty: "X1", },
+            //         { recipe: "味噌鮮魚湯", qty: "X1", },
+            //         { recipe: "塔香茄子", qty: "X1", },
+            //     ],
+            //     [
+            //         { recipe: "越南河粉湯", qty: "X1", status: "處理中" },
+            //         { recipe: "泰式生菜包", qty: "X1", },
+            //         { recipe: "麻婆豆腐", qty: "X1", },
+            //         { recipe: "巴西凱撒沙拉", qty: "X1", },
+            //     ],
+            //     [
+            //         { recipe: "滑嫩蕃茄蛋", qty: "X1", status: "處理中" },
             //         { recipe: "蒸蛋", qty: "X1", },
             //         { recipe: "味噌鮮魚湯", qty: "X1", },
             //         { recipe: "塔香茄子", qty: "X1", },
@@ -142,12 +155,13 @@ export default {
             billDetail: {},
             // billDetail: {
             //     week: "$800 /週",
-            //     qty: "X2",
-            //     amount: "金額：$1600",
+            //     qty: "X4",
+            //     amount: "金額：$3200",
+            //     sale:"8折優惠：-$640",
             //     deliv_m: "運費：$80",
-            //     giftcard_m: "禮物卡折抵：-$100",
+            //     giftcard_m: "禮物卡折抵：-$1080",
             //     giftcard_n: "禮物卡編號：01234567",
-            //     total: "總金額：$1580",
+            //     total: "總金額：$1480",
             // }
         };
     },
@@ -156,11 +170,14 @@ export default {
             this.currentData = this.orderList[n - 1];
         },
         async fetchOrderDetail(ordNo) {
-            try {
-                const response = await axios.post('orderDetail.php', { ordNo });
-                this.orderInfo = response.data;
-            } catch (error) {
-                console.error(error);
+            if (ordNo) {
+                let url = `${this.$url}ordDetail.php`;
+                try {
+                    const response = await axios.post(url, { ordNo });
+                    this.orderInfo = response.data;
+                } catch (error) {
+                    console.error('Error fetching order detail:',error);
+                }
             }
         },
         // async sessionOrdNo(orderNoParam) {
@@ -178,13 +195,24 @@ export default {
         //         this.$router.push('/order');
         //     }
         // },
-
     },
     mounted() {
         this.showCurrentData(1);
         // this.sessionOrdNo(this.orderInfo.ord_no);
         const ordNo = this.$route.params.ordNo;
-        this.fetchOrderDetail(ordNo);
+        if (ordNo) {
+            this.fetchOrderDetail(ordNo);
+        }
+        console.log(this.$store.state.ordDetail);
+    },
+    watch: {
+        "$store.state.ordDetail": {
+            handler: function (newval) {
+                console.log('watch triggered', newval);
+                this.orderInfo = newval.orderInfo;
+            },
+            deep: true,
+        }
     },
     components: { PageTitle }
 };
@@ -197,7 +225,7 @@ export default {
 
 .details_container {
     p {
-        margin: 10px 5px;
+        margin: 10px 20px;
     }
 
     span {
@@ -221,7 +249,7 @@ export default {
 }
 
 .deatils_box {
-    width: 350px;
+    width: 550px;
     margin: 0 20px;
 }
 
