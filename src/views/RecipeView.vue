@@ -482,13 +482,14 @@ td {
 
 .upload_file {
     width: 100%;
-    height: 150px;
+    height: 200px;
     text-align: center;
     display: flex;
     align-items: center;
     justify-content: center;
     position: relative;
     overflow: hidden;
+    flex-shrink: 0;
 
     &::placeholder {
         width: 100px;
