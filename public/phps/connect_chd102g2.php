@@ -17,3 +17,4 @@ $option = array(
         PDO::ATTR_CASE => PDO::CASE_NATURAL
 );
 $pdo = new PDO($dsn, $user, $psw, $option);
+?>
