@@ -26,13 +26,14 @@
                 <td>{{ item.opinion_no }}</td>
                 <td>{{ item.member_fk }}</td>
                 <td>
-                    <div class="recipe_pic">
-                        <img :src="require(`./@/../../../../fresh_drop/src/assets/images/product/${item.report_pic}`)" alt="">
-                    </div>
+                    <img :src="require(`./@/../../../../fresh_drop/src/assets/images/product/${item.report_pic}`)" alt="">
                 </td>
                 <td>{{ truncateText(item.reason, 4) }}</td>
                 <td>{{ item.date }}</td>
-                <td>{{ item.state }}</td>
+                <td>
+                <span v-if="item.state == 0">未套用</span>
+                <span v-if="item.state == 1">套用</span>
+                </td>
                 <td>{{ item.report }}</td>
                 <td><button class="btn btn-outline-primary btn-sm" @click="openModal(item)">查閱</button></td>
             </tr>
@@ -164,7 +165,13 @@ export default {
 
 <style lang="scss">
 @import "@/assets/scss/page/ingredients.scss";
-
+.table{
+    td{
+        img{
+            width: 80px;
+        }
+    }
+}
 .report_container {
     .input-group {
         width: fit-content;

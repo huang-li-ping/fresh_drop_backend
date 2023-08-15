@@ -6,10 +6,10 @@ try{
     
     $sql = "select opinion_no, member, recipeno, experience, opinion_no_pic, share_time, state
             from opinion";
-    $member = $pdo->query($sql);
-    $memberRows = $member->fetchAll(PDO::FETCH_ASSOC);
+    $opinion = $pdo->query($sql);
+    $opinionRows = $opinion->fetchAll(PDO::FETCH_ASSOC);
     // echo json_encode(["連線成功"]);
-    echo json_encode($memberRows);
+    echo json_encode($opinionRows);
 }catch(Exception $e){
     echo json_encode(["連線失敗"]);
 }

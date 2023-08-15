@@ -21,18 +21,21 @@
         </thead>
         <tbody>
             <tr v-for="(item, index) in showData" :key="index">
-                <td>{{ item.opinion_no }}</td>
-                <td>{{ item.member }}</td>
-                <td>{{ item.recipeno }}</td>
-                <td>
-                    <div class="recipe_pic">
-                        <img :src="require(`./@/../../../../fresh_drop/src/assets/images/product/${item.opinion_no_pic	}`)" alt="">
-                    </div>
-                </td>
-                <td>{{ truncateText(item.experience, 4) }}</td>
-                <td>{{ item.share_time }}</td>
-                <td>{{ item.state }}</td>
-                <td><button class="btn btn-outline-primary btn-sm" @click="openModal(item)">刪除</button></td>
+            <td>{{ item.opinion_no }}</td>
+            <td>{{ item.member }}</td>
+            <td>{{ item.recipeno }}</td>
+            <td>
+                <div class="recipe_pic">
+                <img :src="require(`./@/../../../../fresh_drop/src/assets/images/product/${item.opinion_no_pic}`)" alt="">
+                </div>
+            </td>
+            <td>{{ truncateText(item.experience, 4) }}</td>
+            <td>{{ item.share_time }}</td>
+            <td>
+                <span v-if="item.state == 0">未套用</span>
+                <span v-if="item.state == 1">套用</span>
+            </td>
+            <td><button class="btn btn-outline-primary btn-sm" @click="handleDelete(item)">下架</button></td>
             </tr>
         </tbody>
     </table>
@@ -44,14 +47,14 @@ import PageComponent from '@/components/PageComponent.vue';
 import PageTitle from '@/components/PageTitle.vue';
 
 export default {
-    name: 'ReportView',
+    name: 'opinionView',
     components: {
         PageComponent,
         PageTitle,
     },
     data() {
         return {
-            colTitle: ["心得分享編號", "會員編號", "食譜編號", "心得照片", "心得", "日期", "狀態","",""],
+            colTitle: ["心得分享編號", "會員編號", "食譜編號", "心得照片", "心得", "日期", "狀態","上下架",],
             opinionData: [],
             showModal: false,
             newData: [],
@@ -63,7 +66,7 @@ export default {
     methods: {
         //串接ingred資料庫        
         getopinionData() {
-            let url = `${this.$url}opinion.php`
+            let url = `${this.$url}opinionRows.php`
             this.axios.get(url).then(res => {
                 this.opinionData = res.data
             }).catch(err => {
@@ -83,6 +86,20 @@ export default {
                 this.searchResult = nameResult;
             }
         },    
+        // 上下架
+        handleDelete(item) {
+        let url = `${this.$url}opiniondelete.php`;
+        const formData = new FormData();
+        formData.append("opinion_no", item.opinion_no);
+        formData.append("submit", "刪除"); // 修改此处
+
+        this.axios.post(url, formData).then(response => {
+            console.log(response.data);
+            this.getopinionData();
+        }).catch(error => {
+            console.error(error);
+        });
+        },
         getPageData(data) {
                 this.showData = data
             },
@@ -119,36 +136,6 @@ export default {
     //串接ingred資料庫
     this.getopinionData()
     },
-    // delete announcement
-    deleteAnnouncement() {
-      const index = this.dataFromMySQL.findIndex(
-        (item) => item.opinion_no === this.currentItem.opinion_no
-      );
-      if (index !== -1) {
-        // 這裡刪除的是vue this.data
-        this.dataFromMySQL.splice(index, 1);
-        this.showModal = false;
-      }
-
-      //傳送資料庫要刪除的項目
-      const data = new URLSearchParams();
-      data.append("opinion_no", this.currentItem.opinion_no);
-      data.append("pattern_file", this.currentItem.pattern_file);
-      // 使用 Axios 發送 POST 請求
-      axios
-        .post(`${BASE_URL}delete.php`, data)
-        .then((response) => {
-          // 請求成功後的處理
-          console.log(response.data);
-          location.reload(); //刷新頁面
-          alert("已刪除圖案成功！");
-        })
-        .catch((error) => {
-          // 請求失敗後的處理
-          console.error(error);
-          alert("刪除失敗！");
-        });
-    }, 
 };
 </script>
 
