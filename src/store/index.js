@@ -15,7 +15,7 @@ export default createStore({
         },
         sendOrdDetail(state, data) {
             state.ordDetail = data;
-            sessionStorage.setItem("detail_ordNo", data.orderInfo.ord_no);
+            sessionStorage.setItem("detail_ordNo", data.ord_no);
         },
     },
     actions: {},
