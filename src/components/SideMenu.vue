@@ -2,16 +2,36 @@
     <div class="col-3">
         <div class="sidebar">
             <ul>
-                <router-link to="/order" class="item"><span>訂單管理</span></router-link>
-                <router-link to="/member" class="item"><span>會員資料管理</span></router-link>
-                <router-link to="recipe" class="item"><span>菜色管理</span></router-link>
-                <router-link to="/ingred" class="item active"><span>食材管理</span></router-link>
-                <router-link to="/giftcard" class="item"><span>禮物卡管理</span></router-link>
-                <router-link to="/opinion" class="item"><span>烹飪心得管理</span></router-link>
-                <router-link to="/faq" class="item"><span>FAQ管理</span></router-link>
-                <router-link to="/game" class="item"><span>遊戲結果管理</span></router-link>
-                <router-link to="/report" class="item"><span>檢舉管理</span></router-link>
-                <router-link to="/employee" class="item"><span>管理員帳號管理</span></router-link>
+                <router-link to="/order" class="item"
+                    ><span>訂單管理</span></router-link
+                >
+                <router-link to="/member" class="item"
+                    ><span>會員資料管理</span></router-link
+                >
+                <router-link to="recipe" class="item"
+                    ><span>菜色管理</span></router-link
+                >
+                <router-link to="/ingred" class="item active"
+                    ><span>食材管理</span></router-link
+                >
+                <router-link to="/giftcard" class="item"
+                    ><span>禮物卡管理</span></router-link
+                >
+                <router-link to="/opinion" class="item"
+                    ><span>烹飪心得管理</span></router-link
+                >
+                <router-link to="/faq" class="item"
+                    ><span>FAQ管理</span></router-link
+                >
+                <router-link to="/game" class="item"
+                    ><span>遊戲結果管理</span></router-link
+                >
+                <router-link to="/report" class="item"
+                    ><span>檢舉管理</span></router-link
+                >
+                <router-link to="/employee" class="item"
+                    ><span>管理員帳號管理</span></router-link
+                >
             </ul>
         </div>
     </div>
@@ -51,7 +71,7 @@
                 transition: background-color 0.2s ease-out;
             }
 
-            &.active {
+            &:focus {
                 background-color: $primary;
                 color: #fff;
             }

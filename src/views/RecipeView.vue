@@ -14,11 +14,14 @@
                         v-model="searchInput"
                     />
                 </div>
-                <!-- <div class="btn btn-outline-primary" @click="searchIdOrName">
-                    搜尋
-                </div> -->
                 <!-- 新增 -->
-                <div class="btn btn-outline-primary">新增</div>
+                <button
+                    class="btn btn-primary create-btn"
+                    type="button"
+                    style="margin-left: auto; color: #fff"
+                >
+                    新增食材
+                </button>
             </div>
         </div>
         <!-- 表格 -->
@@ -47,16 +50,25 @@
                     <td>{{ item.recipe_no }}</td>
                     <td>{{ item.recipe_name }}</td>
                     <td>
+                        <!-- {{ item.class }} -->
                         <span v-if="item.class == 0">主菜</span>
                         <span v-if="item.class == 1">湯品</span>
                         <span v-if="item.class == 2">沙拉</span>
                     </td>
                     <td>
-                        {{ truncateText(item.quantity_unit) }}
+                        {{ truncateText(getFirstIngredName(item)) }}
                     </td>
-
                     <td>{{ truncateText(item.step) }}</td>
-                    <td>{{ truncateText(item.recipe_pic) }}</td>
+                    <td>
+                        <div class="recipe_pic">
+                            <img
+                                :src="
+                                    require(`./@/../../../../fresh_drop/src/assets/images/product/${item.recipe_pic}`)
+                                "
+                                alt=""
+                            />
+                        </div>
+                    </td>
                     <td>{{ truncateText(item.des) }}</td>
                     <td>
                         <div class="input-group-append">
@@ -79,22 +91,29 @@
             class="show_modal d-flex flex-column align-items-start gap-2"
             v-if="showModal"
         >
-            <!-- <div class="show_modal_wrap"> -->
             <label for=""
                 >類別：
-                <select id="category" v-model="newData.category">
-                    <option :value="newData.category">主菜</option>
-                    <option :value="newData.category">湯品</option>
-                    <option :value="newData.category">沙拉</option>
+                <select id="category" v-model="newData.class">
+                    <option value="0">主菜</option>
+                    <option value="1">湯品</option>
+                    <option value="2">沙拉</option>
                 </select>
             </label>
             <label for=""
                 >編號：
-                <input class="recipe_no" type="text" :value="newData.id"
+                <input
+                    class="recipe_no"
+                    type="text"
+                    :value="newData.recipe_no"
+                    disabled
             /></label>
             <label for=""
                 >名稱：
-                <input class="recipe_name" type="text" :value="newData.name" />
+                <input
+                    class="recipe_name"
+                    type="text"
+                    :value="newData.recipe_name"
+                />
             </label>
             <label for="des">菜色描述：</label>
             <textarea
@@ -111,32 +130,18 @@
                     :key="index"
                 >
                     <div class="ingred_input">
-                        <!-- <label for="ingred_item">
-                                <input
-                                    type="text"
-                                    id="ingred_item"
-                                    v-model="newData.ingred"
-                                />
-                            </label>
-                            <label for="ingred_unit">
-                                <input
-                                    type="text"
-                                    id="ingred_unit"
-                                    v-model="newData.ingred"
-                                />
-                            </label> -->
-                        <label for="ingred_item">
+                        <label :for="'ingred_item' + index">
                             <input
                                 type="text"
                                 :id="'ingred_item_' + index"
-                                v-model="inputData.ingred"
+                                v-model="inputData.ingred_name"
                             />
                         </label>
-                        <label for="ingred_unit">
+                        <label :for="'ingred_unit' + index">
                             <input
                                 type="text"
                                 :id="'ingred_unit_' + index"
-                                v-model="inputData.unit"
+                                v-model="inputData.quantity_unit"
                             />
                         </label>
                     </div>
@@ -157,10 +162,35 @@
                 v-model="newData.step"
                 rows="6"
             ></textarea>
-            <!-- <label for=""
-                    >照片： <input type="file" :value="newData.img" />
-                </label> -->
-            <!-- </div> -->
+            <label for="">菜色照片：</label>
+            <div class="upload_file">
+                <!-- <div class="upload_pic" v-if="previewImage"> -->
+                <div class="upload_pic">
+                    <!-- <img
+                        class="pic"
+                        :src="previewImage"
+                        alt="Preview"
+                    /> -->
+                    <img
+                        class="pic"
+                        :src="
+                            previewImage ||
+                            require(`./@/../../../../fresh_drop/src/assets/images/product/${newData.recipe_pic}`)
+                        "
+                        alt="Preview"
+                    />
+                </div>
+                <button class="file_btn" @click="triggerFileInput">
+                    <p class="file_text">點擊上傳照片</p>
+                </button>
+                <input
+                    id="fileInput"
+                    type="file"
+                    ref="fileInput"
+                    @change="handleFileUpload"
+                    style="display: none"
+                />
+            </div>
             <div class="recipe_btn">
                 <button class="delete">刪除</button>
                 <button class="archive">存檔</button>
@@ -187,9 +217,7 @@ export default {
             searchInput: "",
             searchResult: [],
             showData: [],
-            inputDataArray: [
-                { ingred: "", unit: "" }, // 初始化輸入
-            ],
+            inputDataArray: [{ ingred: "", unit: "" }],
             colTitle: [
                 "",
                 "菜色編號",
@@ -202,6 +230,8 @@ export default {
                 "狀態",
             ],
             recipeData: [],
+            //上傳圖片
+            previewImage: null,
         };
     },
     methods: {
@@ -211,6 +241,7 @@ export default {
             this.axios
                 .get(url)
                 .then((res) => {
+                    console.log(res.data);
                     this.recipeData = res.data;
                 })
                 .catch((err) => {
@@ -261,6 +292,30 @@ export default {
             const newInputData = { ingred: "", unit: "" };
             this.inputDataArray.splice(index + 1, 0, newInputData);
         },
+        // 食材表Rows
+        getFirstIngredName(item) {
+            if (item.ingreds && item.ingreds.length > 0) {
+                const firstIngred = item.ingreds[0];
+                return `${firstIngred.ingred_name}：${firstIngred.quantity_unit}`;
+            }
+            return "";
+        },
+        //上傳圖片
+        triggerFileInput() {
+            this.$refs.fileInput.click();
+        },
+        handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    this.previewImage = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            } else {
+                this.previewImage = null;
+            }
+        },
     },
     created() {
         this.searchResult = this.recipeData;
@@ -272,6 +327,10 @@ export default {
                 this.searchResult = this.recipeData;
             },
             deep: true,
+        },
+        showModal(nVal) {
+            if (!nVal) return;
+            this.inputDataArray = [...this.newData.ingreds];
         },
     },
     mounted() {
@@ -297,6 +356,20 @@ export default {
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
+    }
+}
+
+td {
+    vertical-align: middle;
+}
+
+.recipe_pic {
+    display: block;
+    margin: auto;
+    width: 50px;
+
+    img {
+        width: 100%;
     }
 }
 
@@ -326,53 +399,6 @@ export default {
         }
     }
 }
-
-.xmark {
-    right: 20px;
-    top: 10px;
-    position: absolute;
-    border: none;
-    background-color: #fff7ea;
-    font-size: $m-font;
-    color: #aaa;
-}
-
-.recipe_btn {
-    width: 100%;
-    margin-top: 10px;
-    background-color: #fff7ea;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    // position: fixed;
-    // bottom: 0px;
-    // padding: 32px;
-    // border-radius: 0 0 20px 20px;
-
-    .delete,
-    .archive {
-        background-color: #fff7ea;
-        border: #1f8d61 1px solid;
-        border-radius: 20px;
-        // width: 90%;
-        // margin: 10px auto 0;
-
-        &:hover {
-            background-color: #1f8d61;
-            color: #fff7ea;
-        }
-    }
-}
-
-// .show_modal_wrap {
-//     padding: $sp4;
-//     display: flex;
-//     flex-direction: column;
-//     align-items: flex-start;
-//     gap: 5px;
-//     overflow: auto;
-//     height: calc(100vh - 50px);
-// }
 
 .recipe_des {
     width: 100%;
@@ -417,6 +443,76 @@ export default {
             cursor: pointer;
             border-radius: 50%;
             flex-shrink: 0;
+        }
+    }
+}
+
+.xmark {
+    right: 20px;
+    top: 10px;
+    position: absolute;
+    border: none;
+    background-color: #fff7ea;
+    font-size: $m-font;
+    color: #aaa;
+}
+
+.recipe_btn {
+    width: 100%;
+    margin-top: 10px;
+    background-color: #fff7ea;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    .delete,
+    .archive {
+        background-color: #fff7ea;
+        border: #1f8d61 1px solid;
+        border-radius: 20px;
+        // width: 90%;
+        // margin: 10px auto 0;
+
+        &:hover {
+            background-color: #1f8d61;
+            color: #fff7ea;
+        }
+    }
+}
+
+.upload_file {
+    width: 100%;
+    height: 150px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+
+    &::placeholder {
+        width: 100px;
+    }
+
+    .file_btn {
+        z-index: 10;
+        width: 100%;
+        height: 100%;
+        background-color: transparent;
+
+        .file_text {
+            background-color: #ffffffaa;
+            padding: 6px 20px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+    }
+
+    .upload_pic {
+        position: absolute;
+
+        img {
+            width: 100%;
         }
     }
 }
