@@ -23,4 +23,5 @@ module.exports = defineConfig({
             msTileImage: "favicon.ico",
         },
     },
+    publicPath: process.env.NODE_ENV === "production" ? "/chd102/g2/back" : "/",
 });

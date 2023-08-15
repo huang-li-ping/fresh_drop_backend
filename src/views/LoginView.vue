@@ -19,8 +19,8 @@
 export default {
     data() {
         return {
-            account: '',
-            psw:'',
+            account: '12345',
+            psw:'12345',
         }
     },
     methods: {

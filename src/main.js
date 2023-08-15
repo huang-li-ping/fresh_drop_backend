@@ -25,7 +25,12 @@ router.afterEach(() => {
 //全域引用axios
 import axios from 'axios';
 import VueAxios from 'vue-axios'
+
+//開發用
 const apiURL = 'http://localhost/fresh_drop_backend/public/phps/'
+
+//上線用
+// const apiURL = 'https://tibamef2e.com/chd102/g2/back/phps/'
 app.config.globalProperties.$url = apiURL
 
 
