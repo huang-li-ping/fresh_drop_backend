@@ -26,7 +26,7 @@
                 <td>{{ item.recipeno }}</td>
                 <td>
                     <div class="recipe_pic">
-                        <img :src="require(`./@/../../../../fresh_drop/src/assets/images/product/${item.opinion_no_pic	}`)" alt="">
+                        <!-- <img :src="require(`./@/../../../../fresh_drop/src/assets/images/product/${item.opinion_no_pic	}`)" alt=""> -->
                     </div>
                 </td>
                 <td>{{ truncateText(item.experience, 4) }}</td>

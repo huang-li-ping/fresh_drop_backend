@@ -15,7 +15,13 @@
                     />
                 </div>
                 <!-- 新增 -->
-                <div class="btn btn-outline-primary">新增</div>
+                <button
+                    class="btn btn-primary create-btn"
+                    type="button"
+                    style="margin-left: auto; color: #fff"
+                >
+                    新增菜色
+                </button>
             </div>
         </div>
         <!-- 表格 -->

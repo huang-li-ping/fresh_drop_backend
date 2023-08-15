@@ -2,21 +2,79 @@
     <div class="col-3">
         <div class="sidebar">
             <ul>
-                <router-link to="/order" class="item"><span>訂單管理</span></router-link>
-                <router-link to="/member" class="item"><span>會員資料管理</span></router-link>
-                <router-link to="recipe" class="item"><span>菜色管理</span></router-link>
-                <router-link to="/ingred" class="item active"><span>食材管理</span></router-link>
-                <router-link to="/giftcard" class="item"><span>禮物卡管理</span></router-link>
-                <router-link to="/opinion" class="item"><span>烹飪心得管理</span></router-link>
-                <router-link to="/report" class="item"><span>烹飪檢舉管理</span></router-link>
-                <router-link to="/faq" class="item"><span>FAQ管理</span></router-link>
-                <router-link to="/game" class="item"><span>遊戲結果管理</span></router-link>
-                <router-link to="/employee" class="item"><span>管理員帳號管理</span></router-link>
+                <router-link
+                    v-for="item in menu"
+                    :key="item.link"
+                    :to="item.link"
+                    class="item"
+                    :class="{ active: nowPage === item.link }"
+                    @click="nowPage = item.link"
+                >
+                    <span>{{ item.title }}</span>
+                </router-link>
             </ul>
         </div>
     </div>
 </template>
-
+<script>
+export default {
+    name: "SideMenu",
+    // components: {
+    //   MainHeader,
+    // },
+    data() {
+        return {
+            nowPage: "",
+            menu: [
+                {
+                    link: "/order",
+                    title: "訂單管理",
+                },
+                {
+                    link: "/member",
+                    title: "會員資料管理",
+                },
+                {
+                    link: "/recipe",
+                    title: "菜色管理",
+                },
+                {
+                    link: "/ingred",
+                    title: "食材管理",
+                },
+                {
+                    link: "/giftcard",
+                    title: "禮物卡管理",
+                },
+                {
+                    link: "/opinion",
+                    title: "烹飪心得管理",
+                },
+                {
+                    link: "/report",
+                    title: "烹飪檢舉管理",
+                },
+                {
+                    link: "/faq",
+                    title: "FAQ管理",
+                },
+                {
+                    link: "/game",
+                    title: "遊戲結果管理",
+                },
+                {
+                    link: "/employee",
+                    title: "管理員帳號管理",
+                },
+            ],
+        };
+    },
+    created() {
+        this.nowPage = this.$route.path;
+    },
+    methods: {},
+};
+</script>
 <style lang="scss">
 .sidebar {
     height: 100%;
@@ -51,7 +109,7 @@
                 transition: background-color 0.2s ease-out;
             }
 
-            &.active {
+            &:focus {
                 background-color: $primary;
                 color: #fff;
             }
