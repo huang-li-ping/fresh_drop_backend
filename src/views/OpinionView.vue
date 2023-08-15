@@ -26,7 +26,7 @@
                 <td>{{ item.recipeno }}</td>
                 <td>
                     <div class="recipe_pic">
-                        <!-- <img :src="require(`./@/../../../../fresh_drop/src/assets/images/product/${item.opinion_no_pic	}`)" alt=""> -->
+                        <img :src="require(`./@/../../../../fresh_drop/src/assets/images/product/${item.opinion_no_pic	}`)" alt="">
                     </div>
                 </td>
                 <td>{{ truncateText(item.experience, 4) }}</td>
@@ -119,7 +119,36 @@ export default {
     //串接ingred資料庫
     this.getopinionData()
     },
-    
+    // delete announcement
+    deleteAnnouncement() {
+      const index = this.dataFromMySQL.findIndex(
+        (item) => item.opinion_no === this.currentItem.opinion_no
+      );
+      if (index !== -1) {
+        // 這裡刪除的是vue this.data
+        this.dataFromMySQL.splice(index, 1);
+        this.showModal = false;
+      }
+
+      //傳送資料庫要刪除的項目
+      const data = new URLSearchParams();
+      data.append("opinion_no", this.currentItem.opinion_no);
+      data.append("pattern_file", this.currentItem.pattern_file);
+      // 使用 Axios 發送 POST 請求
+      axios
+        .post(`${BASE_URL}delete.php`, data)
+        .then((response) => {
+          // 請求成功後的處理
+          console.log(response.data);
+          location.reload(); //刷新頁面
+          alert("已刪除圖案成功！");
+        })
+        .catch((error) => {
+          // 請求失敗後的處理
+          console.error(error);
+          alert("刪除失敗！");
+        });
+    }, 
 };
 </script>
 
