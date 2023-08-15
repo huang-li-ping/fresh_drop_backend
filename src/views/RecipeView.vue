@@ -319,7 +319,6 @@ export default {
     },
     created() {
         this.searchResult = this.recipeData;
-        this.initializeInputDataArray();
     },
     watch: {
         //串接recipe資料庫
