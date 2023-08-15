@@ -1,7 +1,7 @@
 <template>
     <PageTitle :title="'會員資料明細'">
         <template v-slot:button>
-            <div class="btn btn-outline-primary rounded-pill" @click="router.go(-1)">返回</div>
+            <div class="btn btn-outline-primary rounded-pill" @click="$router.go(-1)">返回</div>
         </template>
     </PageTitle>
 
@@ -19,7 +19,7 @@
             <div class="col-3">
                 <p>手機號碼：{{ memInfo.phone }}</p>
             </div>
-            <div class="col-4">
+            <div class="col-6">
                 <p>會員信箱：{{ memInfo.cus_email }}</p>
             </div>
         </div>

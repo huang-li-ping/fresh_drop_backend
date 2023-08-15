@@ -15,7 +15,13 @@
                     />
                 </div>
                 <!-- 新增 -->
-                <div class="btn btn-outline-primary">新增</div>
+                <button
+                    class="btn btn-primary create-btn"
+                    type="button"
+                    style="margin-left: auto; color: #fff"
+                >
+                    新增食材
+                </button>
             </div>
         </div>
         <!-- 表格 -->
@@ -128,14 +134,14 @@
                             <input
                                 type="text"
                                 :id="'ingred_item_' + index"
-                                v-model="inputData.ingred"
+                                v-model="inputData.ingred_name"
                             />
                         </label>
                         <label :for="'ingred_unit' + index">
                             <input
                                 type="text"
                                 :id="'ingred_unit_' + index"
-                                v-model="inputData.unit"
+                                v-model="inputData.quantity_unit"
                             />
                         </label>
                     </div>
@@ -156,9 +162,34 @@
                 v-model="newData.step"
                 rows="6"
             ></textarea>
-            <div>
-                <label for="">照片：</label>
-                <input type="file" :value="newData.img" />
+            <label for="">菜色照片：</label>
+            <div class="upload_file">
+                <!-- <div class="upload_pic" v-if="previewImage"> -->
+                <div class="upload_pic">
+                    <!-- <img
+                        class="pic"
+                        :src="previewImage"
+                        alt="Preview"
+                    /> -->
+                    <img
+                        class="pic"
+                        :src="
+                            previewImage ||
+                            require(`./@/../../../../fresh_drop/src/assets/images/product/${newData.recipe_pic}`)
+                        "
+                        alt="Preview"
+                    />
+                </div>
+                <button class="file_btn" @click="triggerFileInput">
+                    <p class="file_text">點擊上傳照片</p>
+                </button>
+                <input
+                    id="fileInput"
+                    type="file"
+                    ref="fileInput"
+                    @change="handleFileUpload"
+                    style="display: none"
+                />
             </div>
             <div class="recipe_btn">
                 <button class="delete">刪除</button>
@@ -186,9 +217,7 @@ export default {
             searchInput: "",
             searchResult: [],
             showData: [],
-            inputDataArray: [
-                { ingred: "", unit: "" }, // 初始化輸入
-            ],
+            inputDataArray: [{ ingred: "", unit: "" }],
             colTitle: [
                 "",
                 "菜色編號",
@@ -201,6 +230,8 @@ export default {
                 "狀態",
             ],
             recipeData: [],
+            //上傳圖片
+            previewImage: null,
         };
     },
     methods: {
@@ -269,31 +300,25 @@ export default {
             }
             return "";
         },
-        updateInputDataArray(index) {
-            const item = this.recipeDataArray[index]; // 这里的 recipeDataArray 是你的数据源
-            if (item.ingreds && item.ingreds.length > 0) {
-                const values = this.getFirstIngredName(item).split("：");
-                this.inputDataArray[index].ingred = values[0];
-                this.inputDataArray[index].unit = values[1];
-            }
+        //上傳圖片
+        triggerFileInput() {
+            this.$refs.fileInput.click();
         },
-        initializeInputDataArray() {
-            this.inputDataArray = this.newData.map((item) => {
-                if (item.ingreds && item.ingreds.length > 0) {
-                    const firstIngred = item.ingreds[0];
-                    return {
-                        ingred: firstIngred.ingred_name,
-                        unit: firstIngred.quantity_unit,
-                    };
-                } else {
-                    return { ingred: "", unit: "" };
-                }
-            });
+        handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    this.previewImage = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            } else {
+                this.previewImage = null;
+            }
         },
     },
     created() {
         this.searchResult = this.recipeData;
-        this.initializeInputDataArray();
     },
     watch: {
         //串接recipe資料庫
@@ -302,6 +327,10 @@ export default {
                 this.searchResult = this.recipeData;
             },
             deep: true,
+        },
+        showModal(nVal) {
+            if (!nVal) return;
+            this.inputDataArray = [...this.newData.ingreds];
         },
     },
     mounted() {
@@ -330,10 +359,15 @@ export default {
     }
 }
 
+td {
+    vertical-align: middle;
+}
+
 .recipe_pic {
     display: block;
     margin: auto;
-    width: 80px;
+    width: 50px;
+
     img {
         width: 100%;
     }
@@ -362,43 +396,6 @@ export default {
         input {
             padding: 0 5px;
             margin-left: 5px;
-        }
-    }
-}
-
-.xmark {
-    right: 20px;
-    top: 10px;
-    position: absolute;
-    border: none;
-    background-color: #fff7ea;
-    font-size: $m-font;
-    color: #aaa;
-}
-
-.recipe_btn {
-    width: 100%;
-    margin-top: 10px;
-    background-color: #fff7ea;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    // position: fixed;
-    // bottom: 0px;
-    // padding: 32px;
-    // border-radius: 0 0 20px 20px;
-
-    .delete,
-    .archive {
-        background-color: #fff7ea;
-        border: #1f8d61 1px solid;
-        border-radius: 20px;
-        // width: 90%;
-        // margin: 10px auto 0;
-
-        &:hover {
-            background-color: #1f8d61;
-            color: #fff7ea;
         }
     }
 }
@@ -446,6 +443,76 @@ export default {
             cursor: pointer;
             border-radius: 50%;
             flex-shrink: 0;
+        }
+    }
+}
+
+.xmark {
+    right: 20px;
+    top: 10px;
+    position: absolute;
+    border: none;
+    background-color: #fff7ea;
+    font-size: $m-font;
+    color: #aaa;
+}
+
+.recipe_btn {
+    width: 100%;
+    margin-top: 10px;
+    background-color: #fff7ea;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    .delete,
+    .archive {
+        background-color: #fff7ea;
+        border: #1f8d61 1px solid;
+        border-radius: 20px;
+        // width: 90%;
+        // margin: 10px auto 0;
+
+        &:hover {
+            background-color: #1f8d61;
+            color: #fff7ea;
+        }
+    }
+}
+
+.upload_file {
+    width: 100%;
+    height: 150px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+
+    &::placeholder {
+        width: 100px;
+    }
+
+    .file_btn {
+        z-index: 10;
+        width: 100%;
+        height: 100%;
+        background-color: transparent;
+
+        .file_text {
+            background-color: #ffffffaa;
+            padding: 6px 20px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+    }
+
+    .upload_pic {
+        position: absolute;
+
+        img {
+            width: 100%;
         }
     }
 }

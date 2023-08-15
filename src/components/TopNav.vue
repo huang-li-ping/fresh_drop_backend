@@ -4,9 +4,26 @@
             <img src="../assets/images/logo/logo.png" alt="logo" />
         </a>
         <span>後台管理</span>
-        <button class="btn btn-outline-light" type="button">登出</button>
+        <button class="btn btn-outline-light" type="button" @click="logout">登出</button>
     </nav>
 </template>
+<script>
+
+export default {
+    name: 'TopNav',
+    data() {
+        return {
+
+        };
+    },
+    methods: {
+        logout() {
+            this.$store.state.isLogin = false
+            this.$router.push('/')
+        }
+    },
+}
+</script>
 <style lang="scss">
 .navbar {
     display: flex;
