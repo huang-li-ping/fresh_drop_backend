@@ -6,20 +6,12 @@
                 <!-- 搜尋框 -->
                 <div class="input-group">
                     <span class="input-group-text">搜尋食材</span>
-                    <input
-                        type="text"
-                        class="form-control"
-                        placeholder="請輸入食材名稱或編號"
-                        @input="searchIdOrName"
-                        v-model="searchInput"
-                    />
+                    <input type="text" class="form-control" placeholder="請輸入食材名稱或編號" @input="searchIdOrName"
+                        v-model="searchInput" />
                 </div>
                 <!-- 新增 -->
-                <button
-                    class="btn btn-primary create-btn"
-                    type="button"
-                    style="margin-left: auto; color: #fff"
-                >
+                <button class="btn btn-primary create-btn" type="button" style="margin-left: auto; color: #fff"
+                    @click="openAddModal">
                     新增菜色
                 </button>
             </div>
@@ -28,11 +20,7 @@
         <table class="table table-hover">
             <thead>
                 <tr>
-                    <th
-                        scope="col"
-                        v-for="(item, index) in colTitle"
-                        :key="index"
-                    >
+                    <th scope="col" v-for="(item, index) in colTitle" :key="index">
                         {{ item }}
                     </th>
                 </tr>
@@ -40,10 +28,7 @@
             <tbody>
                 <tr v-for="(item, index) in showData" :key="index">
                     <td>
-                        <button
-                            class="edit-button btn btn-sm btn-outline-secondary rounded-5"
-                            @click="openModal(item)"
-                        >
+                        <button class="edit-button btn btn-sm btn-outline-secondary rounded-5" @click="openModal(item)">
                             <font-awesome-icon icon="fa-solid fa-pen" />
                         </button>
                     </td>
@@ -57,30 +42,64 @@
     </div>
     <!-- 頁碼 -->
     <PageComponent :data="searchResult" @changePage="getPageData" />
-    <!-- 彈窗 -->
-    <div
-        class="show_modal d-flex flex-column align-items-start gap-2"
-        v-if="showModal"
-    >
-        <label for=""
-            >編號：<input type="text" :value="newData.ingred_no" disabled
-        /></label>
-        <label for=""
-            >名稱：<input type="text" :value="newData.ingred_name" />
+    <!-- 修改&刪除彈窗 -->
+    <div class="show_modal d-flex flex-column align-items-start gap-2" v-if="showModal">
+        <label for="ingred_no">編號：<input type="text" :value="newData.ingred_no" disabled id="ingred_no"
+                name="ingred_no" /></label>
+        <label for="ingred_name">名稱：<input type="text" :value="newData.ingred_name" id="ingred_name" name="ingred_name" />
         </label>
-        <label for="allergy"
-            ><input type="checkbox" id="allergy" v-model="allergyChecked" />
-            過敏原</label
-        >
-        <label for="dislike"
-            ><input type="checkbox" id="dislike" v-model="dislikeChecked" />
-            不喜歡的食物</label
-        >
-        <button class="delete">刪除</button>
-        <button class="archive">存檔</button>
+        <label for="allergy">
+            <input type="checkbox" id="allergy" name="allergy" v-model="allergyChecked" />
+            過敏原
+        </label>
+        <label for="dislike">
+            <input type="checkbox" id="dislike" name="dislike" v-model="dislikeChecked" />
+            不喜歡的食物
+        </label>
+
+        <button class="btn btn-primary col-12" style="color:#fff" type="submit" name="submit" value="修改"
+            @click="handleSubmit('存檔')">存檔</button>
+        <button class="btn btn-outline-secondary col-12" type="submit" name="submit" value="刪除"
+            @click="handleSubmit('刪除')">刪除</button>
+
         <!-- 關閉按鍵 -->
-        <button class="xmark" @click="closeModal">x</button>
+        <button class="xmark btn btn-outline-secondary rounded-5" @click="closeModal(currentItem)">
+            x
+        </button>
     </div>
+    <!-- 新增彈窗 -->
+
+    <form id="revise_game" method="POST" enctype="multipart/form-data" @submit.prevent action="#">
+        <div class="show_modal d-flex flex-column align-items-start gap-2" v-if="showAddModal">
+
+            <label for="ingred_no">編號：<input type="text" :value="ingredIdNum()" disabled id="ingred_no"
+                    name="ingred_no" /></label>
+
+
+            <label for="ingred_name">名稱：<input type="text" id="ingred_name" name="ingred_name" />
+            </label>
+
+            <label for="allergy">
+                <input type="checkbox" id="allergy" v-model="allergyChecked" />
+                過敏原
+            </label>
+            <label for="dislike">
+                <input type="checkbox" id="dislike" v-model="dislikeChecked" />
+                不喜歡的食物
+            </label>
+
+
+
+            <button class="btn btn-primary col-12" style="color:#fff" type="submit" name="submit" value="新增"
+                @click="handleSubmit('新增')">新增</button>
+
+            <!-- 關閉按鍵 -->
+            <button class="xmark btn btn-outline-secondary rounded-5" @click="closeModal(currentItem)">
+                x
+            </button>
+
+        </div>
+    </form>
 </template>
 <script>
 import PageComponent from "@/components/PageComponent.vue";
@@ -96,13 +115,15 @@ export default {
         return {
             dislikeChecked: false,
             allergyChecked: false,
-            showModal: false,
+            showModal: false, // 修改刪除的彈窗
+            showAddModal: false, //新增的彈窗
             newData: [],
             searchInput: "",
             searchResult: [],
             showData: [],
             colTitle: ["", "食材編號", "食材名稱", "過敏原", "不喜愛的"],
             foodData: [],
+            currentItem: [],
         };
     },
     methods: {
@@ -140,23 +161,62 @@ export default {
         openModal(item) {
             this.showModal = true;
             this.newData = item;
+            console.log(this.newData)
+
         },
         closeModal() {
             this.showModal = false;
+            this.showAddModal = false;
+
+            this.allergyChecked = false;
+            this.dislikeChecked = false;
+
+        },
+
+        //開啟新增視窗
+        openAddModal() {
+            this.showAddModal = true;
+
+
+        },
+        ingredIdNum() {
+            const ingredIdNum = this.foodData.length + 1;
+            return ingredIdNum;
+        },
+        //新增&修改&刪除
+        handleSubmit(submitType) {
+            let url = `${this.$url}ingredInsertUpdate.php`;
+            const formData = new FormData();
+            const ingred_no = document.querySelector('#ingred_no')?.value;
+            const ingred_name = document.querySelector('#ingred_name')?.value;
+
+
+
+            // 如果都没有选中，则设置为 NULL
+            if (!this.allergyChecked && !this.dislikeChecked) {
+                allergy = null;
+                dislike = null;
+            }
+
+            formData.append("ingred_no", ingred_no);
+            formData.append("ingred_name", ingred_name);
+            formData.append("allergy", +this.allergyChecked);
+            formData.append("dislike", +this.dislikeChecked);
+            formData.append("submit", submitType);
+
+            this.axios.post(url, formData).then(res => {
+                console.log(res)
+                this.getFoodData()
+                this.closeModal()
+            }).catch(err => {
+                console.log(err);
+            });
         },
     },
     created() {
         this.searchResult = this.foodData;
     },
     watch: {
-        // 監聽 newData.allergy 的變化
-        "newData.allergy": function (newallergy) {
-            this.allergyChecked = newallergy === "是";
-        },
-        // 監聽 newData.dislike 的變化
-        "newData.dislike": function (newDislike) {
-            this.dislikeChecked = newDislike === "是";
-        },
         //串接ingred資料庫
         foodData: {
             handler: function () {
@@ -164,6 +224,44 @@ export default {
             },
             deep: true,
         },
+        "newData.ingred_no"() {
+            this.allergyChecked = this.newData.allergy === '是';
+            this.dislikeChecked = this.newData.dislike === '是';
+
+        },
+
+        // 监听 newData.allergy 的变化
+        // "newData.allergy": function (newallergy) {
+        //     if (newallergy === true) {
+        //         this.allergyChecked = true;
+        //         this.dislikeChecked = false;
+        //         this.newData.allergy = "1";
+        //         this.newData.dislike = "0";
+        //     } else {
+        //         this.allergyChecked = false;
+        //         if (this.newData.dislike !== true) {
+        //             this.newData.allergy = null;
+        //         }
+        //     }
+        // },
+        // 监听 newData.dislike 的变化
+        // "newData.dislike": function (newDislike) {
+        //     if (newDislike === true) {
+        //         this.dislikeChecked = true;
+        //         this.allergyChecked = false;
+        //         this.newData.dislike = "1";
+        //         this.newData.allergy = "0";
+        //     } else {
+        //         this.dislikeChecked = false;
+        //         if (this.newData.allergy !== true) {
+        //             this.newData.dislike = null;
+        //         }
+        //     }
+        // },
+        // ...
+
+
+
     },
     mounted() {
         //串接ingred資料庫
@@ -210,6 +308,7 @@ export default {
     overflow: auto;
 
     label {
+
         select,
         textarea,
         input {
