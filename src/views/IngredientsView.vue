@@ -192,11 +192,7 @@ export default {
 
 
 
-            // 如果都没有选中，则设置为 NULL
-            if (!this.allergyChecked && !this.dislikeChecked) {
-                allergy = null;
-                dislike = null;
-            }
+
 
             formData.append("ingred_no", ingred_no);
             formData.append("ingred_name", ingred_name);
