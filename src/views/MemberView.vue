@@ -78,7 +78,7 @@ export default {
                 this.searchResult = this.memData
             }
             let idResult = this.memData.filter(item => {
-                return item.id.includes(this.searchInput)
+                return item.cus_no.includes(this.searchInput)
             })
             let phoneResult = this.memData.filter(item => {
                 return item.phone.includes(this.searchInput)

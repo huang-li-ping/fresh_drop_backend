@@ -50,7 +50,7 @@
             <div class="report_name">
                 <div class="report_member">
                     <div class="report_name_pic">
-                        <img src="/chd102/g2/data_images/logo/1.png" alt="">
+                        <img src="/chd102/g2/data_images/1.png" alt="">
                     </div>
                     <div class="report_me">
                         <h6>{{ newData.member }}</h6>

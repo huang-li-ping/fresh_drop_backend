@@ -7,7 +7,7 @@ header('Access-Control-Allow-Headers: Content-Type');
 try {
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $file = $_FILES["image"];
-        $dir = "../../../fresh_drop/src/assets/images/gift/";
+        $dir = __DIR__ . "/../gift_images/";
         //$dir = "images/"; //存放的路徑
         if (file_exists($dir) === false) {
             mkdir($dir);

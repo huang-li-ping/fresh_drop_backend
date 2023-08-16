@@ -37,7 +37,7 @@
         <td>{{ item.giftcard_pic_no }}</td>
         <td>{{ item.giftcard_pic_name }}</td>
         <td>{{ item.giftcard_pic_type }}</td>
-        <td><img :src="require(`./@/../../../../fresh_drop/src/assets/images/gift/${item.giftcard_defaultpic_url}`)"
+        <td><img :src="`/chd102/g2/back/gift_images/${item.giftcard_defaultpic_url}`"
             alt=""></td>
         <td>{{ item.giftcard_pic_date }}</td>
         <td>{{ status(item) }}</td>
@@ -62,7 +62,7 @@
 
       <div class="giftcardPic">
         <img
-          :src="uploadedImage || require(`./@/../../../../fresh_drop/src/assets/images/gift/${newData.giftcard_defaultpic_url}`)"
+          :src="uploadedImage || `/chd102/g2/back/gift_images/${newData.giftcard_defaultpic_url}`"
           alt="">
 
         <label for="fileInput" class="btn btn-primary" style="display: block; color:#fff">上傳圖片</label>
@@ -78,7 +78,7 @@
       <label for="giftcard_pic_type">類別　　：<input type="text" :value="newData.giftcard_pic_type" id="giftcard_pic_type"
           name="giftcard_pic_type"></label>
       <label for="giftcard_defaultpic_url">圖片路徑：<input type="text" :value="newData.giftcard_defaultpic_url"
-          id="giftcard_defaultpic_url" name="giftcard_defaultpic_url"></label>
+          id="giftcard_defaultpic_url" name="giftcard_defaultpic_url" readonly="readonly"></label>
       <label for="date">上架日期　：<input type="text" :value="newData.giftcard_pic_date || currentDate()"
           id="giftcard_pic_date" name="giftcard_pic_date"></label>
 
@@ -129,7 +129,7 @@
       <label for="giftcard_pic_type">類別　　：<input type="text" :value="newData.giftcard_pic_type" id="giftcard_pic_type"
           name="giftcard_pic_type"></label>
       <label for="giftcard_defaultpic_url">圖片路徑：<input type="text" v-model="imageFileName" id="giftcard_defaultpic_url"
-          name="image"></label>
+          name="image" readonly="readonly"></label>
       <label for="date">上架日期　：<input type="text" :value="currentDate()" id="giftcard_pic_date"
           name="giftcard_pic_date"></label>
 
