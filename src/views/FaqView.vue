@@ -11,7 +11,7 @@
 
                 <!-- 新增 -->
                 <div class="create">
-                    <button class="btn btn-primary create-btn" @click="openModal(null)" type="button"
+                    <button class="btn btn-primary create-btn" @click="openAddModal" type="button"
                         style="margin-left: auto; color: #fff">新增問答</button>
                 </div>
             </div>
@@ -25,7 +25,7 @@
             </thead>
             <tbody>
                 <tr v-for="(item, index) in showData" :key="index">
-
+                    <td>{{ item.question_no }}</td>
                     <td>{{ item.question_group }}</td>
                     <td>{{ truncateText(item.question_des) }}</td>
                     <td>{{ truncateText(item.ans) }}</td>
@@ -33,7 +33,7 @@
                         <span v-if="item.status == 0">未套用</span>
                         <span v-if="item.status == 1">套用</span>
                     </td>
-                    <td><button class="btn btn-outline-primary btn-sm" @click="openModal(item)">查閱</button></td>
+                    <td><button class="btn btn-outline-primary btn-sm" @click="openModal(item)" value="修改">查閱</button></td>
                 </tr>
             </tbody>
         </table>
@@ -42,44 +42,99 @@
     <!-- 頁碼 -->
     <PageComponent :data="searchResult" @changePage="getPageData" />
 
-    <!-- 彈窗 -->
+    <!-- 修改&刪除彈窗 -->
+    <form id="revise_faq" method="POST" enctype="multipart/form-data" @submit.prevent action="#">
+        <div class="show_modal d-flex flex-column align-items-start gap-2" v-if="showModal">
 
-    <div class="show_modal d-flex flex-column align-items-start gap-2" v-if="showModal">
+            <label for="question_no">
+                問題編號 ：<input type="text" :value="newData.question_no" id="question_no" name="question_no"
+                    disabled="disabled">
+            </label>
 
-        <label for="">狀態:
-            <select v-model="newData.status">
-                <option value="1">套用</option>
-                <option value="0">未套用</option>
-            </select>
-        </label>
-
-
-        <label for="">分類:<select v-model="newData.question_group">
-                <option value="常見問題">常見問題</option>
-                <option value="會員註冊">會員註冊</option>
-                <option value="付款問題">付款問題</option>
-                <option value="寄送問題">寄送問題</option>
-                <option value="購物相關">購物相關</option>
-                <option value="訂單問題">訂單問題</option>
-                <option value="禮物卡相關">禮物卡相關</option>
-                <option value="退換貨問題">退換貨問題</option>
-            </select> </label>
+            <label for="status">狀態 :
+                <select v-model="newData.status" id="status" name="status">
+                    <option value="1">套用</option>
+                    <option value="0">未套用</option>
+                </select>
+            </label>
 
 
-        <label for="" style="display: flex;">標題:
-            <textarea name="" id="" cols="30" rows="3">{{ newData.question_des }}</textarea>
-        </label>
-        <label for="" style="display: flex;">內容:
-            <textarea name="" id="" cols="30" rows="10">{{ newData.ans }}</textarea>
-        </label>
-        <button class="delete">刪除</button>
-        <button class="archive">存檔</button>
+            <label for="question_group">分類 :<select v-model="newData.question_group" name="question_group"
+                    id="question_group">
+                    <option value="常見問題">常見問題</option>
+                    <option value="會員註冊">會員註冊</option>
+                    <option value="付款問題">付款問題</option>
+                    <option value="寄送問題">寄送問題</option>
+                    <option value="購物相關">購物相關</option>
+                    <option value="訂單問題">訂單問題</option>
+                    <option value="禮物卡相關">禮物卡相關</option>
+                    <option value="退換貨問題">退換貨問題</option>
+                </select> </label>
 
-        <!-- 關閉按鍵 -->
-        <button class="xmark btn btn-outline-secondary " @click="closeModal">
-            x
-        </button>
-    </div>
+
+            <label for="question_des" style="display: flex;">標題 :
+                <textarea name="question_des" id="question_des" cols="30" rows="3">{{ newData.question_des }}</textarea>
+            </label>
+            <label for="ans" style="display: flex;">內容 :
+                <textarea name="ans" id="ans" cols="30" rows="10">{{ newData.ans }}</textarea>
+            </label>
+
+            <button class="btn btn-primary col-12" style="color:#fff" type="submit" name="submit" value="修改"
+                @click="handleSubmit('存檔')">存檔</button>
+            <button class="btn btn-outline-secondary col-12" type="submit" name="submit" value="刪除"
+                @click="handleSubmit('刪除')">刪除</button>
+
+            <!-- 關閉按鍵 -->
+            <button class="xmark btn btn-outline-secondary rounded-5" @click="closeModal">
+                x
+            </button>
+        </div>
+    </form>
+
+    <!-- 新增彈窗 -->
+
+    <form id="revise_faq" method="POST" enctype="multipart/form-data" @submit.prevent action="#">
+        <div class="show_modal d-flex flex-column align-items-start gap-2" v-if="showAddModal">
+
+            <label for="question_no">問題編號:<input type="text" :value="faqIdNum()" id="question_no"
+                    name="question_no"></label>
+
+            <label for="status">狀態 :
+                <select id="status" name="status">
+                    <option value="1">套用</option>
+                    <option value="0">未套用</option>
+                </select>
+            </label>
+
+            <label for="question_group">分類 :<select name="question_group" id="question_group">
+                    <option value="常見問題">常見問題</option>
+                    <option value="會員註冊">會員註冊</option>
+                    <option value="付款問題">付款問題</option>
+                    <option value="寄送問題">寄送問題</option>
+                    <option value="購物相關">購物相關</option>
+                    <option value="訂單問題">訂單問題</option>
+                    <option value="禮物卡相關">禮物卡相關</option>
+                    <option value="退換貨問題">退換貨問題</option>
+                </select> </label>
+
+            <label for="question_des" style="display: flex;">標題 :
+                <textarea name="question_des" id="question_des" cols="30" rows="3"></textarea>
+            </label>
+
+            <label for="ans" style="display: flex;">內容 :
+                <textarea name="ans" id="ans" cols="30" rows="10"></textarea>
+            </label>
+
+            <button class="btn btn-primary col-12" style="color:#fff" type="submit" name="submit" value="新增"
+                @click="handleSubmit('新增')">新增</button>
+
+            <!-- 關閉按鍵 -->
+            <button class="xmark btn btn-outline-secondary rounded-5" @click="closeModal">
+                x
+            </button>
+
+        </div>
+    </form>
 </template>
 <script>
 import PageTitle from '@/components/PageTitle.vue';
@@ -93,7 +148,8 @@ export default {
     },
     data() {
         return {
-            showModal: false,
+            showModal: false, // 修改刪除的彈窗
+            showAddModal: false, //新增的彈窗
             presetData: {
                 id: null,
                 type: '常見問題',
@@ -106,8 +162,7 @@ export default {
             showData: [],
             searchInput: '',
             searchResult: [],
-            colTitle: ["分類", "標題", "內容", "狀態", ""],
-
+            colTitle: ["問題編號", "分類", "標題", "內容", "狀態", ""],
             faqData: []
         };
     },
@@ -140,15 +195,18 @@ export default {
         //開啟彈窗,帶入data值
         openModal(item) {
             this.showModal = true;
-            console.log(this.presetData);
-            if (item === null) {
-                this.newData = this.presetData;
-            } else {
-                this.newData = item;
-            }
+            this.newData = item;
+            console.log(this.newData)
+
+        },
+        openAddModal() {
+            this.showAddModal = true;
+
         },
         closeModal() {
             this.showModal = false;
+            this.showAddModal = false;
+
         },
         getPageData(data) {
             this.showData = data
@@ -158,6 +216,34 @@ export default {
             let url = `${this.$url}faqRows.php`
             this.axios.get(url).then(res => {
                 this.faqData = res.data
+            }).catch(err => {
+                console.log(err);
+            })
+        },
+        faqIdNum() {
+            const faqIdNum = this.faqData.length + 1;
+            return faqIdNum;
+        },
+        //新增&修改&刪除
+        handleSubmit(submitType) {
+            let url = `${this.$url}faqInsertUpdate.php`
+            const formData = new FormData();
+            const question_no = document.querySelector('#question_no')?.value;
+            const status = document.querySelector('#status')?.value;
+            const question_group = document.querySelector('#question_group')?.value;
+            const question_des = document.querySelector('#question_des')?.value;
+            const ans = document.querySelector('#ans')?.value;
+            formData.append("question_no", question_no);
+            formData.append("status", status);
+            formData.append("question_group", question_group);
+            formData.append("question_des", question_des);
+            formData.append("ans", ans);
+            formData.append("submit", submitType);
+
+            this.axios.post(url, formData).then(res => {
+                console.log(res)
+                this.getFaqData()
+                this.closeModal()
             }).catch(err => {
                 console.log(err);
             })

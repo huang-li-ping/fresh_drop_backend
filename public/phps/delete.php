@@ -2,17 +2,17 @@
 header('Access-Control-Allow-Origin:*');
 
 	try {
-		require_once("./connect_chd102g1.php");
+		require_once("./connect_chd102g2.php");
 
-		$sql = "DELETE FROM pattern 
-						WHERE pattern_no = :pattern_no";
+		$sql = "DELETE FROM opinion 
+						WHERE opinion_no = :opinion_no";
 
-		$pattern = $pdo->prepare($sql);
-		$pattern->bindValue(":pattern_no", $_POST["pattern_no"]);
-		$pattern->execute();
+		$opinion = $pdo->prepare($sql);
+		$opinion->bindValue(":opinion_no", $_POST["opinion_no"]);
+		$opinion->execute();
 		
-		$pattern_file = $_POST["pattern_file"];// images/pattern/2.svg
-		$filePath = "../../$pattern_file";
+		$opinion_file = $_POST["opinion_file"];// images/opinion/2.svg
+		$filePath = "../../$opinion_file";
 		unlink($filePath); // 將檔案刪除
 
 		$msg = "已刪除圖片";

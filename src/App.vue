@@ -13,8 +13,6 @@ export default {
     watch: {
         "$route.path": {
             handler: function () {
-                console.log('watch');
-                console.log(this.$route.path);
                 if (this.$route.path !== '/' && !this.$store.state.isLogin) {
                     this.$router.push('/')
                     alert('請先登入')

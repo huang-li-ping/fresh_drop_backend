@@ -27,7 +27,7 @@
                 <td>{{ item.member_fk }}</td>
                 <td>
                     <div class="recipe_pic">
-                        <!-- <img :src="require(`./@/../../../../fresh_drop/src/assets/images/product/${item.report_pic}`)" alt=""> -->
+                        <img :src="require(`@/assets/images/product/${item.report_pic}`)" alt="">
                     </div>
                 </td>
                 <td>{{ truncateText(item.reason, 4) }}</td>
@@ -45,12 +45,12 @@
         <h4>被檢舉內容：</h4>
         <div class="report_content">
             <div class="report_pic">
-                <!-- <img :src="require(`./@/../../../../fresh_drop/src/assets/images/product/${newData.report_pic}`)" alt=""> -->
+                <img :src="require(`@/assets/images/product/${newData.report_pic}`)" alt="">
             </div>
             <div class="report_name">
                 <div class="report_member">
                     <div class="report_name_pic">
-                        <!-- <img src="./@/../../../../fresh_drop/src/assets/images/logo/robo.png" alt=""> -->
+                        <!-- <img src="@/assets/images/logo/robo.png" alt=""> -->
                     </div>
                     <div class="report_me">
                         <h6>{{ newData.member }}</h6>
@@ -177,7 +177,6 @@ export default {
         white-space: nowrap;
     }
 }
-
 .show_modal {
     position: fixed;
     left: 50%;
