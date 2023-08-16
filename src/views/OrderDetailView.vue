@@ -50,7 +50,7 @@
                 <ul class="nav nav-tabs" v-show="orderList.length > 1">
                     <li class="nav-item" v-for="n in orderList.length" :key="n">
                         <a class="nav-link" :class="{ active: currentTab === 'WEEK1' }" @click="showCurrentData(n)"
-                                href="#">
+                            href="#">
                             WEEK{{ n }}
                         </a>
                     </li>
@@ -63,8 +63,8 @@
                         <th scope="col" v-for="(item, index) in colTitle" :key="index">{{ item }}</th>
                     </tr>
                 </thead>
-                <tbody v-if="orderList">
-                    <tr v-for="(item, index) in currentData" :key="index">
+                <tbody>
+                    <tr v-if="orderList" v-for="(item, index) in currentData" :key="index">
                         <td>{{ item.recipe }}</td>
                         <td>{{ item.qty }}</td>
                         <td>{{ item.status }}</td>
@@ -72,7 +72,21 @@
                 </tbody>
             </table>
         </div>
-        <div class="bill_container" v-if="orderList">
+        <div class="bill_container" v-if="billDetail">
+            <p>訂單金額明細</p>
+            <div class="frist">
+                <p>{{ billDetail.week }}</p>
+                <p>{{ billDetail.qty }}</p>
+                <P>{{ billDetail.amount }}</P>
+            </div>
+            <p style="text-align: right;">{{ billDetail.sale }}</p>
+            <p style="text-align: right;">{{ billDetail.deliv_m }}</p>
+            <p style="text-align: right;">{{ billDetail.giftcard_m }}</p>
+            <p style="text-align: right;">{{ billDetail.giftcard_n }}</p>
+            <hr>
+            <p style="text-align: right;">{{ billDetail.total }}</p>
+        </div>
+        <!-- <div class="bill_container" v-if="orderList">
             <p>訂單金額明細</p>
             <div class="frist">
                 <p v-if="orderList.length > 1">${{ orderList.length * 200 }}/週</p>
@@ -82,11 +96,11 @@
             </div>
             <p style="text-align: right;" v-if="orderList.length > 1">優惠折抵：${{ (orderInfo.ord_price - 80) / 0.2 }}</p>
             <p style="text-align: right;">運費:$80</p>
-            <p style="text-align: right;" v-if="orderInfo.discount_price > 0">禮物卡折抵：${{ orderInfo.discount_price }}</p>
-            <!-- <p style="text-align: right;" v-if="orderInfo.discount_price > 0">{{ orderInfo.discount_price }}</p> -->
-            <hr>
+            <p style="text-align: right;" v-if="orderInfo.discount_price > 0">禮物卡折抵：${{ orderInfo.discount_price }}</p> -->
+        <!-- <p style="text-align: right;" v-if="orderInfo.discount_price > 0">{{ orderInfo.discount_price }}</p> -->
+        <!-- <hr>
             <p style="text-align: right;">{{ orderInfo.total_price }}</p>
-        </div>
+        </div> -->
     </div>
 </template>
 <script>
@@ -105,6 +119,58 @@ export default {
 
             currentTab: 1,
             colTitle: ["品項", "份數", "出貨狀態",],
+            // orderInfo:
+            // {
+            //     ord_date: "2023-07-04",
+            //     ord_no: "4",
+            //     cus_name: "藍奕柯",
+            //     cus_email: "Alice_Mckenzie@fresh.com",
+            //     deliv_no: "定期配送",
+            //     total_price: "$1480",
+            //     payment: "信用卡+禮物卡",
+            //     ord_status: "處理中",
+            //     week: "WEEK1",
+            //     ord_cus: "陳小廷",
+            //     ord_phone: "0966-987654",
+            //     ord_addr: "320 桃園市中壢區哀哀路3號",
+            //     ord_credit_no: "6548-9989-6564-3221",
+            // },
+            // orderList: [
+            //     [
+            //         { recipe: "泡椒炒鮮魚", qty: "X1", status: "已出貨(2023-07-05)" },
+            //         { recipe: "阿根廷燉牛肉", qty: "X1", },
+            //         { recipe: "希臘烤羊肉", qty: "X1", },
+            //         { recipe: "日本櫻花蝦天婦羅", qty: "X1", },
+            //     ],
+            //     [
+            //         { recipe: "越南河粉湯", qty: "X1", status: "處理中" },
+            //         { recipe: "泰式生菜包", qty: "X1", },
+            //         { recipe: "麻婆豆腐", qty: "X1", },
+            //         { recipe: "巴西凱撒沙拉", qty: "X1", },
+            //     ],
+            //     [
+            //         { recipe: "泡椒炒鮮魚", qty: "X1", status: "處理中(2023-07-05)" },
+            //         { recipe: "阿根廷燉牛肉", qty: "X1", },
+            //         { recipe: "希臘烤羊肉", qty: "X1", },
+            //         { recipe: "日本櫻花蝦天婦羅", qty: "X1", },
+            //     ],
+            //     [
+            //         { recipe: "越南河粉湯", qty: "X1", status: "處理中(2023-07-05)" },
+            //         { recipe: "泰式生菜包", qty: "X1", },
+            //         { recipe: "麻婆豆腐", qty: "X1", },
+            //         { recipe: "巴西凱撒沙拉", qty: "X1", },
+            //     ],
+            // ],
+            billDetail: {
+                week: "$800 /週",
+                qty: "X4",
+                amount: "金額：$3200",
+                sale:"8折優惠：-$640",
+                deliv_m: "運費：$80",
+                giftcard_m: "禮物卡折抵：-$1080",
+                giftcard_n: "禮物卡編號：01234567",
+                total: "總金額：$1480",
+            }
         };
     },
     methods: {
@@ -117,7 +183,7 @@ export default {
                 try {
                     const response = await axios.post(url, { ordNo });
                     this.orderInfo = response.data;
-                console.log(response.data);
+                    console.log(response.data);
                 } catch (error) {
                     console.error('Error fetching order detail:', error);
                 }

@@ -1,14 +1,14 @@
 <?php
 //開發用
-$user = "root";
-$psw = "";
-$port = 3306;
+// $user = "root";
+// $psw = "";
+// $port = 3306;
 $dbname = "fresh_drop";
 
 //雨停用
-// $user = "root";
-// $psw = "root";
-// $port = 8889;
+$user = "root";
+$psw = "root";
+$port = 8889;
 
 //上線用
 // $user = "tibamefe_since2021";
