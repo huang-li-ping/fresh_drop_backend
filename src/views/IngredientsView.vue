@@ -59,7 +59,7 @@
     <PageComponent :data="searchResult" @changePage="getPageData" />
     <!-- 彈窗 -->
     <div
-        class="show_modal d-flex flex-column align-items-start gap-2"
+        class="show_modal_ingred d-flex flex-column align-items-start gap-2"
         v-if="showModal"
     >
         <label for=""
@@ -191,7 +191,7 @@ export default {
     }
 }
 
-.show_modal {
+.show_modal_ingred {
     border: 3px solid #1f8d61;
     border-radius: 20px;
     width: fit-content;
