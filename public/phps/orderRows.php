@@ -69,6 +69,7 @@ try{
 
     echo json_encode($uniqueOrderRows);
 }catch(Exception $e){
-    echo json_encode(["連線失敗"]);
+    // echo json_encode(["連線失敗"]);
+    echo json_encode([$e]);
 }
 ?>
