@@ -42,7 +42,7 @@
     <!-- 頁碼 -->
     <PageComponent :data="searchResult" @changePage="getPageData" />
     <!-- 彈窗 -->
-    <div class="show_modal d-flex flex-column align-items-start gap-2" v-if="showModal">
+    <div class="report_show_modal d-flex flex-column align-items-start gap-2" v-if="showModal">
         <h4>被檢舉內容：</h4>
         <div class="report_content">
             <div class="report_pic">
@@ -184,7 +184,7 @@ export default {
         white-space: nowrap;
     }
 }
-.show_modal {
+.report_show_modal {
     position: fixed;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -286,7 +286,6 @@ export default {
             }
         }
     }
-
 }
 
 td {

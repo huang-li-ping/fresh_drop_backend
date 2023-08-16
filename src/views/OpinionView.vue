@@ -121,7 +121,7 @@ export default {
     created() {
         this.searchResult = this.opinionData;
     },
-    //串接ingred資料庫
+    //串接資料庫
     watch:{
         opinionData: {
         handler: function () {
@@ -133,7 +133,7 @@ export default {
 
     },
     mounted (){
-    //串接ingred資料庫
+    //串接資料庫
     this.getopinionData()
     },
 };
