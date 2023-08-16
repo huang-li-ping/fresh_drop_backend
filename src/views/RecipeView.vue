@@ -6,12 +6,21 @@
                 <!-- 搜尋框 -->
                 <div class="input-group">
                     <span class="input-group-text">搜尋菜色</span>
-                    <input type="text" class="form-control" placeholder="請輸入菜色名稱或編號" @input="searchIdOrName"
-                        v-model="searchInput" />
+                    <input
+                        type="text"
+                        class="form-control"
+                        placeholder="請輸入菜色名稱或編號"
+                        @input="searchIdOrName"
+                        v-model="searchInput"
+                    />
                 </div>
                 <!-- 新增 -->
-                <button class="btn btn-primary create-btn" type="button" style="margin-left: auto; color: #fff"
-                    @click="openAddModal">
+                <button
+                    class="btn btn-primary create-btn"
+                    type="button"
+                    style="margin-left: auto; color: #fff"
+                    @click="openAddModal"
+                >
                     新增食材
                 </button>
             </div>
@@ -20,7 +29,11 @@
         <table class="table table-hover">
             <thead>
                 <tr>
-                    <th scope="col" v-for="(item, index) in colTitle" :key="index">
+                    <th
+                        scope="col"
+                        v-for="(item, index) in colTitle"
+                        :key="index"
+                    >
                         {{ item }}
                     </th>
                 </tr>
@@ -28,7 +41,10 @@
             <tbody>
                 <tr v-for="(item, index) in showData" :key="index">
                     <td>
-                        <button class="edit-button btn btn-sm btn-outline-secondary rounded-5" @click="openModal(item)">
+                        <button
+                            class="edit-button btn btn-sm btn-outline-secondary rounded-5"
+                            @click="openModal(item)"
+                        >
                             <font-awesome-icon icon="fa-solid fa-pen" />
                         </button>
                     </td>
@@ -46,14 +62,21 @@
                     <td>{{ truncateText(item.step) }}</td>
                     <td>
                         <div class="recipe_pic">
-                            <img :src="require(`./@/../../../../fresh_drop/src/assets/images/product/${item.recipe_pic}`)
-                                " alt="" />
+                            <img
+                                :src="
+                                    require(`./@/../../../../fresh_drop/src/assets/images/product/${item.recipe_pic}`)
+                                "
+                                alt=""
+                            />
                         </div>
                     </td>
                     <td>{{ truncateText(item.des) }}</td>
                     <td>
                         <div class="input-group-append">
-                            <button class="btn btn-outline-primary" type="button">
+                            <button
+                                class="btn btn-outline-primary"
+                                type="button"
+                            >
                                 <span v-if="item.state == 0">上架</span>
                                 <span v-if="item.state == 1">下架</span>
                             </button>
@@ -65,47 +88,96 @@
         <!-- 頁碼 -->
         <PageComponent :data="searchResult" @changePage="getPageData" />
         <!-- 修改&刪除彈窗 -->
-        <form id="revise_faq" method="POST" enctype="multipart/form-data" @submit.prevent action="#">
-            <div class="show_modal d-flex flex-column align-items-start gap-2" v-if="showModal">
-                <label for="class">類別：
+        <form
+            id="revise_faq"
+            method="POST"
+            enctype="multipart/form-data"
+            @submit.prevent
+            action="#"
+        >
+            <div
+                class="show_modal_recipe d-flex flex-column align-items-start gap-2"
+                v-if="showModal"
+            >
+                <label for="class"
+                    >類別：
                     <select id="class" name="class" v-model="newData.class">
                         <option value="0">主菜</option>
                         <option value="1">湯品</option>
                         <option value="2">沙拉</option>
                     </select>
                 </label>
-                <label for="">編號：
-                    <input class="recipe_no" type="text" id="recipe_no" name="recipe_no" :value="newData.recipe_no"
-                        disabled /></label>
-                <label for="">名稱：
-                    <input class="recipe_name" id="recipe_name" name="recipe_name" type="text"
-                        :value="newData.recipe_name" />
+                <label for=""
+                    >編號：
+                    <input
+                        class="recipe_no"
+                        type="text"
+                        id="recipe_no"
+                        name="recipe_no"
+                        :value="newData.recipe_no"
+                        disabled
+                /></label>
+                <label for=""
+                    >名稱：
+                    <input
+                        class="recipe_name"
+                        id="recipe_name"
+                        name="recipe_name"
+                        type="text"
+                        :value="newData.recipe_name"
+                    />
                 </label>
                 <label for="des">菜色描述：</label>
-                <textarea class="recipe_des" id="des" name="des" v-model="newData.des" rows="4"></textarea>
+                <textarea
+                    class="recipe_des"
+                    id="des"
+                    name="des"
+                    v-model="newData.des"
+                    rows="4"
+                ></textarea>
                 <div>食材表：</div>
                 <div class="ingred_wrap">
-                    <div class="ingred_table" v-for="(inputData, index) in inputDataArray" :key="index">
+                    <div
+                        class="ingred_table"
+                        v-for="(inputData, index) in inputDataArray"
+                        :key="index"
+                    >
                         <div class="ingred_input">
                             <label :for="'ingred_item' + index">
-                                <input type="text" :id="'ingred_item_' + index" v-model="inputData.ingred_name" />
+                                <input
+                                    type="text"
+                                    :id="'ingred_item_' + index"
+                                    v-model="inputData.ingred_name"
+                                />
                             </label>
                             <label :for="'ingred_unit' + index">
-                                <input type="text" :id="'ingred_unit_' + index" v-model="inputData.quantity_unit" />
+                                <input
+                                    type="text"
+                                    :id="'ingred_unit_' + index"
+                                    v-model="inputData.quantity_unit"
+                                />
                             </label>
                         </div>
                         <div class="ingred_btn">
                             <button class="reduce" @click="reduceInput(index)">
                                 <font-awesome-icon icon="fa-solid fa-minus" />
                             </button>
-                            <button class="increase" @click="increaseInput(index)">
+                            <button
+                                class="increase"
+                                @click="increaseInput(index)"
+                            >
                                 <font-awesome-icon icon="fa-solid fa-plus" />
                             </button>
                         </div>
                     </div>
                 </div>
                 <label for="step">製作步驟：</label>
-                <textarea class="recipe_step" id="step" v-model="newData.step" rows="6"></textarea>
+                <textarea
+                    class="recipe_step"
+                    id="step"
+                    v-model="newData.step"
+                    rows="6"
+                ></textarea>
                 <label for="">菜色照片：</label>
                 <div class="upload_file">
                     <!-- <div class="upload_pic" v-if="previewImage"> -->
@@ -115,14 +187,25 @@
                         :src="previewImage"
                         alt="Preview"
                     /> -->
-                        <img class="pic" :src="previewImage ||
-                            require(`./@/../../../../fresh_drop/src/assets/images/product/${newData.recipe_pic}`)
-                            " alt="Preview" />
+                        <img
+                            class="pic"
+                            :src="
+                                previewImage ||
+                                require(`./@/../../../../fresh_drop/src/assets/images/product/${newData.recipe_pic}`)
+                            "
+                            alt="Preview"
+                        />
                     </div>
                     <button class="file_btn" @click="triggerFileInput">
                         <p class="file_text">點擊上傳照片</p>
                     </button>
-                    <input id="fileInput" type="file" ref="fileInput" @change="handleFileUpload" style="display: none" />
+                    <input
+                        id="fileInput"
+                        type="file"
+                        ref="fileInput"
+                        @change="handleFileUpload"
+                        style="display: none"
+                    />
                 </div>
                 <div class="recipe_btn">
                     <button class="delete">刪除</button>
@@ -135,63 +218,118 @@
 
         <!-- 新增彈窗 -->
 
-        <form id="revise_game" method="POST" enctype="multipart/form-data" @submit.prevent action="#">
-            <div class="show_modal d-flex flex-column align-items-start gap-2" v-if="showAddModal">
+        <form
+            id="revise_game"
+            method="POST"
+            enctype="multipart/form-data"
+            @submit.prevent
+            action="#"
+        >
+            <div
+                class="show_modal_recipe d-flex flex-column align-items-start gap-2"
+                v-if="showAddModal"
+            >
+                <label for="result_no"
+                    >結果編號：<input
+                        type="text"
+                        :value="gameIdNum()"
+                        id="result_no"
+                        name="result_no"
+                /></label>
 
-                <label for="result_no">結果編號：<input type="text" :value="gameIdNum()" id="result_no" name="result_no"></label>
-
-                <label for="status">狀態:
+                <label for="status"
+                    >狀態:
                     <select id="status" name="status">
                         <option value="1">套用</option>
                         <option value="0">未套用</option>
                     </select>
                 </label>
 
-                <label for="personality" class="inline-label">人格種類:<input type="text" value="" id="personality"
-                        name="personality"></label>
+                <label for="personality" class="inline-label"
+                    >人格種類:<input
+                        type="text"
+                        value=""
+                        id="personality"
+                        name="personality"
+                /></label>
 
-                <label for="">推薦菜色1:
+                <label for=""
+                    >推薦菜色1:
                     <select name="dish1" id="dish1">
-                        <option v-for="(item) in recipeData" :key="item.recipe_no" :value="item.recipe_no">
+                        <option
+                            v-for="item in recipeData"
+                            :key="item.recipe_no"
+                            :value="item.recipe_no"
+                        >
                             {{ item.recipe_name }}
                         </option>
                     </select>
                 </label>
-                <label for="">推薦菜色2:
+                <label for=""
+                    >推薦菜色2:
                     <select name="dish2" id="dish2">
-                        <option v-for="(item) in recipeData" :key="item.recipe_no" :value="item.recipe_no">
+                        <option
+                            v-for="item in recipeData"
+                            :key="item.recipe_no"
+                            :value="item.recipe_no"
+                        >
                             {{ item.recipe_name }}
                         </option>
                     </select>
                 </label>
-                <label for="">推薦菜色3:
+                <label for=""
+                    >推薦菜色3:
                     <select name="dish3" id="dish3">
-                        <option v-for="(item) in recipeData" :key="item.recipe_no" :value="item.recipe_no">
+                        <option
+                            v-for="item in recipeData"
+                            :key="item.recipe_no"
+                            :value="item.recipe_no"
+                        >
                             {{ item.recipe_name }}
                         </option>
                     </select>
                 </label>
-                <label for="">推薦菜色4:
+                <label for=""
+                    >推薦菜色4:
                     <select name="dish4" id="dish4">
-                        <option v-for="(item) in recipeData" :key="item.recipe_no" :value="item.recipe_no">
+                        <option
+                            v-for="item in recipeData"
+                            :key="item.recipe_no"
+                            :value="item.recipe_no"
+                        >
                             {{ item.recipe_name }}
                         </option>
                     </select>
                 </label>
 
-                <label for="content" style="display: flex;">分析結果:
-                    <textarea id="content" name="content" cols="30" rows="6"></textarea>
+                <label for="content" style="display: flex"
+                    >分析結果:
+                    <textarea
+                        id="content"
+                        name="content"
+                        cols="30"
+                        rows="6"
+                    ></textarea>
                 </label>
 
-
-                <button class="btn btn-primary col-12" style="color:#fff" type="submit" name="submit" value="新增"
-                    @click="handleSubmit('新增')">新增</button>
-
-                <!-- 關閉按鍵 -->
-                <button class="xmark btn btn-outline-secondary rounded-5" @click="closeModal">
-                    x
+                <button
+                    class="btn btn-primary col-12"
+                    style="color: #fff"
+                    type="submit"
+                    name="submit"
+                    value="新增"
+                    @click="handleSubmit('新增')"
+                >
+                    新增
                 </button>
 
+                <!-- 關閉按鍵 -->
+                <button
+                    class="xmark btn btn-outline-secondary rounded-5"
+                    @click="closeModal"
+                >
+                    x
+                </button>
             </div>
         </form>
     </div>
@@ -279,12 +417,10 @@ export default {
         closeModal() {
             this.showModal = false;
             this.showAddModal = false;
-
         },
         //開啟新增視窗
         openAddModal() {
             this.showAddModal = true;
-
         },
         //增減欄位
         reduceInput(index) {
@@ -322,16 +458,16 @@ export default {
         },
         //新增&修改&刪除
         handleSubmit(submitType) {
-            let url = `${this.$url}gameInsertUpdate.php`
+            let url = `${this.$url}gameInsertUpdate.php`;
             const formData = new FormData();
-            const result_no = document.querySelector('#result_no')?.value;
-            const status = document.querySelector('#status')?.value;
-            const personality = document.querySelector('#personality')?.value;
-            const dish1 = document.querySelector('#dish1')?.value;
-            const dish2 = document.querySelector('#dish2')?.value;
-            const dish3 = document.querySelector('#dish3')?.value;
-            const dish4 = document.querySelector('#dish4')?.value;
-            const content = document.querySelector('#content')?.value;
+            const result_no = document.querySelector("#result_no")?.value;
+            const status = document.querySelector("#status")?.value;
+            const personality = document.querySelector("#personality")?.value;
+            const dish1 = document.querySelector("#dish1")?.value;
+            const dish2 = document.querySelector("#dish2")?.value;
+            const dish3 = document.querySelector("#dish3")?.value;
+            const dish4 = document.querySelector("#dish4")?.value;
+            const content = document.querySelector("#content")?.value;
             formData.append("result_no", result_no);
             formData.append("status", status);
             formData.append("personality", personality);
@@ -342,13 +478,16 @@ export default {
             formData.append("content", content);
             formData.append("submit", submitType);
 
-            this.axios.post(url, formData).then(res => {
-                console.log(res)
-                this.getGameData()
-                this.closeModal()
-            }).catch(err => {
-                console.log(err);
-            })
+            this.axios
+                .post(url, formData)
+                .then((res) => {
+                    console.log(res);
+                    this.getGameData();
+                    this.closeModal();
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
         },
     },
     created() {
@@ -407,7 +546,7 @@ td {
     }
 }
 
-.show_modal {
+.show_modal_recipe {
     border: 3px solid #1f8d61;
     border-radius: 20px;
     width: fit-content;
@@ -425,7 +564,6 @@ td {
     overflow: auto;
 
     label {
-
         select,
         textarea,
         input {
@@ -517,13 +655,14 @@ td {
 
 .upload_file {
     width: 100%;
-    height: 150px;
+    height: 200px;
     text-align: center;
     display: flex;
     align-items: center;
     justify-content: center;
     position: relative;
     overflow: hidden;
+    flex-shrink: 0;
 
     &::placeholder {
         width: 100px;
