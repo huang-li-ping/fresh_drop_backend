@@ -57,7 +57,7 @@
 
     <!-- 修改&刪除彈窗 -->
     <form id="revise_faq" method="POST" enctype="multipart/form-data" @submit.prevent action="#">
-        <div class="show_modal d-flex flex-column align-items-start gap-2" v-if="showModal">
+        <div class="show_modal_game d-flex flex-column align-items-start gap-2" v-if="showModal">
 
             <label for="result_no">結果編號:<input type="text" :value="newData.result_no || gameIdNum()" id="result_no"
                     name="result_no" disabled="disabled"></label>
@@ -138,7 +138,7 @@
     <!-- 新增彈窗 -->
 
     <form id="revise_game" method="POST" enctype="multipart/form-data" @submit.prevent action="#">
-        <div class="show_modal d-flex flex-column align-items-start gap-2" v-if="showAddModal">
+        <div class="show_modal_game d-flex flex-column align-items-start gap-2" v-if="showAddModal">
 
             <label for="result_no">結果編號：<input type="text" :value="gameIdNum()" id="result_no" name="result_no"></label>
 
@@ -384,7 +384,7 @@ export default {
 </script>
 
 <style lang="scss">
-.show_modal {
+.show_modal_game {
     border: 3px solid #1f8d61;
     border-radius: 20px;
     width: fit-content;

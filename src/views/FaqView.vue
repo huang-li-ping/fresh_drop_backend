@@ -44,7 +44,7 @@
 
     <!-- 修改&刪除彈窗 -->
     <form id="revise_faq" method="POST" enctype="multipart/form-data" @submit.prevent action="#">
-        <div class="show_modal d-flex flex-column align-items-start gap-2" v-if="showModal">
+        <div class="show_modal_faq d-flex flex-column align-items-start gap-2" v-if="showModal">
 
             <label for="question_no">
                 問題編號 ：<input type="text" :value="newData.question_no" id="question_no" name="question_no"
@@ -94,7 +94,7 @@
     <!-- 新增彈窗 -->
 
     <form id="revise_faq" method="POST" enctype="multipart/form-data" @submit.prevent action="#">
-        <div class="show_modal d-flex flex-column align-items-start gap-2" v-if="showAddModal">
+        <div class="show_modal_faq d-flex flex-column align-items-start gap-2" v-if="showAddModal">
 
             <label for="question_no">問題編號:<input type="text" :value="faqIdNum()" id="question_no"
                     name="question_no"></label>
@@ -274,7 +274,7 @@ export default {
 // @import '@/assets/scss/all.scss';
 // @import "@/assets/scss/page/ingredients.scss";
 
-.show_modal {
+.show_modal_faq {
     border: 3px solid #1F8D61;
     border-radius: 20px;
     width: fit-content;
