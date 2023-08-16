@@ -10,17 +10,17 @@ export default {
         return {};
     },
     methods: {},
-    watch: {
-        "$route.path": {
-            handler: function () {
-                if (this.$route.path !== '/' && !this.$store.state.isLogin) {
-                    this.$router.push('/')
-                    alert('請先登入')
-                }
-            },
-            deep:true
-        }
-    },
+    // watch: {
+    //     "$route.path": {
+    //         handler: function () {
+    //             if (this.$route.path !== '/' && !this.$store.state.isLogin) {
+    //                 this.$router.push('/')
+    //                 alert('請先登入')
+    //             }
+    //         },
+    //         deep:true
+    //     }
+    // },
 };
 </script>
 

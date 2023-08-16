@@ -26,19 +26,20 @@ export default {
     methods: {
         employeeLogin() {
             
-            let url = `${this.$url}employeeLogin.php`
-            let params = new URLSearchParams()
-            params.append("account", this.account)
-            params.append("psw", this.psw)
-            this.axios.post(url, params).then(res => {
-                alert(res.data)
-                if (res.data[0] == '登入成功') {
-                    this.$store.state.isLogin = true
-                    this.$router.push('/backhome')
-                } 
-            }).catch(err => {
-                console.log(err);
-            })
+            // let url = `${this.$url}employeeLogin.php`
+            // let params = new URLSearchParams()
+            // params.append("account", this.account)
+            // params.append("psw", this.psw)
+            // this.axios.post(url, params).then(res => {
+            //     alert(res.data)
+            //     if (res.data[0] == '登入成功') {
+            //         this.$store.state.isLogin = true
+            //         this.$router.push('/backhome')
+            //     } 
+            // }).catch(err => {
+            //     console.log(err);
+            // })
+            this.$router.push('/backhome')
         },
     }
 }
