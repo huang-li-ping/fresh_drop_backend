@@ -49,7 +49,7 @@
   <!-- 修改刪除彈窗 -->
 
  <form id="revise_employee" method="POST" enctype="multipart/form-data" @submit.prevent action="#">
-  <div class="show_modal d-flex flex-column align-items-start gap-2" v-if="showModal">
+  <div class="emp_show_modal d-flex flex-column align-items-start gap-2" v-if="showModal">
    
    
     <label for="emp_no">管理員編號：<input type="text" :value="newData.emp_no ||  employeeIdNum()" id="emp_no" name="emp_no"></label>
@@ -63,7 +63,7 @@
     <label for="date">加入日期　：<input type="text" :value="newData.emp_date || currentDate()" id="emp_date"  name="emp_date"></label>
 
     <label for="status">狀態　　　：
-      <select name="emp_status" id="emp_status">
+      <select name="emp_status" id="emp_status" v-model="newData.emp_status">
         <option value=1>啟用</option>
         <option value=0>停用</option>
       </select></label>
@@ -84,7 +84,7 @@
  <!-- 新增彈窗 -->
 
  <form id="revise_employee" method="POST" enctype="multipart/form-data" @submit.prevent action="#">
-  <div class="show_modal d-flex flex-column align-items-start gap-2" v-if="showAddModal">
+  <div class="emp_show_modal d-flex flex-column align-items-start gap-2" v-if="showAddModal">
       
     <label for="emp_no">管理員編號：<input type="text" :value="employeeIdNum()" id="emp_no" name="emp_no"></label>
 
@@ -263,7 +263,7 @@ table {
   margin-top: 20px;
 }
 
-.show_modal {
+.emp_show_modal {
   border: 3px solid #1F8D61;
   border-radius: 20px;
   width: fit-content;
