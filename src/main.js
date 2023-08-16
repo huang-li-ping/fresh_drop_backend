@@ -27,8 +27,8 @@ import axios from 'axios';
 import VueAxios from 'vue-axios'
 
 //開發用
-// const apiURL = 'http://localhost/fresh_drop_backend/public/phps/'
-const apiURL = 'http://localhost:8888/'
+const apiURL = 'http://localhost/fresh_drop_backend/public/phps/'
+// const apiURL = 'http://localhost:8888/'
 
 //上線用
 // const apiURL = 'https://tibamef2e.com/chd102/g2/back/phps/'
