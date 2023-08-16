@@ -26,14 +26,13 @@
                 <td>{{ item.opinion_no }}</td>
                 <td>{{ item.member_fk }}</td>
                 <td>
-                    <img :src="require(`./@/../../../../fresh_drop/src/assets/images/product/${item.report_pic}`)" alt="">
+                    <div class="recipe_pic">
+                        <img :src="require(`@/assets/images/product/${item.report_pic}`)" alt="">
+                    </div>
                 </td>
                 <td>{{ truncateText(item.reason, 4) }}</td>
                 <td>{{ item.date }}</td>
-                <td>
-                <span v-if="item.state == 0">未套用</span>
-                <span v-if="item.state == 1">套用</span>
-                </td>
+                <td>{{ item.state }}</td>
                 <td>{{ item.report }}</td>
                 <td><button class="btn btn-outline-primary btn-sm" @click="openModal(item)">查閱</button></td>
             </tr>
@@ -46,12 +45,12 @@
         <h4>被檢舉內容：</h4>
         <div class="report_content">
             <div class="report_pic">
-                <img :src="require(`./@/../../../../fresh_drop/src/assets/images/product/${newData.report_pic}`)" alt="">
+                <img :src="require(`@/assets/images/product/${newData.report_pic}`)" alt="">
             </div>
             <div class="report_name">
                 <div class="report_member">
                     <div class="report_name_pic">
-                        <img src="./@/../../../../fresh_drop/src/assets/images/logo/robo.png" alt="">
+                        <img src="/chd102/g2/data_images/logo/1.png" alt="">
                     </div>
                     <div class="report_me">
                         <h6>{{ newData.member }}</h6>
@@ -165,13 +164,7 @@ export default {
 
 <style lang="scss">
 @import "@/assets/scss/page/ingredients.scss";
-.table{
-    td{
-        img{
-            width: 80px;
-        }
-    }
-}
+
 .report_container {
     .input-group {
         width: fit-content;
@@ -286,6 +279,7 @@ export default {
             }
         }
     }
+
 }
 
 td {
@@ -302,3 +296,4 @@ td {
         width: 100%;
     }
 }</style>
+
