@@ -94,11 +94,12 @@ export default {
 
         searchOrdNo() {
             console.log(this.searchInput);
-            if (this.searchInput == '') {
+            if (this.searchInput == "") {
                 this.searchResult = this.orderData;
             } else {
-                let idResult = this.orderData.filter(item => {
-                    return item.ord_no.includes(this.searchInput);
+                let idResult = this.orderData.filter((item) => {
+                    // return item.ord_no.includes(this.searchInput);
+                    return item.ord_no.toString().includes(this.searchInput);
                 });
                 this.searchResult = idResult;
             }

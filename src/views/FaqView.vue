@@ -5,7 +5,7 @@
             <div class="d-flex justify-content-between">
                 <div class="input-group" style="width: fit-content;">
                     <span class="input-group-text">搜尋結果</span>
-                    <input type="text" class="form-control" placeholder="請輸入分類或狀態" @input="searchIdOrPhone"
+                    <input type="text" class="form-control" placeholder="請輸入分類或編號" @input="searchIdOrPhone"
                         v-model="searchInput" />
                 </div>
 
@@ -173,10 +173,15 @@ export default {
                 this.searchResult = this.faqData
             }
             let typeResult = this.faqData.filter(item => {
-                return item.question_group.includes(this.searchInput)
+
+                return (
+                    typeof item.question_group == "string" &&
+                    item.question_group.includes(this.searchInput)
+                );
             })
             let stateResult = this.faqData.filter(item => {
-                return item.status.includes(this.searchInput)
+
+                return item.question_no.toString().includes(this.searchInput);
             })
             if (typeResult.length > 0) {
                 this.searchResult = typeResult

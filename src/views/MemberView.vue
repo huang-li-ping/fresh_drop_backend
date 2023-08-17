@@ -74,19 +74,21 @@ export default {
             })
         },
         searchIdOrPhone() {
-            if (this.searchInput == '') {
-                this.searchResult = this.memData
+            if (this.searchInput == "") {
+                this.searchResult = this.memData;
             }
-            let idResult = this.memData.filter(item => {
-                return item.cus_no.includes(this.searchInput)
-            })
-            let phoneResult = this.memData.filter(item => {
-                return item.phone.includes(this.searchInput)
-            })
+            let idResult = this.memData.filter((item) => {
+                // return item.id.includes(this.searchInput)
+                return item.cus_no.toString().includes(this.searchInput);
+            });
+            let phoneResult = this.memData.filter((item) => {
+                // return item.phone.includes(this.searchInput)
+                return item.phone.toString().includes(this.searchInput);
+            });
             if (idResult.length > 0) {
-                this.searchResult = idResult
-            } else if ((phoneResult.length > 0)) {
-                this.searchResult = phoneResult
+                this.searchResult = idResult;
+            } else if (phoneResult.length > 0) {
+                this.searchResult = phoneResult;
             }
         },
         goMemberDetail(id) {

@@ -6,7 +6,7 @@
             <div class="d-flex justify-content-between">
                 <div class="input-group">
                     <span class="input-group-text">搜尋菜色</span>
-                    <input type="text" class="form-control" placeholder="請輸入菜色" @input="searchIdOrPhone" v-model="searchInput"/>
+                    <input type="text" class="form-control" placeholder="請輸入編號" @input="searchIdOrPhone" v-model="searchInput"/>
                     <div class="btn btn-outline-primary" @click="searchIdOrPhone">搜尋</div> 
                 </div>
             </div>
@@ -78,14 +78,14 @@ export default {
                 this.searchResult = this.opinionData;
             }
             let idResult = this.opinionData.filter((item) => {
-                return item.member.includes(this.searchInput);
+                return item.opinion_no.toString().includes(this.searchInput);
             });
             if (idResult.length > 0) {
                 this.searchResult = idResult;
             } else if (nameResult.length > 0) {
                 this.searchResult = nameResult;
             }
-        },    
+        },   
         // 上下架
         handleDelete(item) {
         let url = `${this.$url}opiniondelete.php`;

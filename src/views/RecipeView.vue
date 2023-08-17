@@ -388,10 +388,15 @@ export default {
                 this.searchResult = this.recipeData;
             }
             let idResult = this.recipeData.filter((item) => {
-                return item.recipe_no.includes(this.searchInput);
+                // return item.recipe_no.includes(this.searchInput);
+                return item.recipe_no.toString().includes(this.searchInput);
             });
             let nameResult = this.recipeData.filter((item) => {
-                return item.recipe_name.includes(this.searchInput);
+                // return item.recipe_name.includes(this.searchInput);
+                return (
+                    typeof item.recipe_name == "string" &&
+                    item.recipe_name.includes(this.searchInput)
+                );
             });
             if (idResult.length > 0) {
                 this.searchResult = idResult;

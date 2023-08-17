@@ -5,7 +5,7 @@
             <div class="d-flex justify-content-between">
                 <div class="input-group" style="width: fit-content">
                     <span class="input-group-text">搜尋結果</span>
-                    <input type="text" class="form-control" placeholder="請輸入人格種類或狀態" @input="searchIdOrPhone"
+                    <input type="text" class="form-control" placeholder="請輸入人格種類或編號" @input="searchIdOrPhone"
                         v-model="searchInput" />
                 </div>
 
@@ -255,10 +255,15 @@ export default {
                 this.searchResult = this.gameData
             }
             let stateResult = this.gameData.filter(item => {
-                return item.status.includes(this.searchInput)
+
+                return item.result_no.toString().includes(this.searchInput);
             })
             let personalityResult = this.gameData.filter(item => {
-                return item.personality.includes(this.searchInput)
+
+                return (
+                    typeof item.personality == "string" &&
+                    item.personality.includes(this.searchInput)
+                );
             })
             if (stateResult.length > 0) {
                 this.searchResult = stateResult;

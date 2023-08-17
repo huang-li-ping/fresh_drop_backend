@@ -140,22 +140,27 @@ export default {
 
   methods: {
     searchIdOrPhone() {
-      console.log(this.searchInput);
-      if (this.searchInput == '') {
-        this.searchResult = this.employeeData
-      }
-      let idResult = this.employeeData.filter(item => {
-        return item.emp_no.includes(this.searchInput)
-      })
-      let phoneResult = this.employeeData.filter(item => {
-        return item.emp_name.includes(this.searchInput)
-      })
-      if (idResult.length > 0) {
-        this.searchResult = idResult
-      } else if ((phoneResult.length > 0)) {
-        this.searchResult = phoneResult
-      }
-    },
+            console.log(this.searchInput);
+            if (this.searchInput == "") {
+                this.searchResult = this.employeeData;
+            }
+            let idResult = this.employeeData.filter((item) => {
+                // return item.emp_no.includes(this.searchInput)
+                return item.emp_no.toString().includes(this.searchInput);
+            });
+            let phoneResult = this.employeeData.filter((item) => {
+                // return item.emp_name.includes(this.searchInput)
+                return (
+                    typeof item.emp_name == "string" &&
+                    item.emp_name.includes(this.searchInput)
+                );
+            });
+            if (idResult.length > 0) {
+                this.searchResult = idResult;
+            } else if (phoneResult.length > 0) {
+                this.searchResult = phoneResult;
+            }
+        },
     getPageData(data) {
       this.showData = data
     },

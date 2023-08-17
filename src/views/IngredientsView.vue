@@ -224,11 +224,18 @@ export default {
             if (this.searchInput == "") {
                 this.searchResult = this.foodData;
             }
+
             let idResult = this.foodData.filter((item) => {
-                return item.ingred_no.includes(this.searchInput);
+                // return item.ingred_no.includes(this.searchInput);
+                return item.ingred_no.toString().includes(this.searchInput);
             });
+
             let nameResult = this.foodData.filter((item) => {
-                return item.ingred_name.includes(this.searchInput);
+                // return item.ingred_name.includes(this.searchInput);
+                return (
+                    typeof item.ingred_name == "string" &&
+                    item.ingred_name.includes(this.searchInput)
+                );
             });
             if (idResult.length > 0) {
                 this.searchResult = idResult;
